@@ -1,0 +1,54 @@
+s:0:Khách s:1:hàng s:2:MobiFone s:0:Khách s:0:1:Khách:hàng s:1:2:hàng:MobiFone s:0:1:2:Khách:hàng:MobiFone s:0:1:Khách:hàng s:0:Khách d:0 d:1 d:0:1 lst:0 ic:Khách B_W
+s:0:hàng s:-1:Khách s:1:MobiFone s:2:lại s:-1:0:Khách:hàng s:0:1:hàng:MobiFone s:-1:Khách s:1:2:MobiFone:lại s:0:1:2:hàng:MobiFone:lại s:-1:0:1:Khách:hàng:MobiFone s:-1:0:Khách:hàng d:-1 d:0 d:2 d:-1:0 lst:-1 ic:Khách ic:MobiFone I_W
+s:0:MobiFone s:-1:hàng s:-2:Khách s:1:lại s:2:bị s:-1:0:hàng:MobiFone s:0:1:MobiFone:lại s:-2:-1:Khách:hàng s:1:2:lại:bị s:0:1:2:MobiFone:lại:bị s:-1:0:1:hàng:MobiFone:lại s:-2:-1:0:Khách:hàng:MobiFone d:-1 d:-2 d:1 d:2 d:-2:-1 lst:-2 ic:MobiFone nvs:mobifone B_W
+s:0:lại s:-1:MobiFone s:-2:hàng s:1:bị s:2:lừa s:-1:0:MobiFone:lại s:0:1:lại:bị s:-2:-1:hàng:MobiFone s:1:2:bị:lừa s:0:1:2:lại:bị:lừa s:-1:0:1:MobiFone:lại:bị s:-2:-1:0:hàng:MobiFone:lại d:-2 d:0 d:1 d:2 ic:MobiFone B_W
+s:0:bị s:-1:lại s:-2:MobiFone s:1:lừa s:2:nhắn s:-1:0:lại:bị s:0:1:bị:lừa s:-2:-1:MobiFone:lại s:1:2:lừa:nhắn s:0:1:2:bị:lừa:nhắn s:-1:0:1:lại:bị:lừa s:-2:-1:0:MobiFone:lại:bị d:-1 d:0 d:1 d:2 B_W
+s:0:lừa s:-1:bị s:-2:lại s:1:nhắn s:2:tin s:-1:0:bị:lừa s:0:1:lừa:nhắn s:-2:-1:lại:bị s:1:2:nhắn:tin s:0:1:2:lừa:nhắn:tin s:-1:0:1:bị:lừa:nhắn s:-2:-1:0:lại:bị:lừa d:-1 d:-2 d:0 d:1 d:2 d:1:2 B_W
+s:0:nhắn s:-1:lừa s:-2:bị s:1:tin s:2:có s:-1:0:lừa:nhắn s:0:1:nhắn:tin s:-2:-1:bị:lừa s:1:2:tin:có s:0:1:2:nhắn:tin:có s:-1:0:1:lừa:nhắn:tin s:-2:-1:0:bị:lừa:nhắn d:-1 d:-2 d:0 d:1 d:2 d:0:1 B_W
+s:0:tin s:-1:nhắn s:-2:lừa s:1:có s:2:thưởng s:-1:0:nhắn:tin s:0:1:tin:có s:-2:-1:lừa:nhắn s:1:2:có:thưởng s:0:1:2:tin:có:thưởng s:-1:0:1:nhắn:tin:có s:-2:-1:0:lừa:nhắn:tin d:-1 d:-2 d:0 d:1 d:2 d:-1:0 I_W
+s:0:có s:-1:tin s:-2:nhắn s:1:thưởng s:-1:0:tin:có s:0:1:có:thưởng s:-2:-1:nhắn:tin s:1:thưởng s:0:1:có:thưởng s:-1:0:1:tin:có:thưởng s:-2:-1:0:nhắn:tin:có d:-1 d:-2 d:0 d:1 d:-2:-1 B_W
+s:0:thưởng s:-1:có s:-2:tin s:-1:0:có:thưởng s:0:thưởng s:-2:-1:tin:có s:0:thưởng s:-1:0:có:thưởng s:-2:-1:0:tin:có:thưởng d:-1 d:-2 d:0 B_W
+
+s:0:Theo s:1:Tuổi s:2:Trẻ s:0:Theo s:0:1:Theo:Tuổi s:1:2:Tuổi:Trẻ s:0:1:2:Theo:Tuổi:Trẻ s:0:1:Theo:Tuổi s:0:Theo d:0 d:1 d:2 d:1:2 lst:2 ic:Theo ic:Tuổi B_W
+s:0:Tuổi s:-1:Theo s:1:Trẻ s:2:Hơn s:-1:0:Theo:Tuổi s:0:1:Tuổi:Trẻ s:-1:Theo s:1:2:Trẻ:Hơn s:0:1:2:Tuổi:Trẻ:Hơn s:-1:0:1:Theo:Tuổi:Trẻ s:-1:0:Theo:Tuổi d:-1 d:0 d:1 d:2 d:0:1 lst:1 ic:Tuổi ic:Theo ic:Trẻ B_W
+s:0:Trẻ s:-1:Tuổi s:-2:Theo s:1:Hơn s:2:1 s:-1:0:Tuổi:Trẻ s:0:1:Trẻ:Hơn s:-2:-1:Theo:Tuổi s:1:2:Hơn:1 s:0:1:2:Trẻ:Hơn:1 s:-1:0:1:Tuổi:Trẻ:Hơn s:-2:-1:0:Theo:Tuổi:Trẻ d:-1 d:-2 d:0 d:1 d:-1:0 lst:0 lst:2 ic:Trẻ ic:Tuổi ic:Hơn I_W
+s:0:Hơn s:-1:Trẻ s:-2:Tuổi s:1:1 s:2:tháng s:-1:0:Trẻ:Hơn s:0:1:Hơn:1 s:-2:-1:Tuổi:Trẻ s:1:2:1:tháng s:0:1:2:Hơn:1:tháng s:-1:0:1:Trẻ:Hơn:1 s:-2:-1:0:Tuổi:Trẻ:Hơn d:-1 d:-2 d:0 d:2 d:-2:-1 lst:-1 lst:1 ic:Hơn ic:Trẻ re:1:number B_W
+s:0:1 s:-1:Hơn s:-2:Trẻ s:1:tháng s:2:kể s:-1:0:Hơn:1 s:0:1:1:tháng s:-2:-1:Trẻ:Hơn s:1:2:tháng:kể s:0:1:2:1:tháng:kể s:-1:0:1:Hơn:1:tháng s:-2:-1:0:Trẻ:Hơn:1 d:-1 d:-2 d:1 d:2 lst:0 lst:-2 ic:Hơn nvs:1 re:0:number B_W
+s:0:tháng s:-1:1 s:-2:Hơn s:1:kể s:2:từ s:-1:0:1:tháng s:0:1:tháng:kể s:-2:-1:Hơn:1 s:1:2:kể:từ s:0:1:2:tháng:kể:từ s:-1:0:1:1:tháng:kể s:-2:-1:0:Hơn:1:tháng d:-2 d:0 d:1 d:2 d:1:2 lst:-1 re:-1:number B_W
+s:0:kể s:-1:tháng s:-2:1 s:1:từ s:2:khi s:-1:0:tháng:kể s:0:1:kể:từ s:-2:-1:1:tháng s:1:2:từ:khi s:0:1:2:kể:từ:khi s:-1:0:1:tháng:kể:từ s:-2:-1:0:1:tháng:kể d:-1 d:0 d:1 d:2 d:0:1 d:1:2 lst:-2 B_W
+s:0:từ s:-1:kể s:-2:tháng s:1:khi s:2:ý s:-1:0:kể:từ s:0:1:từ:khi s:-2:-1:tháng:kể s:1:2:khi:ý s:0:1:2:từ:khi:ý s:-1:0:1:kể:từ:khi s:-2:-1:0:tháng:kể:từ d:-1 d:-2 d:0 d:1 d:2 d:-1:0 d:0:1 I_W
+s:0:khi s:-1:từ s:-2:kể s:1:ý s:2:tưởng s:-1:0:từ:khi s:0:1:khi:ý s:-2:-1:kể:từ s:1:2:ý:tưởng s:0:1:2:khi:ý:tưởng s:-1:0:1:từ:khi:ý s:-2:-1:0:kể:từ:khi d:-1 d:-2 d:0 d:1 d:2 d:-2:-1 d:-1:0 d:1:2 B_W
+s:0:ý s:-1:khi s:-2:từ s:1:tưởng s:2:" s:-1:0:khi:ý s:0:1:ý:tưởng s:-2:-1:từ:khi s:1:2:tưởng:" s:0:1:2:ý:tưởng:" s:-1:0:1:khi:ý:tưởng s:-2:-1:0:từ:khi:ý d:-1 d:-2 d:0 d:1 d:-2:-1 d:0:1 B_W
+s:0:tưởng s:-1:ý s:-2:khi s:1:" s:2:trói s:-1:0:ý:tưởng s:0:1:tưởng:" s:-2:-1:khi:ý s:1:2:":trói s:0:1:2:tưởng:":trói s:-1:0:1:ý:tưởng:" s:-2:-1:0:khi:ý:tưởng d:-1 d:-2 d:0 d:2 d:-1:0 I_W
+s:0:" s:-1:tưởng s:-2:ý s:1:trói s:2:" s:-1:0:tưởng:" s:0:1:":trói s:-2:-1:ý:tưởng s:1:2:trói:" s:0:1:2:":trói:" s:-1:0:1:tưởng:":trói s:-2:-1:0:ý:tưởng:" d:-1 d:-2 d:1 d:-2:-1 ma:" nvs:" O
+s:0:trói s:-1:" s:-2:tưởng s:1:" s:2:các s:-1:0:":trói s:0:1:trói:" s:-2:-1:tưởng:" s:1:2:":các s:0:1:2:trói:":các s:-1:0:1:":trói:" s:-2:-1:0:tưởng:":trói d:-2 d:0 d:2 ma:" B_W
+s:0:" s:-1:trói s:-2:" s:1:các s:2:thuê s:-1:0:trói:" s:0:1:":các s:-2:-1:":trói s:1:2:các:thuê s:0:1:2:":các:thuê s:-1:0:1:trói:":các s:-2:-1:0:":trói:" d:-1 d:1 d:2 ma:" nvs:" O
+s:0:các s:-1:" s:-2:trói s:1:thuê s:2:bao s:-1:0:":các s:0:1:các:thuê s:-2:-1:trói:" s:1:2:thuê:bao s:0:1:2:các:thuê:bao s:-1:0:1:":các:thuê s:-2:-1:0:trói:":các d:-2 d:0 d:1 d:2 d:1:2 ma:" B_W
+s:0:thuê s:-1:các s:-2:" s:1:bao s:2:di s:-1:0:các:thuê s:0:1:thuê:bao s:-2:-1:":các s:1:2:bao:di s:0:1:2:thuê:bao:di s:-1:0:1:các:thuê:bao s:-2:-1:0:":các:thuê d:-1 d:0 d:1 d:2 d:0:1 B_W
+s:0:bao s:-1:thuê s:-2:các s:1:di s:2:động s:-1:0:thuê:bao s:0:1:bao:di s:-2:-1:các:thuê s:1:2:di:động s:0:1:2:bao:di:động s:-1:0:1:thuê:bao:di s:-2:-1:0:các:thuê:bao d:-1 d:-2 d:0 d:1 d:2 d:-1:0 d:1:2 I_W
+s:0:di s:-1:bao s:-2:thuê s:1:động s:2:trả s:-1:0:bao:di s:0:1:di:động s:-2:-1:thuê:bao s:1:2:động:trả s:0:1:2:di:động:trả s:-1:0:1:bao:di:động s:-2:-1:0:thuê:bao:di d:-1 d:-2 d:0 d:1 d:2 d:-2:-1 d:0:1 B_W
+s:0:động s:-1:di s:-2:bao s:1:trả s:2:trước s:-1:0:di:động s:0:1:động:trả s:-2:-1:bao:di s:1:2:trả:trước s:0:1:2:động:trả:trước s:-1:0:1:di:động:trả s:-2:-1:0:bao:di:động d:-1 d:-2 d:0 d:1 d:2 d:-1:0 d:1:2 I_W
+s:0:trả s:-1:động s:-2:di s:1:trước s:2:được s:-1:0:động:trả s:0:1:trả:trước s:-2:-1:di:động s:1:2:trước:được s:0:1:2:trả:trước:được s:-1:0:1:động:trả:trước s:-2:-1:0:di:động:trả d:-1 d:-2 d:0 d:1 d:2 d:-2:-1 d:0:1 B_W
+s:0:trước s:-1:trả s:-2:động s:1:được s:2:khơi s:-1:0:trả:trước s:0:1:trước:được s:-2:-1:động:trả s:1:2:được:khơi s:0:1:2:trước:được:khơi s:-1:0:1:trả:trước:được s:-2:-1:0:động:trả:trước d:-1 d:-2 d:0 d:1 d:2 d:-1:0 I_W
+s:0:được s:-1:trước s:-2:trả s:1:khơi s:2:mào s:-1:0:trước:được s:0:1:được:khơi s:-2:-1:trả:trước s:1:2:khơi:mào s:0:1:2:được:khơi:mào s:-1:0:1:trước:được:khơi s:-2:-1:0:trả:trước:được d:-1 d:-2 d:0 d:1 d:2 d:-2:-1 d:1:2 B_W
+s:0:khơi s:-1:được s:-2:trước s:1:mào s:2:, s:-1:0:được:khơi s:0:1:khơi:mào s:-2:-1:trước:được s:1:2:mào:, s:0:1:2:khơi:mào:, s:-1:0:1:được:khơi:mào s:-2:-1:0:trước:được:khơi d:-1 d:-2 d:0 d:1 d:0:1 B_W
+s:0:mào s:-1:khơi s:-2:được s:1:, s:2:Bộ s:-1:0:khơi:mào s:0:1:mào:, s:-2:-1:được:khơi s:1:2:,:Bộ s:0:1:2:mào:,:Bộ s:-1:0:1:khơi:mào:, s:-2:-1:0:được:khơi:mào d:-1 d:-2 d:0 d:2 d:-1:0 mdl:2 lst:2 I_W
+s:0:, s:-1:mào s:-2:khơi s:1:Bộ s:2:Bưu s:-1:0:mào:, s:0:1:,:Bộ s:-2:-1:khơi:mào s:1:2:Bộ:Bưu s:0:1:2:,:Bộ:Bưu s:-1:0:1:mào:,:Bộ s:-2:-1:0:khơi:mào:, d:-1 d:-2 d:1 d:-2:-1 mdl:1 lst:1 ma:, ic:Bộ nvs:, O
+s:0:Bộ s:-1:, s:-2:mào s:1:Bưu s:2:chính s:-1:0:,:Bộ s:0:1:Bộ:Bưu s:-2:-1:mào:, s:1:2:Bưu:chính s:0:1:2:Bộ:Bưu:chính s:-1:0:1:,:Bộ:Bưu s:-2:-1:0:mào:,:Bộ d:-2 d:0 d:2 d:1:2 mdl:0 lst:0 ic:Bộ ma:, ic:Bưu B_W
+s:0:Bưu s:-1:Bộ s:-2:, s:1:chính s:2:Viễn s:-1:0:Bộ:Bưu s:0:1:Bưu:chính s:-2:-1:,:Bộ s:1:2:chính:Viễn s:0:1:2:Bưu:chính:Viễn s:-1:0:1:Bộ:Bưu:chính s:-2:-1:0:,:Bộ:Bưu d:-1 d:1 d:0:1 mdl:-1 lst:-1 lst:2 ic:Bưu ic:Bộ B_W
+s:0:chính s:-1:Bưu s:-2:Bộ s:1:Viễn s:2:thông s:-1:0:Bưu:chính s:0:1:chính:Viễn s:-2:-1:Bộ:Bưu s:1:2:Viễn:thông s:0:1:2:chính:Viễn:thông s:-1:0:1:Bưu:chính:Viễn s:-2:-1:0:Bộ:Bưu:chính d:-2 d:0 d:2 d:-1:0 d:1:2 mdl:-2 lst:1 lst:-2 ic:Bưu ic:Viễn I_W
+s:0:Viễn s:-1:chính s:-2:Bưu s:1:thông s:2:vẫn s:-1:0:chính:Viễn s:0:1:Viễn:thông s:-2:-1:Bưu:chính s:1:2:thông:vẫn s:0:1:2:Viễn:thông:vẫn s:-1:0:1:chính:Viễn:thông s:-2:-1:0:Bưu:chính:Viễn d:-1 d:1 d:2 d:-2:-1 d:0:1 lst:0 ic:Viễn B_W
+s:0:thông s:-1:Viễn s:-2:chính s:1:vẫn s:2:không s:-1:0:Viễn:thông s:0:1:thông:vẫn s:-2:-1:chính:Viễn s:1:2:vẫn:không s:0:1:2:thông:vẫn:không s:-1:0:1:Viễn:thông:vẫn s:-2:-1:0:chính:Viễn:thông d:-2 d:0 d:1 d:2 d:-1:0 lst:-1 ic:Viễn I_W
+s:0:vẫn s:-1:thông s:-2:Viễn s:1:không s:2:tìm s:-1:0:thông:vẫn s:0:1:vẫn:không s:-2:-1:Viễn:thông s:1:2:không:tìm s:0:1:2:vẫn:không:tìm s:-1:0:1:thông:vẫn:không s:-2:-1:0:Viễn:thông:vẫn d:-1 d:0 d:1 d:2 d:-2:-1 lst:-2 B_W
+s:0:không s:-1:vẫn s:-2:thông s:1:tìm s:2:được s:-1:0:vẫn:không s:0:1:không:tìm s:-2:-1:thông:vẫn s:1:2:tìm:được s:0:1:2:không:tìm:được s:-1:0:1:vẫn:không:tìm s:-2:-1:0:thông:vẫn:không d:-1 d:-2 d:0 d:1 d:2 B_W
+s:0:tìm s:-1:không s:-2:vẫn s:1:được s:2:phương s:-1:0:không:tìm s:0:1:tìm:được s:-2:-1:vẫn:không s:1:2:được:phương s:0:1:2:tìm:được:phương s:-1:0:1:không:tìm:được s:-2:-1:0:vẫn:không:tìm d:-1 d:-2 d:0 d:1 d:2 B_W
+s:0:được s:-1:tìm s:-2:không s:1:phương s:2:án s:-1:0:tìm:được s:0:1:được:phương s:-2:-1:không:tìm s:1:2:phương:án s:0:1:2:được:phương:án s:-1:0:1:tìm:được:phương s:-2:-1:0:không:tìm:được d:-1 d:-2 d:0 d:1 d:2 d:1:2 B_W
+s:0:phương s:-1:được s:-2:tìm s:1:án s:2:nào s:-1:0:được:phương s:0:1:phương:án s:-2:-1:tìm:được s:1:2:án:nào s:0:1:2:phương:án:nào s:-1:0:1:được:phương:án s:-2:-1:0:tìm:được:phương d:-1 d:-2 d:0 d:1 d:2 d:0:1 B_W
+s:0:án s:-1:phương s:-2:được s:1:nào s:2:mang s:-1:0:phương:án s:0:1:án:nào s:-2:-1:được:phương s:1:2:nào:mang s:0:1:2:án:nào:mang s:-1:0:1:phương:án:nào s:-2:-1:0:được:phương:án d:-1 d:-2 d:0 d:1 d:2 d:-1:0 I_W
+s:0:nào s:-1:án s:-2:phương s:1:mang s:2:tính s:-1:0:án:nào s:0:1:nào:mang s:-2:-1:phương:án s:1:2:mang:tính s:0:1:2:nào:mang:tính s:-1:0:1:án:nào:mang s:-2:-1:0:phương:án:nào d:-1 d:-2 d:0 d:1 d:2 d:-2:-1 B_W
+s:0:mang s:-1:nào s:-2:án s:1:tính s:2:khả s:-1:0:nào:mang s:0:1:mang:tính s:-2:-1:án:nào s:1:2:tính:khả s:0:1:2:mang:tính:khả s:-1:0:1:nào:mang:tính s:-2:-1:0:án:nào:mang d:-1 d:-2 d:0 d:1 B_W
+s:0:tính s:-1:mang s:-2:nào s:1:khả s:2:thi s:-1:0:mang:tính s:0:1:tính:khả s:-2:-1:nào:mang s:1:2:khả:thi s:0:1:2:tính:khả:thi s:-1:0:1:mang:tính:khả s:-2:-1:0:nào:mang:tính d:-1 d:-2 d:0 d:2 d:1:2 d:0:1:2 lst:2 B_W
+s:0:khả s:-1:tính s:-2:mang s:1:thi s:2:. s:-1:0:tính:khả s:0:1:khả:thi s:-2:-1:mang:tính s:1:2:thi:. s:0:1:2:khả:thi:. s:-1:0:1:tính:khả:thi s:-2:-1:0:mang:tính:khả d:-1 d:-2 d:1 d:0:1 d:-1:0:1 lst:1 B_W
+s:0:thi s:-1:khả s:-2:tính s:1:. s:-1:0:khả:thi s:0:1:thi:. s:-2:-1:tính:khả s:1:. s:0:1:thi:. s:-1:0:1:khả:thi:. s:-2:-1:0:tính:khả:thi d:-2 d:0 d:-1:0 d:-2:-1:0 lst:0 ac:. I_W
+s:0:. s:-1:thi s:-2:khả s:-1:0:thi:. s:0:. s:-2:-1:khả:thi s:0:. s:-1:0:thi:. s:-2:-1:0:khả:thi:. d:-1 d:-2:-1 lst:-1 ac:. ma:. nvs:. O
+
