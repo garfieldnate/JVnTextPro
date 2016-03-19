@@ -28,7 +28,7 @@
 package jmaxent;
 
 import java.io.*;
-import riso.numerical.*;
+import org.riso.numerical.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -70,6 +70,8 @@ public class Train {
     
     /** The iflag. */
     int[] iflag = null;
+    
+    private LBFGS lbfgs = new LBFGS();
     
     /**
      * Instantiates a new train.
@@ -183,7 +185,7 @@ public class Train {
 	    
 	    // calling L-BFGS
 	    try {
-		LBFGS.lbfgs(numFeatures, model.option.mForHessian, lambda, f, gradLogLi,
+		lbfgs.lbfgs(numFeatures, model.option.mForHessian, lambda, f, gradLogLi,
 			    false, diag, iprint, model.option.epsForConvergence, xtol, iflag);
 	    } catch (LBFGS.ExceptionWithIflag e) {
 		System.out.println("L-BFGS failed!");
