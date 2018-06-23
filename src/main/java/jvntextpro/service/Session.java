@@ -34,97 +34,98 @@ import java.io.InterruptedIOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Vector;
+
 import jvntextpro.JVnTextPro;
 
 public class Session extends Thread {
 
-	//------------------------
-	// Data
-	//------------------------
-	/** The textpro. */
-	JVnTextPro textpro;
+    //------------------------
+    // Data
+    //------------------------
+    /**
+     * The textpro.
+     */
+    JVnTextPro textpro;
 
-	/** The incoming. */
-	private Socket incoming;
+    /**
+     * The incoming.
+     */
+    private Socket incoming;
 
-	//-----------------------
-	// Methods
-	//-----------------------
-	/**
-	 * Instantiates a new session.
-	 *
-	 * @param textpro the textpro
-	 */
-	public Session(JVnTextPro textpro){
-		this.textpro = textpro;
-	}
+    //-----------------------
+    // Methods
+    //-----------------------
 
-	/**
-	 * Sets the socket.
-	 *
-	 * @param s the new socket
-	 */
-	public synchronized void setSocket(Socket s){
-		this.incoming = s;
-		notify();
-	}
+    /**
+     * Instantiates a new session.
+     *
+     * @param textpro the textpro
+     */
+    public Session(JVnTextPro textpro) {
+        this.textpro = textpro;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Thread#run()
-	 */
-	public synchronized void run(){
-		while (true){
-			try {
-				if (incoming == null) {
-		            wait();
-		        }
+    /**
+     * Sets the socket.
+     *
+     * @param s the new socket
+     */
+    public synchronized void setSocket(Socket s) {
+        this.incoming = s;
+        notify();
+    }
 
-				System.out.println("Socket opening ...");
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						incoming.getInputStream(), "UTF-8"));
-				//PrintStream out = (PrintStream) incoming.getOutputStream();
-				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-						incoming.getOutputStream(), "UTF-8"));
+    /* (non-Javadoc)
+     * @see java.lang.Thread#run()
+     */
+    public synchronized void run() {
+        while (true) {
+            try {
+                if (incoming == null) {
+                    wait();
+                }
 
-				String content = "";
+                System.out.println("Socket opening ...");
+                BufferedReader in = new BufferedReader(new InputStreamReader(incoming.getInputStream(), "UTF-8"));
+                //PrintStream out = (PrintStream) incoming.getOutputStream();
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(incoming.getOutputStream(), "UTF-8"));
 
-				while (true){
-					int ch = in.read();
-					if (ch == 0) //end of string
-						break;
+                String content = "";
 
-					content += (char) ch;
-				}
+                while (true) {
+                    int ch = in.read();
+                    if (ch == 0) //end of string
+                        break;
 
-				//System.out.println(content);
-				String tagged = textpro.process(content);
-				//Thread.sleep(4000);
+                    content += (char) ch;
+                }
 
-				out.write(tagged.trim());
-				out.write((char)0);
-				out.flush();
-			}
-			catch (InterruptedIOException e){
-				System.out.println("The conection is interrupted");
-			}
-			catch (Exception e){
-				System.out.println(e);
-				e.printStackTrace();
-			}
+                //System.out.println(content);
+                String tagged = textpro.process(content);
+                //Thread.sleep(4000);
 
-			//update pool
-			//go back in wait queue if there is fewer than max
-			this.setSocket(null);
-			Vector<Session> pool = TaggingService.pool;
-			synchronized (pool) {
-				if (pool.size() >= TaggingService.maxNSession){
-					/* too many threads, exit this one*/
-					return;
-				}
-				else {
-					pool.addElement(this);
-				}
-			}
-		}
-	}
+                out.write(tagged.trim());
+                out.write((char) 0);
+                out.flush();
+            } catch (InterruptedIOException e) {
+                System.out.println("The conection is interrupted");
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+
+            //update pool
+            //go back in wait queue if there is fewer than max
+            this.setSocket(null);
+            Vector<Session> pool = TaggingService.pool;
+            synchronized (pool) {
+                if (pool.size() >= TaggingService.maxNSession) {
+                    /* too many threads, exit this one*/
+                    return;
+                } else {
+                    pool.addElement(this);
+                }
+            }
+        }
+    }
 }

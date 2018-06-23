@@ -42,123 +42,125 @@ import jvntextpro.conversion.CompositeUnicode2Unicode;
 
 public class JVnTextProTest {
 
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 */
-	public static void main(String [] args){
-		JVnTextProTestOption option = new JVnTextProTestOption();
-		CmdLineParser parser = new CmdLineParser(option);
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
+    public static void main(String[] args) {
+        JVnTextProTestOption option = new JVnTextProTestOption();
+        CmdLineParser parser = new CmdLineParser(option);
 
-		if (args.length == 0) {
-			System.out.println("JVnTextProTest [options...] [arguments..]");
-			parser.printUsage(System.out);
-			return;
-		}
+        if (args.length == 0) {
+            System.out.println("JVnTextProTest [options...] [arguments..]");
+            parser.printUsage(System.out);
+            return;
+        }
 
-		JVnTextPro vnTextPro = new JVnTextPro();
-		CompositeUnicode2Unicode conversion = new CompositeUnicode2Unicode();
+        JVnTextPro vnTextPro = new JVnTextPro();
+        CompositeUnicode2Unicode conversion = new CompositeUnicode2Unicode();
 
-		try {
-			parser.parseArgument(args);
-			vnTextPro.initSenTokenization();
+        try {
+            parser.parseArgument(args);
+            vnTextPro.initSenTokenization();
 
-			if (option.doSenSeg){
-				vnTextPro.initSenSegmenter(option.modelDir.getPath() + File.separator + "jvnsensegmenter");
-			}
+            if (option.doSenSeg) {
+                vnTextPro.initSenSegmenter(option.modelDir.getPath() + File.separator + "jvnsensegmenter");
+            }
 
-			if (option.doSenToken){
-				vnTextPro.initSenTokenization();
-			}
+            if (option.doSenToken) {
+                vnTextPro.initSenTokenization();
+            }
 
-			if (option.doWordSeg){
-				vnTextPro.initSegmenter(option.modelDir.getPath() + File.separator + "jvnsegmenter");
-			}
-
-
-			if (option.doPosTagging){
-				vnTextPro.initPosTagger(option.modelDir.getPath() + File.separator + "jvnpostag" + File.separator + "maxent");
-			}
+            if (option.doWordSeg) {
+                vnTextPro.initSegmenter(option.modelDir.getPath() + File.separator + "jvnsegmenter");
+            }
 
 
-			if (option.inFile.isFile()){
-				//REad file, process and write file
-				BufferedReader reader = new BufferedReader(new InputStreamReader(
-						new FileInputStream(option.inFile), "UTF-8"));
-				String line, ret = "";
+            if (option.doPosTagging) {
+                vnTextPro.initPosTagger(
+                    option.modelDir.getPath() + File.separator + "jvnpostag" + File.separator + "maxent");
+            }
 
-				while ((line = reader.readLine()) != null){
-					line = conversion.convert(line);
-					ret += vnTextPro.process(line).trim() + "\n";
 
-				}
+            if (option.inFile.isFile()) {
+                //REad file, process and write file
+                BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(option.inFile),
+                    "UTF-8"
+                ));
+                String line, ret = "";
 
-				reader.close();
+                while ((line = reader.readLine()) != null) {
+                    line = conversion.convert(line);
+                    ret += vnTextPro.process(line).trim() + "\n";
 
-				//write file
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-						new FileOutputStream(option.inFile.getPath() + ".pro"), "UTF-8"));
-				writer.write(ret);
-				writer.close();
-			}
-			else if (option.inFile.isDirectory()){
-				File [] childs = option.inFile.listFiles();
+                }
 
-				for (File child : childs){
-					if (!child.getName().endsWith(option.fileType)) continue;
+                reader.close();
 
-					//REad file, process and write file
-					BufferedReader reader = new BufferedReader(new InputStreamReader(
-							new FileInputStream(child), "UTF-8"));
-					String line, ret = "";
+                //write file
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                    option.inFile.getPath() + ".pro"), "UTF-8"));
+                writer.write(ret);
+                writer.close();
+            } else if (option.inFile.isDirectory()) {
+                File[] childs = option.inFile.listFiles();
 
-					while ((line = reader.readLine()) != null){
-						line = conversion.convert(line);
-						ret += vnTextPro.process(line).trim() + "\n";
-					}
+                for (File child : childs) {
+                    if (!child.getName().endsWith(option.fileType)) continue;
 
-					reader.close();
+                    //REad file, process and write file
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(child),
+                        "UTF-8"
+                    ));
+                    String line, ret = "";
 
-					//write file
-					BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-							new FileOutputStream(child.getPath() + ".pro"), "UTF-8"));
-					writer.write(ret);
-					writer.close();
-				}
-			}
-		}
-		catch(CmdLineException cle){
-			System.out.println("JVnTextProTest [options...] [arguments..]");
-			parser.printUsage(System.out);
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-	}
+                    while ((line = reader.readLine()) != null) {
+                        line = conversion.convert(line);
+                        ret += vnTextPro.process(line).trim() + "\n";
+                    }
+
+                    reader.close();
+
+                    //write file
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                        child.getPath() + ".pro"), "UTF-8"));
+                    writer.write(ret);
+                    writer.close();
+                }
+            }
+        } catch (CmdLineException cle) {
+            System.out.println("JVnTextProTest [options...] [arguments..]");
+            parser.printUsage(System.out);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 }
 
-class JVnTextProTestOption{
-	@Option(name="-modeldir", usage="(required) Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
-	File modelDir;
+class JVnTextProTestOption {
+    @Option(name = "-modeldir", usage = "(required) Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
+    File modelDir;
 
-	@Option(name="-senseg", usage=" (optional) Specify if doing sentence segmentation is set or not, not set by default")
-	boolean doSenSeg = false;
+    @Option(name = "-senseg", usage = " (optional) Specify if doing sentence segmentation is set or not, not set by default")
+    boolean doSenSeg = false;
 
-	@Option(name="-wordseg", usage = "(optional) Specify if doing word segmentation is set or not, not set by default")
-	boolean doWordSeg = false;
+    @Option(name = "-wordseg", usage = "(optional) Specify if doing word segmentation is set or not, not set by default")
+    boolean doWordSeg = false;
 
-	@Option(name="-sentoken", usage = "(optional) Specify if doing sentence tokenization is set or not, not set by default")
-	boolean doSenToken = false;
+    @Option(name = "-sentoken", usage = "(optional) Specify if doing sentence tokenization is set or not, not set by default")
+    boolean doSenToken = false;
 
-	@Option(name="-postag", usage = "(optional) Specify if doing pos tagging or not is set or not, not set by default")
-	boolean doPosTagging = false;
+    @Option(name = "-postag", usage = "(optional) Specify if doing pos tagging or not is set or not, not set by default")
+    boolean doPosTagging = false;
 
-	@Option(name="-input", usage="(required) Specify input file/directory")
-	File inFile;
+    @Option(name = "-input", usage = "(required) Specify input file/directory")
+    File inFile;
 
-	@Option(name="-filetype", usage=" (optional) Specify file types to process (in the case -input is a directory")
-	String fileType=".txt";
+    @Option(name = "-filetype", usage = " (optional) Specify file types to process (in the case -input is a directory")
+    String fileType = ".txt";
 }

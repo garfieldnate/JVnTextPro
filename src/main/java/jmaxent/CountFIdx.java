@@ -29,21 +29,25 @@ package jmaxent;
 
 public class CountFIdx {
 
-    /** The count. */
+    /**
+     * The count.
+     */
     public int count = 0;
 
-    /** The fidx. */
+    /**
+     * The fidx.
+     */
     public int fidx = -1;
 
     /**
      * Instantiates a new count f idx.
      *
      * @param count the count
-     * @param fidx the fidx
+     * @param fidx  the fidx
      */
     public CountFIdx(int count, int fidx) {
-	this.count = count;
-	this.fidx = fidx;
+        this.count = count;
+        this.fidx = fidx;
     }
 
 } // end of class CountFeatureIdx

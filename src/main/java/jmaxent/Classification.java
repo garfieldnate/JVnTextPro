@@ -27,36 +27,58 @@
 
 package jmaxent;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class Classification {
 
-    /** The option. */
+    /**
+     * The option.
+     */
     public Option option = null;
 
-    /** The data. */
+    /**
+     * The data.
+     */
     public Data data = null;
 
-    /** The dict. */
+    /**
+     * The dict.
+     */
     public Dictionary dict = null;
 
-    /** The feagen. */
+    /**
+     * The feagen.
+     */
     public FeatureGen feagen = null;
 
-    /** The inference. */
+    /**
+     * The inference.
+     */
     public Inference inference = null;
 
-    /** The model. */
+    /**
+     * The model.
+     */
     public Model model = null;
 
-    /** The initialized. */
+    /**
+     * The initialized.
+     */
     public boolean initialized = false;
 
-    /** The fin model. */
+    /**
+     * The fin model.
+     */
     private BufferedReader finModel = null;
 
-    /** The int cps. */
+    /**
+     * The int cps.
+     */
     List intCps = null;
 
     /**
@@ -65,10 +87,10 @@ public class Classification {
      * @param modelDir the model dir
      */
     public Classification(String modelDir) {
-	option = new Option(modelDir);
-	option.readOptions();
+        option = new Option(modelDir);
+        option.readOptions();
 
-	 init();
+        init();
     }
 
     /**
@@ -77,53 +99,53 @@ public class Classification {
      * @return true, if is initialized
      */
     public boolean isInitialized() {
-	return initialized;
+        return initialized;
     }
 
     /**
      * Inits the.
      */
     public void init() {
-	try {
-	    // open model file
-	    finModel = option.openModelFile();
-	    if (finModel == null) {
-		System.out.println("Couldn't open model file");
-		return;
-	    }
+        try {
+            // open model file
+            finModel = option.openModelFile();
+            if (finModel == null) {
+                System.out.println("Couldn't open model file");
+                return;
+            }
 
-	    data = new Data(option);
-	    // read context predicate map
-	    data.readCpMaps(finModel);
-	    // read label map
-	    data.readLbMaps(finModel);
+            data = new Data(option);
+            // read context predicate map
+            data.readCpMaps(finModel);
+            // read label map
+            data.readLbMaps(finModel);
 
-	    dict = new Dictionary(option, data);
-	    // read dictionary
-	    dict.readDict(finModel);
+            dict = new Dictionary(option, data);
+            // read dictionary
+            dict.readDict(finModel);
 
-	    feagen = new FeatureGen(option, data, dict);
-	    // read features
-	    feagen.readFeatures(finModel);
+            feagen = new FeatureGen(option, data, dict);
+            // read features
+            feagen.readFeatures(finModel);
 
-	    // create an inference object
-	    inference = new Inference();
+            // create an inference object
+            inference = new Inference();
 
-	    // create a model object
-	    model = new Model(option, data, dict, feagen, null, inference, null);
-	    model.initInference();
+            // create a model object
+            model = new Model(option, data, dict, feagen, null, inference, null);
+            model.initInference();
 
-	    // close model file
-	    finModel.close();
+            // close model file
+            finModel.close();
 
-	} catch(IOException e) {
-	    System.out.println("Couldn't load the model, check the model file again");
-	    System.out.println(e.toString());
-	}
+        } catch (IOException e) {
+            System.out.println("Couldn't load the model, check the model file again");
+            System.out.println(e.toString());
+        }
 
-	intCps = new ArrayList();
+        intCps = new ArrayList();
 
-	initialized = true;
+        initialized = true;
     }
 
     /**
@@ -133,35 +155,35 @@ public class Classification {
      * @return label
      */
     public String classify(String cps) {
-		// cps contains a list of context predicates
+        // cps contains a list of context predicates
 
-		String modelLabel = "";
-		int i;
+        String modelLabel = "";
+        int i;
 
-		intCps.clear();
+        intCps.clear();
 
-		StringTokenizer strTok = new StringTokenizer(cps, " \t\r\n");
-		int count = strTok.countTokens();
+        StringTokenizer strTok = new StringTokenizer(cps, " \t\r\n");
+        int count = strTok.countTokens();
 
-		for (i = 0; i < count; i++) {
-		    String cpStr = strTok.nextToken();
-		    Integer cpInt = (Integer)data.cpStr2Int.get(cpStr);
-		    if (cpInt != null) {
-			intCps.add(cpInt);
-		    }
-		}
+        for (i = 0; i < count; i++) {
+            String cpStr = strTok.nextToken();
+            Integer cpInt = (Integer) data.cpStr2Int.get(cpStr);
+            if (cpInt != null) {
+                intCps.add(cpInt);
+            }
+        }
 
-		Observation obsr = new Observation(intCps);
+        Observation obsr = new Observation(intCps);
 
-		// classify
-		inference.classify(obsr);
+        // classify
+        inference.classify(obsr);
 
-		String lbStr = (String)data.lbInt2Str.get(new Integer(obsr.modelLabel));
-		if (lbStr != null) {
-		    modelLabel = lbStr;
-		}
+        String lbStr = (String) data.lbInt2Str.get(new Integer(obsr.modelLabel));
+        if (lbStr != null) {
+            modelLabel = lbStr;
+        }
 
-		return modelLabel;
+        return modelLabel;
     }
 
     /**
@@ -170,79 +192,74 @@ public class Classification {
      * @param cpArr the cp arr
      * @return the string
      */
-    public String classify(String [] cpArr){
-    	String modelLabel = "";
-		//int i;
+    public String classify(String[] cpArr) {
+        String modelLabel = "";
+        //int i;
 
-		intCps.clear();
+        intCps.clear();
 
-		int curWordCp = -1;
-		int dictLabel = -2;
-		int dictCp = -1;
-		Vector<Integer> dictCps = new Vector<Integer>();
+        int curWordCp = -1;
+        int dictLabel = -2;
+        int dictCp = -1;
+        Vector<Integer> dictCps = new Vector<Integer>();
 
-		for (String cpStr : cpArr) {
-			Integer cpInt = (Integer)data.cpStr2Int.get(cpStr);
+        for (String cpStr : cpArr) {
+            Integer cpInt = (Integer) data.cpStr2Int.get(cpStr);
 
-			if (cpInt != null) {
-				intCps.add(cpInt);
+            if (cpInt != null) {
+                intCps.add(cpInt);
 
-				if (cpStr.startsWith("w:0")){
-					//current word
-					curWordCp = cpInt;
-				}
-				else if (cpStr.startsWith("dict:0")){
-					//current labels
-					dictCp = cpInt;
-					dictCps.add(dictCp);
+                if (cpStr.startsWith("w:0")) {
+                    //current word
+                    curWordCp = cpInt;
+                } else if (cpStr.startsWith("dict:0")) {
+                    //current labels
+                    dictCp = cpInt;
+                    dictCps.add(dictCp);
 
-					if (dictLabel == -1){
-						//do nothing
-					}
-					else if (dictLabel == -2){
-						//initial state
-						String label = cpStr.substring("dict:0:".length());
+                    if (dictLabel == -1) {
+                        //do nothing
+                    } else if (dictLabel == -2) {
+                        //initial state
+                        String label = cpStr.substring("dict:0:".length());
 
-						if (data.lbStr2Int.containsKey(label))
-							dictLabel = (Integer) data.lbStr2Int.get(label);
-						else dictLabel = -1;
-					}
-					else {//!=-1 && !=-2
-						dictLabel = -1;
-					}
-				}
-			}
-		}
+                        if (data.lbStr2Int.containsKey(label)) dictLabel = (Integer) data.lbStr2Int.get(label);
+                        else dictLabel = -1;
+                    } else {//!=-1 && !=-2
+                        dictLabel = -1;
+                    }
+                }
+            }
+        }
 
-		//insert information about current cpid of w:0:<current_word>
-		if (curWordCp != -1 && dictLabel >= 0) { //in training data
-			for (int i = 0; i < 3; ++i)
-				intCps.add(dictCp);
-		}
-		else {
-			for (int i = 0; i < dictCps.size(); ++i){
-				intCps.add(dictCps.get(i));
-				intCps.add(dictCps.get(i));
-			}
-		}
+        //insert information about current cpid of w:0:<current_word>
+        if (curWordCp != -1 && dictLabel >= 0) { //in training data
+            for (int i = 0; i < 3; ++i)
+                intCps.add(dictCp);
+        } else {
+            for (int i = 0; i < dictCps.size(); ++i) {
+                intCps.add(dictCps.get(i));
+                intCps.add(dictCps.get(i));
+            }
+        }
 
-		//create observation and start inference
-		Observation obsr = new Observation(intCps);
-		obsr.curWordCp = curWordCp;
-		obsr.dictLabel = dictLabel;
+        //create observation and start inference
+        Observation obsr = new Observation(intCps);
+        obsr.curWordCp = curWordCp;
+        obsr.dictLabel = dictLabel;
 
-		 if (obsr.curWordCp == -1 && obsr.dictLabel >= 0){
-		    	//not in training data and
-		    	//there is only one corresponding label in dict
-			 obsr.modelLabel = obsr.dictLabel;
-		}else inference.classify(obsr);
+        if (obsr.curWordCp == -1 && obsr.dictLabel >= 0) {
+            //not in training data and
+            //there is only one corresponding label in dict
+            obsr.modelLabel = obsr.dictLabel;
+        } else inference.classify(obsr);
 
-		String lbStr = (String)data.lbInt2Str.get(new Integer(obsr.modelLabel));
-		if (lbStr != null) {
-		    modelLabel = lbStr;
-		}
+        String lbStr = (String) data.lbInt2Str.get(new Integer(obsr.modelLabel));
+        if (lbStr != null) {
+            modelLabel = lbStr;
+        }
 
-		return modelLabel;
+        return modelLabel;
     }
 
     /**
@@ -252,13 +269,13 @@ public class Classification {
      * @return the list
      */
     public List classify(List data) {
-		List list = new ArrayList();
+        List list = new ArrayList();
 
-		for (int i = 0; i < data.size(); i++) {
-		    list.add(classify((String)data.get(i)));
-		}
+        for (int i = 0; i < data.size(); i++) {
+            list.add(classify((String) data.get(i)));
+        }
 
-		return list;
+        return list;
     }
 
 } // end of class Classification

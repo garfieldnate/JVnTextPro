@@ -36,118 +36,117 @@ import java.util.StringTokenizer;
 import jvntextpro.data.DataReader;
 import jvntextpro.data.Sentence;
 
-public class WordDataReader extends DataReader{
+public class WordDataReader extends DataReader {
 
-	/** The is train reading. */
-	protected boolean isTrainReading = false;
+    /**
+     * The is train reading.
+     */
+    protected boolean isTrainReading = false;
 
-	/** The tags. */
-	protected String [] tags = {"B-W", "I-W", "O"};
+    /**
+     * The tags.
+     */
+    protected String[] tags = {"B-W", "I-W", "O"};
 
-	//------------------------------------
-	// Constructor
-	//------------------------------------
-	/**
-	 * Instantiates a new word data reader.
-	 */
-	public WordDataReader(){
-		// do nothing now
-		isTrainReading = false;
-	}
+    //------------------------------------
+    // Constructor
+    //------------------------------------
 
-	/**
-	 * Instantiates a new word data reader.
-	 *
-	 * @param isTrainReading the is train reading
-	 */
-	public WordDataReader(boolean isTrainReading){
-		this.isTrainReading = isTrainReading;
-	}
+    /**
+     * Instantiates a new word data reader.
+     */
+    public WordDataReader() {
+        // do nothing now
+        isTrainReading = false;
+    }
 
-	//-------------------------------------
-	// Override methods
-	//-------------------------------------
-	/* (non-Javadoc)
+    /**
+     * Instantiates a new word data reader.
+     *
+     * @param isTrainReading the is train reading
+     */
+    public WordDataReader(boolean isTrainReading) {
+        this.isTrainReading = isTrainReading;
+    }
+
+    //-------------------------------------
+    // Override methods
+    //-------------------------------------
+    /* (non-Javadoc)
 	 * @see jvntextpro.data.DataReader#readFile(java.lang.String)
 	 */
-	@Override
-	public List<Sentence> readFile(String datafile){
-		try{
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(datafile), "UTF-8"));
+    @Override
+    public List<Sentence> readFile(String datafile) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(datafile), "UTF-8"));
 
-			String line = null;
-			List<Sentence> data = new ArrayList<Sentence>();
+            String line = null;
+            List<Sentence> data = new ArrayList<Sentence>();
 
-			while ((line = reader.readLine()) != null){
-				Sentence sentence = new Sentence();
+            while ((line = reader.readLine()) != null) {
+                Sentence sentence = new Sentence();
 
-				if (line.startsWith("#"))
-					continue;
+                if (line.startsWith("#")) continue;
 
-				StringTokenizer tk = new StringTokenizer(line, " ");
-				while (tk.hasMoreTokens()){
-					String word = "", tag = null;
-					if (!isTrainReading){
-						String token = tk.nextToken();
-						word = token;
-						sentence.addTWord(word, tag);
-					}
-					else {
-						String token = tk.nextToken();
-						for (int i = 0; i < tags.length; ++i){
-							String labelPart = "/" + tags[i];
-							if (token.endsWith(labelPart)){
-								word = token.substring(0, token.length() - labelPart.length());
-								tag = tags[i];
-								break;
-							}
-						}
-						sentence.addTWord(word, tag);
-					}
-				}
-				data.add(sentence);
-			}
-			reader.close();
-			return data;
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			return new ArrayList<Sentence>(); // empty array
-		}
-	}
+                StringTokenizer tk = new StringTokenizer(line, " ");
+                while (tk.hasMoreTokens()) {
+                    String word = "", tag = null;
+                    if (!isTrainReading) {
+                        String token = tk.nextToken();
+                        word = token;
+                        sentence.addTWord(word, tag);
+                    } else {
+                        String token = tk.nextToken();
+                        for (int i = 0; i < tags.length; ++i) {
+                            String labelPart = "/" + tags[i];
+                            if (token.endsWith(labelPart)) {
+                                word = token.substring(0, token.length() - labelPart.length());
+                                tag = tags[i];
+                                break;
+                            }
+                        }
+                        sentence.addTWord(word, tag);
+                    }
+                }
+                data.add(sentence);
+            }
+            reader.close();
+            return data;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<Sentence>(); // empty array
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see jvntextpro.data.DataReader#readString(java.lang.String)
-	 */
-	public List<Sentence> readString(String dataStr){
-		String [] lines = dataStr.split("\n");
-		List<Sentence> data = new ArrayList<Sentence>();
-		for (String line : lines){
-			Sentence sentence = new Sentence();
+    /* (non-Javadoc)
+     * @see jvntextpro.data.DataReader#readString(java.lang.String)
+     */
+    public List<Sentence> readString(String dataStr) {
+        String[] lines = dataStr.split("\n");
+        List<Sentence> data = new ArrayList<Sentence>();
+        for (String line : lines) {
+            Sentence sentence = new Sentence();
 
-			if (line.startsWith("#"))
-				continue;
+            if (line.startsWith("#")) continue;
 
-			StringTokenizer tk = new StringTokenizer(line, " ");
-			while (tk.hasMoreTokens()){
-				String word = "", tag = null;
-				if (!isTrainReading){
-					String token = tk.nextToken();
-					word = token;
-					sentence.addTWord(word, tag);
-				}
-				else {
-					String token = tk.nextToken();
-					StringTokenizer sltk = new StringTokenizer(token, "/");
-					word = sltk.nextToken();
-					tag = sltk.nextToken();
-					sentence.addTWord(word, tag);
-				}
-			}
-			data.add(sentence);
-		}
+            StringTokenizer tk = new StringTokenizer(line, " ");
+            while (tk.hasMoreTokens()) {
+                String word = "", tag = null;
+                if (!isTrainReading) {
+                    String token = tk.nextToken();
+                    word = token;
+                    sentence.addTWord(word, tag);
+                } else {
+                    String token = tk.nextToken();
+                    StringTokenizer sltk = new StringTokenizer(token, "/");
+                    word = sltk.nextToken();
+                    tag = sltk.nextToken();
+                    sentence.addTWord(word, tag);
+                }
+            }
+            data.add(sentence);
+        }
 
-		return data;
-	}
+        return data;
+    }
 }

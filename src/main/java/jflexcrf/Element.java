@@ -33,27 +33,37 @@ import java.util.Map;
 
 public class Element {
 
-    /** The count. */
-    public int count = 0;	// the number of occurrences of this context predicate
+    /**
+     * The count.
+     */
+    public int count = 0;    // the number of occurrences of this context predicate
 
-    /** The chosen. */
-    public int chosen = 0;	// indicating whether or not it is incorporated into the model
+    /**
+     * The chosen.
+     */
+    public int chosen = 0;    // indicating whether or not it is incorporated into the model
 
-    /** The lb cnt fidxes. */
-    Map lbCntFidxes = null;	// map of labels to CountFeatureIdxes
+    /**
+     * The lb cnt fidxes.
+     */
+    Map lbCntFidxes = null;    // map of labels to CountFeatureIdxes
 
-    /** The cp features. */
-    List cpFeatures = null;	// features associated with this context predicates
+    /**
+     * The cp features.
+     */
+    List cpFeatures = null;    // features associated with this context predicates
 
-    /** The is scanned. */
-    boolean isScanned = false;	// be scanned or not
+    /**
+     * The is scanned.
+     */
+    boolean isScanned = false;    // be scanned or not
 
     /**
      * Instantiates a new element.
      */
     public Element() {
-	lbCntFidxes = new HashMap();
-	cpFeatures = new ArrayList();
+        lbCntFidxes = new HashMap();
+        cpFeatures = new ArrayList();
     }
 
 } // end of class Element

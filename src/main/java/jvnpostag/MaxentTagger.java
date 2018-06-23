@@ -38,72 +38,71 @@ import jvntextpro.data.TaggingData;
 import jvntextpro.util.StringUtils;
 
 public class MaxentTagger implements POSTagger {
-	DataReader reader = new POSDataReader();
-	DataWriter writer = new POSDataWriter();
-	TaggingData dataTagger = new TaggingData();
+    DataReader reader = new POSDataReader();
+    DataWriter writer = new POSDataWriter();
+    TaggingData dataTagger = new TaggingData();
 
-	Classification classifier = null;
+    Classification classifier = null;
 
-	public MaxentTagger(String modelDir){
-		init(modelDir);
-	}
-	public void init(String modeldir) {
-		dataTagger.addContextGenerator(new POSContextGenerator(modeldir + File.separator + "featuretemplate.xml"));
-		classifier = new Classification(modeldir);
-	}
+    public MaxentTagger(String modelDir) {
+        init(modelDir);
+    }
 
-	public String tagging(String instr) {
-		System.out.println("tagging ....");
-		List<Sentence> data = reader.readString(instr);
-		for (int i = 0; i < data.size(); ++i){
+    public void init(String modeldir) {
+        dataTagger.addContextGenerator(new POSContextGenerator(modeldir + File.separator + "featuretemplate.xml"));
+        classifier = new Classification(modeldir);
+    }
 
-    		Sentence sent = data.get(i);
-    		for (int j = 0; j < sent.size(); ++j){
-    			String [] cps = dataTagger.getContext(sent, j);
-    			String label = classifier.classify(cps);
+    public String tagging(String instr) {
+        System.out.println("tagging ....");
+        List<Sentence> data = reader.readString(instr);
+        for (int i = 0; i < data.size(); ++i) {
 
-    			if (label.equalsIgnoreCase("Mrk")){
-    				if (StringUtils.isPunc(sent.getWordAt(j)))
-    					label = sent.getWordAt(j);
-    				else label = "X";
-    			}
+            Sentence sent = data.get(i);
+            for (int j = 0; j < sent.size(); ++j) {
+                String[] cps = dataTagger.getContext(sent, j);
+                String label = classifier.classify(cps);
 
-    			sent.getTWordAt(j).setTag(label);
-    		}
-    	}
+                if (label.equalsIgnoreCase("Mrk")) {
+                    if (StringUtils.isPunc(sent.getWordAt(j))) label = sent.getWordAt(j);
+                    else label = "X";
+                }
 
-		return writer.writeString(data);
-	}
+                sent.getTWordAt(j).setTag(label);
+            }
+        }
+
+        return writer.writeString(data);
+    }
 
 
-	public String tagging(File file) {
-		List<Sentence> data = reader.readFile(file.getPath());
-		for (int i = 0; i < data.size(); ++i){
+    public String tagging(File file) {
+        List<Sentence> data = reader.readFile(file.getPath());
+        for (int i = 0; i < data.size(); ++i) {
 
-    		Sentence sent = data.get(i);
-    		for (int j = 0; j < sent.size(); ++j){
-    			String [] cps = dataTagger.getContext(sent, j);
-    			String label = classifier.classify(cps);
+            Sentence sent = data.get(i);
+            for (int j = 0; j < sent.size(); ++j) {
+                String[] cps = dataTagger.getContext(sent, j);
+                String label = classifier.classify(cps);
 
-    			if (label.equalsIgnoreCase("Mrk")){
-    				if (StringUtils.isPunc(sent.getWordAt(j)))
-    					label = sent.getWordAt(j);
-    				else label = "X";
-    			}
+                if (label.equalsIgnoreCase("Mrk")) {
+                    if (StringUtils.isPunc(sent.getWordAt(j))) label = sent.getWordAt(j);
+                    else label = "X";
+                }
 
-    			sent.getTWordAt(j).setTag(label);
-    			//System.out.println(sent.getTagAt(j));
-    		}
-    	}
+                sent.getTWordAt(j).setTag(label);
+                //System.out.println(sent.getTagAt(j));
+            }
+        }
 
-		return writer.writeString(data);
-	}
+        return writer.writeString(data);
+    }
 
-	public void setDataReader(DataReader reader){
-		this.reader = reader;
-	}
+    public void setDataReader(DataReader reader) {
+        this.reader = reader;
+    }
 
-	public void setDataWriter(DataWriter writer){
-		this.writer = writer;
-	}
+    public void setDataWriter(DataWriter writer) {
+        this.writer = writer;
+    }
 }

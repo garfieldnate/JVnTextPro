@@ -34,79 +34,77 @@ import java.io.OutputStreamWriter;
 
 public class WordSegmenting {
 
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 */
-	public static void main(String [] args){
-		displayCopyright();
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
+    public static void main(String[] args) {
+        displayCopyright();
         if (!checkArgs(args)) {
             displayHelp();
             return;
         }
 
-      //get model dir
+        //get model dir
         String modelDir = args[1];
         CRFSegmenter segmenter = new CRFSegmenter(modelDir);
 
-      //tagging
+        //tagging
         try {
-        	System.out.println(args[2]);
-	        if (args[2].equalsIgnoreCase("-inputfile")){
-	        	System.out.println(args[3]);
-	        	File inputFile = new File(args[3]);
-	        	BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-	        			new FileOutputStream(inputFile.getPath() + ".wseg"), "UTF-8"));
+            System.out.println(args[2]);
+            if (args[2].equalsIgnoreCase("-inputfile")) {
+                System.out.println(args[3]);
+                File inputFile = new File(args[3]);
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                    inputFile.getPath() + ".wseg"), "UTF-8"));
 
-	        	String result = segmenter.segmenting(inputFile);
+                String result = segmenter.segmenting(inputFile);
 
-	        	writer.write(result);
-	        	writer.close();
-	        }
-	        else{ //input dir
-	        	String inputDir = args[3];
-	        	 if (inputDir.endsWith(File.separator)) {
-		                inputDir = inputDir.substring(0, inputDir.length() - 1);
-		            }
+                writer.write(result);
+                writer.close();
+            } else { //input dir
+                String inputDir = args[3];
+                if (inputDir.endsWith(File.separator)) {
+                    inputDir = inputDir.substring(0, inputDir.length() - 1);
+                }
 
-		            File dir = new File(inputDir);
-		            String[] children = dir.list(new FilenameFilter() {
-		                public boolean accept(File dir, String name) {
-		                    return name.endsWith(".tkn");
-		                }
-		            });
+                File dir = new File(inputDir);
+                String[] children = dir.list(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        return name.endsWith(".tkn");
+                    }
+                });
 
-		            for (int i = 0; i < children.length; i++) {
-		            	System.out.println("Segmenting " + children[i]);
-		            	String filename = inputDir + File.separator + children[i];
-			                if ((new File(filename)).isDirectory()) {
-			                    continue;
-			            }
+                for (int i = 0; i < children.length; i++) {
+                    System.out.println("Segmenting " + children[i]);
+                    String filename = inputDir + File.separator + children[i];
+                    if ((new File(filename)).isDirectory()) {
+                        continue;
+                    }
 
-			            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-				        			new FileOutputStream(filename + ".wseg"), "UTF-8"));
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                        filename + ".wseg"), "UTF-8"));
 
-			            writer.write(segmenter.segmenting(new File(filename)));
+                    writer.write(segmenter.segmenting(new File(filename)));
 
-			            writer.close();
-		            }
-	        }
+                    writer.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error while segmenting");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        catch (Exception e){
-        	System.out.println("Error while segmenting");
-        	System.out.println(e.getMessage());
-        	e.printStackTrace();
-        }
-	}
+    }
 
-	/**
-	 * Check args.
-	 *
-	 * @param args the args
-	 * @return true, if successful
-	 */
-	public static boolean checkArgs(String[] args) {
+    /**
+     * Check args.
+     *
+     * @param args the args
+     * @return true, if successful
+     */
+    public static boolean checkArgs(String[] args) {
         if (args.length < 4) {
             return false;
         }
@@ -115,18 +113,17 @@ public class WordSegmenting {
             return false;
         }
 
-        if (!(args[2].compareToIgnoreCase("-inputfile") == 0 ||
-                args[2].compareToIgnoreCase("-inputdir") == 0)) {
+        if (!(args[2].compareToIgnoreCase("-inputfile") == 0 || args[2].compareToIgnoreCase("-inputdir") == 0)) {
             return false;
         }
 
         return true;
     }
 
-	/**
-	 * Display copyright.
-	 */
-	public static void displayCopyright() {
+    /**
+     * Display copyright.
+     */
+    public static void displayCopyright() {
         System.out.println("Vietnamese Word Segmentation:");
         System.out.println("\tusing Conditional Random Fields");
         System.out.println("\ttesting our dataset of 8000 sentences with the highest F1-measure of 94%");

@@ -26,35 +26,54 @@
 
 package jflexcrf;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class Option {
 
-    /** The Constant FIRST_ORDER. */
+    /**
+     * The Constant FIRST_ORDER.
+     */
     static public final int FIRST_ORDER = 1;
     // second-order Markov is not supported currently
-    /** The Constant SECOND_ORDER. */
+    /**
+     * The Constant SECOND_ORDER.
+     */
     static public final int SECOND_ORDER = 2;
 
-    /** The Constant inputSeparator. */
+    /**
+     * The Constant inputSeparator.
+     */
     public static final String inputSeparator = "|";
 
-    /** The Constant outputSeparator. */
+    /**
+     * The Constant outputSeparator.
+     */
     public static final String outputSeparator = "|";
 
     // model directory, default is current dir
-    /** The model dir. */
+    /**
+     * The model dir.
+     */
     public String modelDir = ".";
     // model file (mapping, dictionary, and features)
-    /** The model file. */
+    /**
+     * The model file.
+     */
     public final String modelFile = "model.txt";
     // option file
-    /** The option file. */
+    /**
+     * The option file.
+     */
     public final String optionFile = "option.txt";
 
-    /** The order. */
-    public int order = FIRST_ORDER;	// 1: first-order Markov; 2: second-order Markov
+    /**
+     * The order.
+     */
+    public int order = FIRST_ORDER;    // 1: first-order Markov; 2: second-order Markov
 
     /**
      * Instantiates a new option.
@@ -68,11 +87,11 @@ public class Option {
      * @param modelDir the model dir
      */
     public Option(String modelDir) {
-	if (modelDir.endsWith(File.separator)) {
-	    this.modelDir = modelDir.substring(0, modelDir.length() - 1);
-	} else {
-	    this.modelDir = modelDir;
-	}
+        if (modelDir.endsWith(File.separator)) {
+            this.modelDir = modelDir.substring(0, modelDir.length() - 1);
+        } else {
+            this.modelDir = modelDir;
+        }
     }
 
     /**
@@ -81,48 +100,48 @@ public class Option {
      * @return true, if successful
      */
     public boolean readOptions() {
-	String filename = modelDir + File.separator + optionFile;
-	BufferedReader fin = null;
-	String line;
+        String filename = modelDir + File.separator + optionFile;
+        BufferedReader fin = null;
+        String line;
 
-	try {
-	    fin = new BufferedReader(new FileReader(filename));
+        try {
+            fin = new BufferedReader(new FileReader(filename));
 
-	    System.out.println("Reading options ...");
+            System.out.println("Reading options ...");
 
-	    // read option lines
-	    while ((line = fin.readLine()) != null) {
-		String trimLine = line.trim();
-		if (trimLine.startsWith("#")) {
-		    // comment line
-		    continue;
-		}
+            // read option lines
+            while ((line = fin.readLine()) != null) {
+                String trimLine = line.trim();
+                if (trimLine.startsWith("#")) {
+                    // comment line
+                    continue;
+                }
 
-		StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
-		int len = strTok.countTokens();
-		if (len != 2) {
-		    // invalid parameter line, ignore it
-		    continue;
-		}
+                StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
+                int len = strTok.countTokens();
+                if (len != 2) {
+                    // invalid parameter line, ignore it
+                    continue;
+                }
 
-		String strOpt = strTok.nextToken();
-		String strVal = strTok.nextToken();
+                String strOpt = strTok.nextToken();
+                String strVal = strTok.nextToken();
 
-		if (strOpt.compareToIgnoreCase("order") == 0) {
-		    int numTemp = Integer.parseInt(strVal);
-		    order = numTemp;
-		}
-	    }
+                if (strOpt.compareToIgnoreCase("order") == 0) {
+                    int numTemp = Integer.parseInt(strVal);
+                    order = numTemp;
+                }
+            }
 
-	    System.out.println("Reading options completed!");
+            System.out.println("Reading options completed!");
 
-	} catch (IOException e) {
-	    System.out.println("Couldn't open and read option file: " + optionFile);
-	    System.out.println(e.toString());
-	    return false;
-	}
+        } catch (IOException e) {
+            System.out.println("Couldn't open and read option file: " + optionFile);
+            System.out.println(e.toString());
+            return false;
+        }
 
-	return true;
+        return true;
     }
 
     /**
@@ -131,19 +150,19 @@ public class Option {
      * @return the buffered reader
      */
     public BufferedReader openModelFile() {
-	String filename = modelDir + File.separator + modelFile;
-	BufferedReader fin = null;
+        String filename = modelDir + File.separator + modelFile;
+        BufferedReader fin = null;
 
-	try {
-	    fin = new BufferedReader(new FileReader(filename));
+        try {
+            fin = new BufferedReader(new FileReader(filename));
 
-	} catch (IOException e) {
-	    System.out.println("Couldn't open model file: " + filename);
-	    System.out.println(e.toString());
-	    fin = null;
-	}
+        } catch (IOException e) {
+            System.out.println("Couldn't open model file: " + filename);
+            System.out.println(e.toString());
+            fin = null;
+        }
 
-	return fin;
+        return fin;
     }
 
 } // end of class Option

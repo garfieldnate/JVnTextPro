@@ -35,50 +35,50 @@ import java.util.Vector;
 import jvntextpro.data.Sentence;
 import jvntextpro.util.VnSyllParser;
 
-public class VietnameseContextGenerator extends BasicContextGenerator{
+public class VietnameseContextGenerator extends BasicContextGenerator {
 
-	//------------------------------
-	//Methods
-	//------------------------------
-	/**
-	 * Instantiates a new vietnamese context generator.
-	 *
-	 * @param node the node
-	 */
-	public VietnameseContextGenerator(Element node){
-		readFeatureParameters(node);
-	}
+    //------------------------------
+    //Methods
+    //------------------------------
 
-	/* (non-Javadoc)
-	 * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
-	 */
-	@Override
-	public String[] getContext(Sentence sent, int pos) {
-		List<String> cps = new ArrayList<String>();
+    /**
+     * Instantiates a new vietnamese context generator.
+     *
+     * @param node the node
+     */
+    public VietnameseContextGenerator(Element node) {
+        readFeatureParameters(node);
+    }
 
-		for (int it = 0; it < cpnames.size(); ++it){
-			String cp = cpnames.get(it);
-			Vector<Integer> paras = this.paras.get(it);
-			String cpvalue = "";
+    /* (non-Javadoc)
+     * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
+     */
+    @Override
+    public String[] getContext(Sentence sent, int pos) {
+        List<String> cps = new ArrayList<String>();
 
-			String word = "";
-			for (int i = 0; i < paras.size(); ++i) {
-				if (pos + paras.get(i) < 0 || pos + paras.get(i)>= sent.size()){
-					cpvalue = "";
-					continue;
-				}
+        for (int it = 0; it < cpnames.size(); ++it) {
+            String cp = cpnames.get(it);
+            Vector<Integer> paras = this.paras.get(it);
+            String cpvalue = "";
 
-				word += sent.getWordAt(pos + paras.get(i)) + " ";
-			}
-			word = word.trim().toLowerCase();
+            String word = "";
+            for (int i = 0; i < paras.size(); ++i) {
+                if (pos + paras.get(i) < 0 || pos + paras.get(i) >= sent.size()) {
+                    cpvalue = "";
+                    continue;
+                }
 
-			VnSyllParser parser = new VnSyllParser(word);
-			if (!parser.isValidVnSyllable() && cp.equals("not_valid_vnsyll"))
-				cpvalue = "nvs:" + word;
+                word += sent.getWordAt(pos + paras.get(i)) + " ";
+            }
+            word = word.trim().toLowerCase();
 
-			if (!cpvalue.equals("")) cps.add(cpvalue);
-		}
-		String [] ret = new String[cps.size()];
-		return cps.toArray(ret);
-	}
+            VnSyllParser parser = new VnSyllParser(word);
+            if (!parser.isValidVnSyllable() && cp.equals("not_valid_vnsyll")) cpvalue = "nvs:" + word;
+
+            if (!cpvalue.equals("")) cps.add(cpvalue);
+        }
+        String[] ret = new String[cps.size()];
+        return cps.toArray(ret);
+    }
 }

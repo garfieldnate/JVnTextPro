@@ -36,143 +36,147 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class TaggingClient {
-	//-----------------------
-	// Data
-	//-----------------------
-	/** The host. */
-	String host;
+    //-----------------------
+    // Data
+    //-----------------------
+    /**
+     * The host.
+     */
+    String host;
 
-	/** The port. */
-	int port;
+    /**
+     * The port.
+     */
+    int port;
 
-	/** The in. */
-	private BufferedReader in;
+    /**
+     * The in.
+     */
+    private BufferedReader in;
 
-	/** The out. */
-	private BufferedWriter out;
+    /**
+     * The out.
+     */
+    private BufferedWriter out;
 
-	/** The sock. */
-	private Socket sock;
+    /**
+     * The sock.
+     */
+    private Socket sock;
 
-	//-----------------------
-	// Methods
-	//-----------------------
-	/**
-	 * Instantiates a new tagging client.
-	 *
-	 * @param host the host
-	 * @param port the port
-	 */
-	public TaggingClient(String host, int port){
-		this.host = host;
-		this.port = port;
-	}
+    //-----------------------
+    // Methods
+    //-----------------------
 
-	/**
-	 * Connect.
-	 *
-	 * @return true, if successful
-	 */
-	public boolean connect(){
-		try {
-			sock = new Socket(host, port);
-			in = new BufferedReader(new InputStreamReader(
-					sock.getInputStream(), "UTF-8"));
-			out = new BufferedWriter(new OutputStreamWriter(
-					sock.getOutputStream(), "UTF-8"));
-			return true;
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			return false;
-		}
-	}
+    /**
+     * Instantiates a new tagging client.
+     *
+     * @param host the host
+     * @param port the port
+     */
+    public TaggingClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
-	/**
-	 * Process.
-	 *
-	 * @param data the data
-	 * @return the string
-	 */
-	public String process(String data){
-		try {
-			out.write(data);
-			out.write((char)0);
-			out.flush();
+    /**
+     * Connect.
+     *
+     * @return true, if successful
+     */
+    public boolean connect() {
+        try {
+            sock = new Socket(host, port);
+            in = new BufferedReader(new InputStreamReader(sock.getInputStream(), "UTF-8"));
+            out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(), "UTF-8"));
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 
-			//Get data from server
-			String tagged = "";
-			while (true){
-				int ch = in.read();
+    /**
+     * Process.
+     *
+     * @param data the data
+     * @return the string
+     */
+    public String process(String data) {
+        try {
+            out.write(data);
+            out.write((char) 0);
+            out.flush();
 
-				if (ch == 0) break;
-				tagged += (char) ch;
-			}
-			return tagged;
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			return "";
-		}
+            //Get data from server
+            String tagged = "";
+            while (true) {
+                int ch = in.read();
 
-	}
+                if (ch == 0) break;
+                tagged += (char) ch;
+            }
+            return tagged;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "";
+        }
 
-	/**
-	 * Close.
-	 */
-	public void close(){
-		try {
-			this.sock.close();
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-		}
-	}
+    }
 
-	//----------------------------------
-	// main method, testing this client
-	//---------------------------------
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 */
-	public static void main(String [] args){
-		if (args.length != 2){
-			System.out.println("TaggingClient [inputfile] [outputfile]");
-			return;
-		}
+    /**
+     * Close.
+     */
+    public void close() {
+        try {
+            this.sock.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
-		try {
-			// Create a tagging client, open connection
-			TaggingClient client = new TaggingClient("localhost", 2929);
+    //----------------------------------
+    // main method, testing this client
+    //---------------------------------
 
-			// read data from file
-			// process data, save into another file
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(args[0]), "UTF-8"));
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(args[1]), "UTF-8"));
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
+    public static void main(String[] args) {
+        if (args.length != 2) {
+            System.out.println("TaggingClient [inputfile] [outputfile]");
+            return;
+        }
 
-			client.connect();
-			String line;
-			String input = "";
-			while ((line = reader.readLine()) != null){
-				input += line + "\n";
-			}
+        try {
+            // Create a tagging client, open connection
+            TaggingClient client = new TaggingClient("localhost", 2929);
 
-			String tagged = client.process(input);
-			writer.write(tagged + "\n");
+            // read data from file
+            // process data, save into another file
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1]), "UTF-8"));
 
-			client.close();
-			reader.close();
-			writer.close();
+            client.connect();
+            String line;
+            String input = "";
+            while ((line = reader.readLine()) != null) {
+                input += line + "\n";
+            }
 
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-	}
+            String tagged = client.process(input);
+            writer.write(tagged + "\n");
+
+            client.close();
+            reader.close();
+            writer.close();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 }

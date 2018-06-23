@@ -35,36 +35,36 @@ import jvntextpro.data.DataWriter;
 import jvntextpro.data.TaggingData;
 
 public class CRFTagger implements POSTagger {
-	DataReader reader = new POSDataReader();
-	DataWriter writer = new POSDataWriter();
+    DataReader reader = new POSDataReader();
+    DataWriter writer = new POSDataWriter();
 
-	TaggingData dataTagger = new TaggingData();
+    TaggingData dataTagger = new TaggingData();
 
-	Labeling labeling = null;
+    Labeling labeling = null;
 
-	public CRFTagger(String modelDir){
-		init(modelDir);
-	}
+    public CRFTagger(String modelDir) {
+        init(modelDir);
+    }
 
-	public void init(String modelDir) {
-		dataTagger.addContextGenerator(new POSContextGenerator(modelDir + File.separator + "featuretemplate.xml"));
-		labeling = new Labeling(modelDir, dataTagger, reader, writer);
-	}
+    public void init(String modelDir) {
+        dataTagger.addContextGenerator(new POSContextGenerator(modelDir + File.separator + "featuretemplate.xml"));
+        labeling = new Labeling(modelDir, dataTagger, reader, writer);
+    }
 
-	public String tagging(String instr) {
-		return labeling.strLabeling(instr);
-	}
+    public String tagging(String instr) {
+        return labeling.strLabeling(instr);
+    }
 
-	public String tagging(File file) {
-		return labeling.strLabeling(file);
-	}
+    public String tagging(File file) {
+        return labeling.strLabeling(file);
+    }
 
-	public void setDataReader(DataReader reader){
-		this.reader = reader;
-	}
+    public void setDataReader(DataReader reader) {
+        this.reader = reader;
+    }
 
-	public void setDataWriter(DataWriter writer){
-		this.writer = writer;
-	}
+    public void setDataWriter(DataWriter writer) {
+        this.writer = writer;
+    }
 
 }

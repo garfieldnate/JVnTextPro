@@ -28,18 +28,22 @@ package jflexcrf;
 
 public class DoubleVector {
 
-    /** The vect. */
+    /**
+     * The vect.
+     */
     public double[] vect = null;
 
-    /** The len. */
+    /**
+     * The len.
+     */
     public int len = 0;
 
     /**
      * Instantiates a new double vector.
      */
     public DoubleVector() {
-	len = 0;
-	vect = null;
+        len = 0;
+        vect = null;
     }
 
     /**
@@ -48,22 +52,22 @@ public class DoubleVector {
      * @param len the len
      */
     public DoubleVector(int len) {
-	this.len = len;
-	vect = new double[len];
+        this.len = len;
+        vect = new double[len];
     }
 
     /**
      * Instantiates a new double vector.
      *
-     * @param len the len
+     * @param len  the len
      * @param vect the vect
      */
     public DoubleVector(int len, double[] vect) {
-	this.len = len;
-	this.vect = new double[len];
-	for (int i = 0; i < len; i++) {
-	    this.vect[i] = vect[i];
-	}
+        this.len = len;
+        this.vect = new double[len];
+        for (int i = 0; i < len; i++) {
+            this.vect[i] = vect[i];
+        }
     }
 
     /**
@@ -72,11 +76,11 @@ public class DoubleVector {
      * @param dv the dv
      */
     public DoubleVector(DoubleVector dv) {
-	len = dv.len;
-	vect = new double[len];
-	for (int i = 0; i < len; i++) {
-	    vect[i] = dv.vect[i];
-	}
+        len = dv.len;
+        vect = new double[len];
+        for (int i = 0; i < len; i++) {
+            vect[i] = dv.vect[i];
+        }
     }
 
     /**
@@ -85,7 +89,7 @@ public class DoubleVector {
      * @return the int
      */
     public int size() {
-	return len;
+        return len;
     }
 
     /**
@@ -94,9 +98,9 @@ public class DoubleVector {
      * @param val the val
      */
     public void assign(double val) {
-	for (int i = 0; i < len; i++) {
-	    vect[i] = val;
-	}
+        for (int i = 0; i < len; i++) {
+            vect[i] = val;
+        }
     }
 
     /**
@@ -105,9 +109,9 @@ public class DoubleVector {
      * @param dv the dv
      */
     public void assign(DoubleVector dv) {
-	for (int i = 0; i < len; i++) {
-	    vect[i] = dv.vect[i];
-	}
+        for (int i = 0; i < len; i++) {
+            vect[i] = dv.vect[i];
+        }
     }
 
     /**
@@ -116,11 +120,11 @@ public class DoubleVector {
      * @return the double
      */
     public double sum() {
-	double res = 0.0;
-	for (int i = 0; i < len; i++) {
-	    res += vect[i];
-	}
-	return res;
+        double res = 0.0;
+        for (int i = 0; i < len; i++) {
+            res += vect[i];
+        }
+        return res;
     }
 
     /**
@@ -129,9 +133,9 @@ public class DoubleVector {
      * @param val the val
      */
     public void compMult(double val) {
-	for (int i = 0; i < len; i++) {
-	    vect[i] *= val;
-	}
+        for (int i = 0; i < len; i++) {
+            vect[i] *= val;
+        }
     }
 
     /**
@@ -140,9 +144,9 @@ public class DoubleVector {
      * @param dv the dv
      */
     public void compMult(DoubleVector dv) {
-	for (int i = 0; i < len; i++) {
-	    vect[i] *= dv.vect[i];
-	}
+        for (int i = 0; i < len; i++) {
+            vect[i] *= dv.vect[i];
+        }
     }
 
 } // end of class DoubleVector

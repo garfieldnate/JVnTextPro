@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -33,36 +33,38 @@ import jvntextpro.data.DataReader;
 import jvntextpro.data.DataWriter;
 
 public interface POSTagger {
-	
-	//--------------------------------
-	// initialization 
-	//--------------------------------
-	public void init(String modelfile);
-	
-	//-------------------------------
-	//tagging methods
-	//-------------------------------
-	
-	/**
-	 * Annotate string with part-of-speech tags
-	 * @param instr string has been done word segmentation
-	 * @return string annotated with part-of-speech tags
-	 */
-	public String tagging(String instr);
-	
-	
-	/**
-	 * Annotate content of file with part-of-speech tags
-	 * @param file of which content has been done word segmentation
-	 * @return string annotated with part-of-speech tags
-	 */
-	public String tagging(File file);
-	
-	/**
-	 * Set data writer and reader to this pos tagger
-	 * this is used to be adaptable to different format of input/output data
-	 */
-	public void setDataReader(DataReader reader);
-	
-	public void setDataWriter(DataWriter writer);
+
+    //--------------------------------
+    // initialization
+    //--------------------------------
+    public void init(String modelfile);
+
+    //-------------------------------
+    //tagging methods
+    //-------------------------------
+
+    /**
+     * Annotate string with part-of-speech tags
+     *
+     * @param instr string has been done word segmentation
+     * @return string annotated with part-of-speech tags
+     */
+    public String tagging(String instr);
+
+
+    /**
+     * Annotate content of file with part-of-speech tags
+     *
+     * @param file of which content has been done word segmentation
+     * @return string annotated with part-of-speech tags
+     */
+    public String tagging(File file);
+
+    /**
+     * Set data writer and reader to this pos tagger this is used to be adaptable to different format of input/output
+     * data
+     */
+    public void setDataReader(DataReader reader);
+
+    public void setDataWriter(DataWriter writer);
 }

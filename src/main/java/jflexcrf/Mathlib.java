@@ -31,39 +31,38 @@ public class Mathlib {
     /**
      * Mult.
      *
-     * @param size the size
-     * @param x the x
-     * @param A the a
-     * @param y the y
+     * @param size         the size
+     * @param x            the x
+     * @param A            the a
+     * @param y            the y
      * @param isTransposed the is transposed
      */
-    public static void mult(int size, DoubleVector x, DoubleMatrix A,
-		DoubleVector y, boolean isTransposed) {
-	// isTransposed = false:	x = A * y
-	// isTransposed = true:		x^t = y^t * A^t
+    public static void mult(int size, DoubleVector x, DoubleMatrix A, DoubleVector y, boolean isTransposed) {
+        // isTransposed = false:	x = A * y
+        // isTransposed = true:		x^t = y^t * A^t
 
-	int i, j;
+        int i, j;
 
-	if (!isTransposed) {
-	    // for beta
-	    // x = A * y
-	    for (i = 0; i < size; i++) {
-		x.vect[i] = 0;
-		for (j = 0; j < size; j++) {
-		    x.vect[i] += A.mtrx[i][j] * y.vect[j];
-		}
-	    }
+        if (!isTransposed) {
+            // for beta
+            // x = A * y
+            for (i = 0; i < size; i++) {
+                x.vect[i] = 0;
+                for (j = 0; j < size; j++) {
+                    x.vect[i] += A.mtrx[i][j] * y.vect[j];
+                }
+            }
 
-	} else {
-	    // for alpha
-	    // x^t = y^t * A^t
-	    for (i = 0; i < size; i++) {
-		x.vect[i] = 0;
-		for (j = 0; j < size; j++) {
-		    x.vect[i] += y.vect[j] * A.mtrx[j][i];
-		}
-	    }
-	}
+        } else {
+            // for alpha
+            // x^t = y^t * A^t
+            for (i = 0; i < size; i++) {
+                x.vect[i] = 0;
+                for (j = 0; j < size; j++) {
+                    x.vect[i] += y.vect[j] * A.mtrx[j][i];
+                }
+            }
+        }
     }
 
 } // end of class Mathlib

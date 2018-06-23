@@ -26,131 +26,122 @@
  */
 package jvnsegmenter;
 
+import org.w3c.dom.Element;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
-import org.w3c.dom.Element;
 
 import jvntextpro.data.Sentence;
 import jvntextpro.util.StringUtils;
 
 public class SyllableContextGenerator extends BasicContextGenerator {
 
-	//constructor
-	/**
-	 * Instantiates a new syllable context generator.
-	 *
-	 * @param node the node
-	 */
-	public SyllableContextGenerator(Element node){
-		readFeatureParameters(node);
-	}
+    //constructor
 
-	/* (non-Javadoc)
-	 * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
-	 */
-	@Override
-	public String[] getContext(Sentence sent, int pos) {
-	List<String> cps = new ArrayList<String>();
+    /**
+     * Instantiates a new syllable context generator.
+     *
+     * @param node the node
+     */
+    public SyllableContextGenerator(Element node) {
+        readFeatureParameters(node);
+    }
 
-		for (int it = 0; it < cpnames.size(); ++it){
-			String cp = cpnames.get(it);
-			Vector<Integer> paras = this.paras.get(it);
-			String cpvalue = "";
-			if (cp.equals("initial_cap")){
-				cpvalue = ic(sent,pos,paras.get(0));
-			}
-			else if (cp.equals("all_cap")){
-				cpvalue = ac(sent, pos, paras.get(0));
-			}
-			else if (cp.equals("mark")){
-				cpvalue = mk(sent, pos, paras.get(0));
-			}
-			else if (cp.equals("first_obsrv")){
-				if (pos + paras.get(0) == 0)
-					cpvalue = "fi:" + paras.get(0);
-			}
+    /* (non-Javadoc)
+     * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
+     */
+    @Override
+    public String[] getContext(Sentence sent, int pos) {
+        List<String> cps = new ArrayList<String>();
 
-			if (!cpvalue.equals("")) cps.add(cpvalue);
-		}
-		String [] ret = new String[cps.size()];
-		return cps.toArray(ret);
-	}
+        for (int it = 0; it < cpnames.size(); ++it) {
+            String cp = cpnames.get(it);
+            Vector<Integer> paras = this.paras.get(it);
+            String cpvalue = "";
+            if (cp.equals("initial_cap")) {
+                cpvalue = ic(sent, pos, paras.get(0));
+            } else if (cp.equals("all_cap")) {
+                cpvalue = ac(sent, pos, paras.get(0));
+            } else if (cp.equals("mark")) {
+                cpvalue = mk(sent, pos, paras.get(0));
+            } else if (cp.equals("first_obsrv")) {
+                if (pos + paras.get(0) == 0) cpvalue = "fi:" + paras.get(0);
+            }
 
-	/**
-	 * Ic.
-	 *
-	 * @param sent the sent
-	 * @param pos the pos
-	 * @param i the i
-	 * @return the string
-	 */
-	private String ic(Sentence sent, int pos, int i){
-		String cp;
-		if (0 <= (pos + i) && (pos + i) < sent.size()){
-			String word = sent.getWordAt(pos + i);
-			cp = "ic:" + word;
+            if (!cpvalue.equals("")) cps.add(cpvalue);
+        }
+        String[] ret = new String[cps.size()];
+        return cps.toArray(ret);
+    }
 
-			if (!StringUtils.isFirstCap(word))
-				cp = "";
-		}
-		else cp = "";
+    /**
+     * Ic.
+     *
+     * @param sent the sent
+     * @param pos  the pos
+     * @param i    the i
+     * @return the string
+     */
+    private String ic(Sentence sent, int pos, int i) {
+        String cp;
+        if (0 <= (pos + i) && (pos + i) < sent.size()) {
+            String word = sent.getWordAt(pos + i);
+            cp = "ic:" + word;
 
-		return cp;
-	}
+            if (!StringUtils.isFirstCap(word)) cp = "";
+        } else cp = "";
 
-	/**
-	 * Ac.
-	 *
-	 * @param sent the sent
-	 * @param pos the pos
-	 * @param i the i
-	 * @return the string
-	 */
-	private String ac(Sentence sent, int pos, int i){
-		String cp;
-		if (0 <= (pos + i) && (pos + i) < sent.size()){
-			String word = sent.getWordAt(pos + i);
-			cp = "ac:" + word;
+        return cp;
+    }
 
-			boolean isAllCap = true;
+    /**
+     * Ac.
+     *
+     * @param sent the sent
+     * @param pos  the pos
+     * @param i    the i
+     * @return the string
+     */
+    private String ac(Sentence sent, int pos, int i) {
+        String cp;
+        if (0 <= (pos + i) && (pos + i) < sent.size()) {
+            String word = sent.getWordAt(pos + i);
+            cp = "ac:" + word;
 
-			for (int j = 0 ; j < word.length(); ++j){
-				if (word.charAt(j) == '_' || word.charAt(j) == '.') continue;
+            boolean isAllCap = true;
 
-				if (!Character.isUpperCase(word.charAt(j))){
-					isAllCap = false;
-					break;
-				}
-			}
+            for (int j = 0; j < word.length(); ++j) {
+                if (word.charAt(j) == '_' || word.charAt(j) == '.') continue;
 
-			if (!isAllCap)
-				cp = "";
-		}
-		else cp = "";
-		return cp;
-	}
+                if (!Character.isUpperCase(word.charAt(j))) {
+                    isAllCap = false;
+                    break;
+                }
+            }
 
-	/**
-	 * Mk.
-	 *
-	 * @param sent the sent
-	 * @param pos the pos
-	 * @param i the i
-	 * @return the string
-	 */
-	private String mk(Sentence sent, int pos, int i){
-		String cp;
-		if (0 <= (pos + i) && (pos + i) < sent.size()){
-			String word = sent.getWordAt(pos + i);
-			cp = "ma:" + word;
-			if (!StringUtils.isPunc(word))
-				cp = "";
-		}
-		else cp = "";
+            if (!isAllCap) cp = "";
+        } else cp = "";
+        return cp;
+    }
 
-		return cp;
-	}
+    /**
+     * Mk.
+     *
+     * @param sent the sent
+     * @param pos  the pos
+     * @param i    the i
+     * @return the string
+     */
+    private String mk(Sentence sent, int pos, int i) {
+        String cp;
+        if (0 <= (pos + i) && (pos + i) < sent.size()) {
+            String word = sent.getWordAt(pos + i);
+            cp = "ma:" + word;
+            if (!StringUtils.isPunc(word)) cp = "";
+        } else cp = "";
+
+        return cp;
+    }
 
 }

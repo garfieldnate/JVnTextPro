@@ -28,23 +28,22 @@
 package jvntextpro.data;
 
 import java.util.List;
-import java.util.Map;
 
 abstract public class DataWriter {
 
-	/**
-	 * Write file.
-	 *
-	 * @param lblSeqs the lbl seqs
-	 * @param filename the filename
-	 */
-	public abstract void writeFile(List lblSeqs, String filename);
+    /**
+     * Write file.
+     *
+     * @param lblSeqs  the lbl seqs
+     * @param filename the filename
+     */
+    public abstract void writeFile(List lblSeqs, String filename);
 
-	/**
-	 * Write string.
-	 *
-	 * @param lblSeqs the lbl seqs
-	 * @return the string
-	 */
-	public abstract String writeString(List lblSeqs);
+    /**
+     * Write string.
+     *
+     * @param lblSeqs the lbl seqs
+     * @return the string
+     */
+    public abstract String writeString(List lblSeqs);
 }

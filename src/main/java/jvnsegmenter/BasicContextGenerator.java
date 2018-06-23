@@ -26,94 +26,99 @@
  */
 package jvnsegmenter;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Vector;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import jvntextpro.data.ContextGenerator;
 
 public abstract class BasicContextGenerator extends ContextGenerator {
 
-	// common variables
-	/** The cpnames. */
-	Vector<String> cpnames;
+    // common variables
+    /**
+     * The cpnames.
+     */
+    Vector<String> cpnames;
 
-	/** The paras. */
-	Vector<Vector<Integer>> paras;
+    /**
+     * The paras.
+     */
+    Vector<Vector<Integer>> paras;
 
-	// common template reader methods
-	/**
-	 * Read feature parameters.
-	 *
-	 * @param node the node
-	 * @return true, if successful
-	 */
-	protected boolean readFeatureParameters(Element node){
-		try{
-			NodeList childrent = node.getChildNodes();
-			cpnames = new Vector<String>();
-			paras = new Vector<Vector<Integer>>();
+    // common template reader methods
 
-			for (int i = 0; i < childrent.getLength(); i++)
-				if (childrent.item(i) instanceof Element) {
-					Element child = (Element) childrent.item(i);
-					String value = child.getAttribute("value");
+    /**
+     * Read feature parameters.
+     *
+     * @param node the node
+     * @return true, if successful
+     */
+    protected boolean readFeatureParameters(Element node) {
+        try {
+            NodeList childrent = node.getChildNodes();
+            cpnames = new Vector<String>();
+            paras = new Vector<Vector<Integer>>();
 
-					//parse the value and get the parameters
-					String [] parastr = value.split(":");
-					Vector<Integer> para = new Vector<Integer>();
-					for (int j = 3; j < parastr.length; ++j){
-						para.add(Integer.parseInt(parastr[j]));
-					}
+            for (int i = 0; i < childrent.getLength(); i++)
+                if (childrent.item(i) instanceof Element) {
+                    Element child = (Element) childrent.item(i);
+                    String value = child.getAttribute("value");
 
-					cpnames.add(parastr[2]);
-					paras.add(para);
-				}
+                    //parse the value and get the parameters
+                    String[] parastr = value.split(":");
+                    Vector<Integer> para = new Vector<Integer>();
+                    for (int j = 3; j < parastr.length; ++j) {
+                        para.add(Integer.parseInt(parastr[j]));
+                    }
 
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
+                    cpnames.add(parastr[2]);
+                    paras.add(para);
+                }
 
-	/**
-	 * Read feature nodes.
-	 *
-	 * @param templateFile the template file
-	 * @return the vector
-	 */
-	public static Vector<Element> readFeatureNodes(String templateFile){
-		Vector<Element> feaTypes = new Vector<Element>();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
-		try {
-			// Read feature template file........
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
+    /**
+     * Read feature nodes.
+     *
+     * @param templateFile the template file
+     * @return the vector
+     */
+    public static Vector<Element> readFeatureNodes(String templateFile) {
+        Vector<Element> feaTypes = new Vector<Element>();
 
-			InputStream feaTplStream = new FileInputStream(templateFile);
-			Document doc = builder.parse(feaTplStream);
+        try {
+            // Read feature template file........
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
 
-			Element root = doc.getDocumentElement();
-			NodeList childrent = root.getChildNodes();
-			for (int i = 0; i < childrent.getLength(); i++)
-				if (childrent.item(i) instanceof Element) {
-					Element child = (Element) childrent.item(i);
-					feaTypes.add(child);
-				}
-		}
-		catch (Exception e){
-			System.out.println("Reading featuretemplate fail " + e.getMessage());
-			e.printStackTrace();
-		}
+            InputStream feaTplStream = new FileInputStream(templateFile);
+            Document doc = builder.parse(feaTplStream);
 
-		return feaTypes;
-	}
+            Element root = doc.getDocumentElement();
+            NodeList childrent = root.getChildNodes();
+            for (int i = 0; i < childrent.getLength(); i++)
+                if (childrent.item(i) instanceof Element) {
+                    Element child = (Element) childrent.item(i);
+                    feaTypes.add(child);
+                }
+        } catch (Exception e) {
+            System.out.println("Reading featuretemplate fail " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return feaTypes;
+    }
 }

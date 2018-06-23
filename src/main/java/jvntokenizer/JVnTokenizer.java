@@ -28,10 +28,17 @@
 package jvntokenizer;
 
 /**
- *
  * @author Nguyen Cam Tu
  */
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class JVnTokenizer {
 
@@ -40,49 +47,48 @@ public class JVnTokenizer {
      *
      * @param args the arguments
      */
-    public static void main(String [] args){
-        if (args.length != 2){
+    public static void main(String[] args) {
+        if (args.length != 2) {
             displayHelp();
             return;
         }
 
         //Read the input data
-        try{
+        try {
             String option = args[0];
-            if (option.equalsIgnoreCase("-inputfile")){
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(new FileInputStream(args[1]), "UTF-8"));
-                BufferedWriter out = new BufferedWriter(
-                        new OutputStreamWriter(new FileOutputStream(args[1] + ".tkn") , "UTF-8"));
+            if (option.equalsIgnoreCase("-inputfile")) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[1]), "UTF-8"));
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1] + ".tkn"),
+                                                                               "UTF-8"));
 
                 String line = "";
-                while ((line = in.readLine()) != null){
+                while ((line = in.readLine()) != null) {
                     out.write(PennTokenizer.tokenize(line));
                     out.write("\n");
                 }
 
                 in.close();
                 out.close();
-            }
-
-            else if (option.equalsIgnoreCase("-inputdir")){
+            } else if (option.equalsIgnoreCase("-inputdir")) {
                 System.out.println("Tokenize input");
                 //segment only files ends with .sent
                 File inputDir = new File(args[1]);
-                File [] childrent = inputDir.listFiles(new FilenameFilter() {
+                File[] childrent = inputDir.listFiles(new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         return name.endsWith(".sent");
                     }
                 });
 
-                for (int i = 0; i < childrent.length; ++i){
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(new FileInputStream(childrent[i]), "UTF-8"));
-                    BufferedWriter out = new BufferedWriter(
-                            new OutputStreamWriter(new FileOutputStream(childrent[i] + ".tkn") , "UTF-8"));
+                for (int i = 0; i < childrent.length; ++i) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(childrent[i]),
+                        "UTF-8"
+                    ));
+                    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                        childrent[i] + ".tkn"), "UTF-8"));
 
                     String line = "";
-                    while ((line = in.readLine()) != null){
+                    while ((line = in.readLine()) != null) {
                         out.write(PennTokenizer.tokenize(line));
                         out.write("\n");
                     }
@@ -91,7 +97,7 @@ public class JVnTokenizer {
                     out.close();
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
         }
     }
@@ -99,15 +105,15 @@ public class JVnTokenizer {
     /**
      * Display help.
      */
-    public static void displayHelp(){
+    public static void displayHelp() {
         System.out.println("Usage:");
-	System.out.println("\tCase 1: JVnTokenizer -inputfile <input data file>");
-	System.out.println("\tCase 2: JVnTokenizer -inputdir <input data directory>");
-	System.out.println("Where:");
-	System.out.println("\t<input data file> is the file containing input text that need to");
-	System.out.println("\thave sentences tokenized (each sentence on a line)");
-	System.out.println("\t<input data directory> is the directory containing multiple input .sent files");
-	System.out.println();
+        System.out.println("\tCase 1: JVnTokenizer -inputfile <input data file>");
+        System.out.println("\tCase 2: JVnTokenizer -inputdir <input data directory>");
+        System.out.println("Where:");
+        System.out.println("\t<input data file> is the file containing input text that need to");
+        System.out.println("\thave sentences tokenized (each sentence on a line)");
+        System.out.println("\t<input data directory> is the directory containing multiple input .sent files");
+        System.out.println();
     }
 
 }

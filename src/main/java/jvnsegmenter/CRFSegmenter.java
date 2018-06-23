@@ -26,10 +26,10 @@
  */
 package jvnsegmenter;
 
+import org.w3c.dom.Element;
+
 import java.io.File;
 import java.util.Vector;
-
-import org.w3c.dom.Element;
 
 import jflexcrf.Labeling;
 import jvntextpro.data.DataReader;
@@ -38,112 +38,115 @@ import jvntextpro.data.TaggingData;
 
 public class CRFSegmenter {
 
-	/** The reader. */
-	DataReader reader = new WordDataReader();
+    /**
+     * The reader.
+     */
+    DataReader reader = new WordDataReader();
 
-	/** The writer. */
-	DataWriter writer = new WordDataWriter();
+    /**
+     * The writer.
+     */
+    DataWriter writer = new WordDataWriter();
 
-	/** The data tagger. */
-	TaggingData dataTagger = new TaggingData();
+    /**
+     * The data tagger.
+     */
+    TaggingData dataTagger = new TaggingData();
 
-	/** The labeling. */
-	Labeling labeling = null;
+    /**
+     * The labeling.
+     */
+    Labeling labeling = null;
 
-	/**
-	 * Instantiates a new cRF segmenter.
-	 *
-	 * @param modelDir the model dir
-	 */
-	public CRFSegmenter(String modelDir){
-		init(modelDir);
-	}
+    /**
+     * Instantiates a new cRF segmenter.
+     *
+     * @param modelDir the model dir
+     */
+    public CRFSegmenter(String modelDir) {
+        init(modelDir);
+    }
 
-	/**
-	 * Instantiates a new cRF segmenter.
-	 */
-	public CRFSegmenter() {
-		//do nothing until now
-	}
+    /**
+     * Instantiates a new cRF segmenter.
+     */
+    public CRFSegmenter() {
+        //do nothing until now
+    }
 
-	/**
-	 * Inits the.
-	 *
-	 * @param modelDir the model dir
-	 */
-	public void init(String modelDir) {
-		//Read feature template file
-		String templateFile = modelDir + File.separator + "featuretemplate.xml";
-		Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
+    /**
+     * Inits the.
+     *
+     * @param modelDir the model dir
+     */
+    public void init(String modelDir) {
+        //Read feature template file
+        String templateFile = modelDir + File.separator + "featuretemplate.xml";
+        Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
 
-		for (int i = 0; i < nodes.size(); ++i){
-			Element node = nodes.get(i);
-			String cpType = node.getAttribute("value");
-			BasicContextGenerator contextGen = null;
+        for (int i = 0; i < nodes.size(); ++i) {
+            Element node = nodes.get(i);
+            String cpType = node.getAttribute("value");
+            BasicContextGenerator contextGen = null;
 
-			if (cpType.equals("Conjunction")){
-				contextGen = new ConjunctionContextGenerator(node);
-			}
-			else if (cpType.equals("Lexicon")){
-				contextGen = new LexiconContextGenerator(node);
-				LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
-				LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
-				LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
-			}
-			else if (cpType.equals("Regex")){
-				contextGen = new RegexContextGenerator(node);
-			}
-			else if (cpType.equals("SyllableFeature")){
-				contextGen = new SyllableContextGenerator(node);
-			}
-			else if (cpType.equals("ViSyllableFeature")){
-				contextGen = new VietnameseContextGenerator(node);
-			}
+            if (cpType.equals("Conjunction")) {
+                contextGen = new ConjunctionContextGenerator(node);
+            } else if (cpType.equals("Lexicon")) {
+                contextGen = new LexiconContextGenerator(node);
+                LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
+                LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
+                LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
+            } else if (cpType.equals("Regex")) {
+                contextGen = new RegexContextGenerator(node);
+            } else if (cpType.equals("SyllableFeature")) {
+                contextGen = new SyllableContextGenerator(node);
+            } else if (cpType.equals("ViSyllableFeature")) {
+                contextGen = new VietnameseContextGenerator(node);
+            }
 
-			if (contextGen != null)
-				dataTagger.addContextGenerator(contextGen);
-		}
+            if (contextGen != null) dataTagger.addContextGenerator(contextGen);
+        }
 
-		//create context generators
-		labeling = new Labeling(modelDir, dataTagger, reader, writer);
-	}
+        //create context generators
+        labeling = new Labeling(modelDir, dataTagger, reader, writer);
+    }
 
-	/**
-	 * Segmenting.
-	 *
-	 * @param instr the instr
-	 * @return the string
-	 */
-	public String segmenting(String instr) {
-		return labeling.strLabeling(instr);
-	}
+    /**
+     * Segmenting.
+     *
+     * @param instr the instr
+     * @return the string
+     */
+    public String segmenting(String instr) {
+        return labeling.strLabeling(instr);
+    }
 
-	/**
-	 * Segmenting.
-	 *
-	 * @param file the file
-	 * @return the string
-	 */
-	public String segmenting(File file) {
-		return labeling.strLabeling(file);
-	}
+    /**
+     * Segmenting.
+     *
+     * @param file the file
+     * @return the string
+     */
+    public String segmenting(File file) {
+        return labeling.strLabeling(file);
+    }
 
-	/**
-	 * Sets the data reader.
-	 *
-	 * @param reader the new data reader
-	 */
-	public void setDataReader(DataReader reader){
-		this.reader = reader;
-	}
+    /**
+     * Sets the data reader.
+     *
+     * @param reader the new data reader
+     */
+    public void setDataReader(DataReader reader) {
+        this.reader = reader;
+    }
 
-	/**
-	 * Sets the data writer.
-	 *
-	 * @param writer the new data writer
-	 */
-	public void setDataWriter(DataWriter writer){
-		this.writer = writer;
-	}
+    /**
+     * Sets the data writer.
+     *
+     * @param writer the new data writer
+     */
+    public void setDataWriter(DataWriter writer) {
+        this.writer = writer;
+    }
 
 }

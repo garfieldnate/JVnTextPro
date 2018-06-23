@@ -39,245 +39,246 @@ import java.util.Vector;
 import jvntextpro.data.Sentence;
 
 public class LexiconContextGenerator extends BasicContextGenerator {
-	//------------------------------
-	//Variables
-	//------------------------------
-	/** The hs vietnamese dict. */
-	private static HashSet hsVietnameseDict;
+    //------------------------------
+    //Variables
+    //------------------------------
+    /**
+     * The hs vietnamese dict.
+     */
+    private static HashSet hsVietnameseDict;
 
-	/** The hs vi family names. */
-	private static HashSet hsViFamilyNames;
+    /**
+     * The hs vi family names.
+     */
+    private static HashSet hsViFamilyNames;
 
-	/** The hs vi middle names. */
-	private static HashSet hsViMiddleNames;
+    /**
+     * The hs vi middle names.
+     */
+    private static HashSet hsViMiddleNames;
 
-	/** The hs vi last names. */
-	private static HashSet hsViLastNames;
+    /**
+     * The hs vi last names.
+     */
+    private static HashSet hsViLastNames;
 
-	/** The hs vi locations. */
-	private static HashSet hsViLocations;
+    /**
+     * The hs vi locations.
+     */
+    private static HashSet hsViLocations;
 
-	//------------------------------
-	//Methods
-	//------------------------------
-	/**
-	 * Instantiates a new lexicon context generator.
-	 *
-	 * @param node the node
-	 */
-	public LexiconContextGenerator(Element node){
-		readFeatureParameters(node);
-	}
+    //------------------------------
+    //Methods
+    //------------------------------
 
-	/* (non-Javadoc)
-	 * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
-	 */
-	@Override
-	public String[] getContext(Sentence sent, int pos) {
-		// get the context information from sequence
-		List<String> cps = new ArrayList<String>();
+    /**
+     * Instantiates a new lexicon context generator.
+     *
+     * @param node the node
+     */
+    public LexiconContextGenerator(Element node) {
+        readFeatureParameters(node);
+    }
 
-		for (int it = 0; it < cpnames.size(); ++it){
-			String cp = cpnames.get(it);
-			Vector<Integer> paras = this.paras.get(it);
-			String cpvalue = "";
+    /* (non-Javadoc)
+     * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
+     */
+    @Override
+    public String[] getContext(Sentence sent, int pos) {
+        // get the context information from sequence
+        List<String> cps = new ArrayList<String>();
 
-			String suffix = "";
-			String word = "";
-			boolean outOfArrayIndex = false;
-			for (int i = 0; i < paras.size(); ++i) {
-				if (pos + paras.get(i) < 0 || pos + paras.get(i)>= sent.size()){
-					cpvalue = "";
-					outOfArrayIndex = true;
-					break;
-				}
+        for (int it = 0; it < cpnames.size(); ++it) {
+            String cp = cpnames.get(it);
+            Vector<Integer> paras = this.paras.get(it);
+            String cpvalue = "";
 
-				suffix += paras.get(i) + ":";
-				word += sent.getWordAt(pos + paras.get(i)) + " ";
-			}
-			word = word.trim();
-			if (suffix.endsWith(":"))
-				suffix = suffix.substring(0, suffix.length() - 1);
+            String suffix = "";
+            String word = "";
+            boolean outOfArrayIndex = false;
+            for (int i = 0; i < paras.size(); ++i) {
+                if (pos + paras.get(i) < 0 || pos + paras.get(i) >= sent.size()) {
+                    cpvalue = "";
+                    outOfArrayIndex = true;
+                    break;
+                }
 
-			if (outOfArrayIndex) continue;
+                suffix += paras.get(i) + ":";
+                word += sent.getWordAt(pos + paras.get(i)) + " ";
+            }
+            word = word.trim();
+            if (suffix.endsWith(":")) suffix = suffix.substring(0, suffix.length() - 1);
 
-			if (cp.equals("vietnamese_dict")) {
-				word = word.toLowerCase();
-				if (inVietnameseDict(word)){
-					cpvalue = "d:" + suffix;
-				}
-			} else if (cp.equals("family_name")) {
-				if (inViFamilyNameList(word))
-					cpvalue = "fam:" + suffix;
-			} else if (cp.equals("middle_name")) {
-				if (inViMiddleNameList(word))
-					cpvalue = "mdl:" + suffix;
-			} else if (cp.equals("last_name")) {
-				if (inViLastNameList(word))
-					cpvalue = "lst:" + suffix;
-			} else if (cp.equals("location")) {
-				if (inViLocations(word))
-					cpvalue = "loc:" + suffix;
-			}
+            if (outOfArrayIndex) continue;
 
-			if (!cpvalue.equals("")) cps.add(cpvalue);
-		}
-		String [] ret = new String[cps.size()];
-		return cps.toArray(ret);
-	}
+            if (cp.equals("vietnamese_dict")) {
+                word = word.toLowerCase();
+                if (inVietnameseDict(word)) {
+                    cpvalue = "d:" + suffix;
+                }
+            } else if (cp.equals("family_name")) {
+                if (inViFamilyNameList(word)) cpvalue = "fam:" + suffix;
+            } else if (cp.equals("middle_name")) {
+                if (inViMiddleNameList(word)) cpvalue = "mdl:" + suffix;
+            } else if (cp.equals("last_name")) {
+                if (inViLastNameList(word)) cpvalue = "lst:" + suffix;
+            } else if (cp.equals("location")) {
+                if (inViLocations(word)) cpvalue = "loc:" + suffix;
+            }
 
-	//------------------------------
-	// static methods
-	//------------------------------
-	/**
-	 * In vietnamese dict.
-	 *
-	 * @param word the word
-	 * @return true, if successful
-	 */
-	public static boolean inVietnameseDict(String word) {
-		return hsVietnameseDict.contains(word);
-	}
+            if (!cpvalue.equals("")) cps.add(cpvalue);
+        }
+        String[] ret = new String[cps.size()];
+        return cps.toArray(ret);
+    }
 
-	/**
-	 * In vi family name list.
-	 *
-	 * @param word the word
-	 * @return true, if successful
-	 */
-	public static boolean inViFamilyNameList(String word) {
-		return hsViFamilyNames.contains(word);
-	}
+    //------------------------------
+    // static methods
+    //------------------------------
 
-	/**
-	 * In vi middle name list.
-	 *
-	 * @param word the word
-	 * @return true, if successful
-	 */
-	public static boolean inViMiddleNameList(String word) {
-		return hsViMiddleNames.contains(word);
-	}
+    /**
+     * In vietnamese dict.
+     *
+     * @param word the word
+     * @return true, if successful
+     */
+    public static boolean inVietnameseDict(String word) {
+        return hsVietnameseDict.contains(word);
+    }
 
-	/**
-	 * In vi last name list.
-	 *
-	 * @param word the word
-	 * @return true, if successful
-	 */
-	public static boolean inViLastNameList(String word) {
-		return hsViLastNames.contains(word);
-	}
+    /**
+     * In vi family name list.
+     *
+     * @param word the word
+     * @return true, if successful
+     */
+    public static boolean inViFamilyNameList(String word) {
+        return hsViFamilyNames.contains(word);
+    }
 
-	/**
-	 * In vi locations.
-	 *
-	 * @param word the word
-	 * @return true, if successful
-	 */
-	public static boolean inViLocations(String word) {
-		return hsViLocations.contains(word);
-	}
+    /**
+     * In vi middle name list.
+     *
+     * @param word the word
+     * @return true, if successful
+     */
+    public static boolean inViMiddleNameList(String word) {
+        return hsViMiddleNames.contains(word);
+    }
 
-	/**
-	 * Load vietnamese dict.
-	 *
-	 * @param filename the filename
-	 */
-	public static void loadVietnameseDict(String filename) {
-		try {
-			FileInputStream in = new FileInputStream(filename);
-			if (hsVietnameseDict == null) {
-				hsVietnameseDict = new HashSet();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(in, "UTF-8"));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					if (line.substring(0, 2).equals("##")) {
-						String word = line.substring(2);
-						word = word.toLowerCase();
-						hsVietnameseDict.add(word);
-					}
-				}
-			}
-			// Print lacviet_dict into lacviet.dict file
-		} catch (Exception e) {
-			System.err.print(e.getMessage());
-			e.printStackTrace();
-		}
-	}
+    /**
+     * In vi last name list.
+     *
+     * @param word the word
+     * @return true, if successful
+     */
+    public static boolean inViLastNameList(String word) {
+        return hsViLastNames.contains(word);
+    }
 
-	/**
-	 * Load vi personal names.
-	 *
-	 * @param filename the filename
-	 */
-	public static void loadViPersonalNames(String filename) {
-		try {
-			FileInputStream in = new FileInputStream(filename);
-			if (hsViFamilyNames == null) {
+    /**
+     * In vi locations.
+     *
+     * @param word the word
+     * @return true, if successful
+     */
+    public static boolean inViLocations(String word) {
+        return hsViLocations.contains(word);
+    }
 
-				hsViFamilyNames = new HashSet();
-				hsViLastNames = new HashSet();
-				hsViMiddleNames = new HashSet();
+    /**
+     * Load vietnamese dict.
+     *
+     * @param filename the filename
+     */
+    public static void loadVietnameseDict(String filename) {
+        try {
+            FileInputStream in = new FileInputStream(filename);
+            if (hsVietnameseDict == null) {
+                hsVietnameseDict = new HashSet();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.substring(0, 2).equals("##")) {
+                        String word = line.substring(2);
+                        word = word.toLowerCase();
+                        hsVietnameseDict.add(word);
+                    }
+                }
+            }
+            // Print lacviet_dict into lacviet.dict file
+        } catch (Exception e) {
+            System.err.print(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(in, "UTF-8"));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					line = line.trim();
-					if (line.equals(""))
-						continue;
+    /**
+     * Load vi personal names.
+     *
+     * @param filename the filename
+     */
+    public static void loadViPersonalNames(String filename) {
+        try {
+            FileInputStream in = new FileInputStream(filename);
+            if (hsViFamilyNames == null) {
 
-					//line = line.toLowerCase();
-					int idxSpace = line.indexOf(' ');
-					int lastIdxSpace = line.lastIndexOf(' ');
+                hsViFamilyNames = new HashSet();
+                hsViLastNames = new HashSet();
+                hsViMiddleNames = new HashSet();
 
-					if (idxSpace != -1) {
-						String strFamilyName = line.substring(0, idxSpace);
-						hsViFamilyNames.add(strFamilyName);
-					}
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.equals("")) continue;
 
-					if ((idxSpace != -1) && (lastIdxSpace > idxSpace + 1)) {
-						String strMiddleName = line.substring(idxSpace + 1,
-								lastIdxSpace - 1);
-						hsViMiddleNames.add(strMiddleName);
-					}
+                    //line = line.toLowerCase();
+                    int idxSpace = line.indexOf(' ');
+                    int lastIdxSpace = line.lastIndexOf(' ');
 
-					if (lastIdxSpace != -1) {
-						String strLastName = line.substring(lastIdxSpace + 1,
-								line.length());
-						hsViLastNames.add(strLastName);
-					}
-				}
-				in.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.print(e.getMessage());
-		}
-	}
+                    if (idxSpace != -1) {
+                        String strFamilyName = line.substring(0, idxSpace);
+                        hsViFamilyNames.add(strFamilyName);
+                    }
 
-	/**
-	 * Load vi location list.
-	 *
-	 * @param filename the filename
-	 */
-	public static void loadViLocationList(String filename) {
-		try {
-			FileInputStream in = new FileInputStream(filename);
-			if (hsViLocations == null) {
-				hsViLocations = new HashSet();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(in, "UTF-8"));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					String word = line.trim();
-					hsViLocations.add(word);
-				}
-			}
-		} catch (Exception e) {
-			System.err.print(e.getMessage());
-		}
-	}
+                    if ((idxSpace != -1) && (lastIdxSpace > idxSpace + 1)) {
+                        String strMiddleName = line.substring(idxSpace + 1, lastIdxSpace - 1);
+                        hsViMiddleNames.add(strMiddleName);
+                    }
+
+                    if (lastIdxSpace != -1) {
+                        String strLastName = line.substring(lastIdxSpace + 1, line.length());
+                        hsViLastNames.add(strLastName);
+                    }
+                }
+                in.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.print(e.getMessage());
+        }
+    }
+
+    /**
+     * Load vi location list.
+     *
+     * @param filename the filename
+     */
+    public static void loadViLocationList(String filename) {
+        try {
+            FileInputStream in = new FileInputStream(filename);
+            if (hsViLocations == null) {
+                hsViLocations = new HashSet();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String word = line.trim();
+                    hsViLocations.add(word);
+                }
+            }
+        } catch (Exception e) {
+            System.err.print(e.getMessage());
+        }
+    }
 }

@@ -30,20 +30,26 @@ import java.util.Map;
 
 public class Observation {
 
-    /** The original data. */
-    public String originalData = "";	// original data (before generating context predicates)
+    /**
+     * The original data.
+     */
+    public String originalData = "";    // original data (before generating context predicates)
 
-    /** The cps. */
-    public int[] cps = null;		// array of context predicates
+    /**
+     * The cps.
+     */
+    public int[] cps = null;        // array of context predicates
 
-    /** The model label. */
-    public int modelLabel = -1;		// label predicted by model
+    /**
+     * The model label.
+     */
+    public int modelLabel = -1;        // label predicted by model
 
     /**
      * Instantiates a new observation.
      */
     public Observation() {
-	// do nothing currently
+        // do nothing currently
     }
 
     /**
@@ -53,14 +59,14 @@ public class Observation {
      * @return the string
      */
     public String toString(Map lbInt2Str) {
-	String res = originalData;
+        String res = originalData;
 
-	String labelStr = (String)lbInt2Str.get(new Integer(modelLabel));
-	if (labelStr != null) {
-	    res += Option.outputSeparator + labelStr.toUpperCase();
-	}
+        String labelStr = (String) lbInt2Str.get(new Integer(modelLabel));
+        if (labelStr != null) {
+            res += Option.outputSeparator + labelStr.toUpperCase();
+        }
 
-	return res;
+        return res;
     }
 
 } // end of class Observation

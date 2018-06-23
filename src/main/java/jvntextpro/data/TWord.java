@@ -33,106 +33,114 @@ import java.util.Vector;
 
 public class TWord {
 
-	/** The token. */
-	private String token;
+    /**
+     * The token.
+     */
+    private String token;
 
-	/** The tag. */
-	private String tag = null; //null if this word is not tagged
+    /**
+     * The tag.
+     */
+    private String tag = null; //null if this word is not tagged
 
-	// this is necessary for further processing
-	// Example: in noun phase chunking
-	// we may have information about pos tag (secondary tag)
-	// chunking tags are main tags
+    // this is necessary for further processing
+    // Example: in noun phase chunking
+    // we may have information about pos tag (secondary tag)
+    // chunking tags are main tags
 
-	//or named entity recognition
-	// we may have information about pos tag, chunk phase, verb phase,  (secondary tags) etc.
+    //or named entity recognition
+    // we may have information about pos tag, chunk phase, verb phase,  (secondary tags) etc.
 
-	/** The secondary tags. */
-	private Vector<String> secondaryTags = null;
+    /**
+     * The secondary tags.
+     */
+    private Vector<String> secondaryTags = null;
 
-	//constructors
-	/**
-	 * Instantiates a new t word.
-	 *
-	 * @param _word the _word
-	 * @param _tag the _tag
-	 */
-	public TWord(String _word, String _tag){
-		token = _word.replaceAll(" ","_");;
-		tag = _tag;
-	}
+    //constructors
 
-	/**
-	 * Instantiates a new t word.
-	 *
-	 * @param _word the _word
-	 */
-	public TWord(String _word){
-		token = _word.replaceAll(" ","_");
-	}
+    /**
+     * Instantiates a new t word.
+     *
+     * @param _word the _word
+     * @param _tag  the _tag
+     */
+    public TWord(String _word, String _tag) {
+        token = _word.replaceAll(" ", "_");
+        ;
+        tag = _tag;
+    }
 
-	//get methods
-	/**
-	 * Gets the word.
-	 *
-	 * @return the word
-	 */
-	public String getWord(){
-		return token;
-	}
+    /**
+     * Instantiates a new t word.
+     *
+     * @param _word the _word
+     */
+    public TWord(String _word) {
+        token = _word.replaceAll(" ", "_");
+    }
 
-	/**
-	 * Gets the tag.
-	 *
-	 * @return the tag
-	 */
-	public String getTag(){
-		return tag;
-	}
+    //get methods
 
-	/**
-	 * Sets the tag.
-	 *
-	 * @param t the new tag
-	 */
-	public void setTag(String t){
-		tag = t;
-	}
+    /**
+     * Gets the word.
+     *
+     * @return the word
+     */
+    public String getWord() {
+        return token;
+    }
 
-	/**
-	 * Gets the secondary tag.
-	 *
-	 * @param i the i
-	 * @return the secondary tag
-	 */
-	public String getSecondaryTag(int i){
-		// i is the predefined position of secondary tag
-		// For example: in named entity recognition (which are main tag)
-		// i=0 can be used for POS tag
-		// i=1 can be used for noun phase tag, etc...
-		if (secondaryTags != null){
-			return secondaryTags.get(i);
-		}
-		else return null;
-	}
+    /**
+     * Gets the tag.
+     *
+     * @return the tag
+     */
+    public String getTag() {
+        return tag;
+    }
 
-	//DEBUG
-	/**
-	 * Prints the.
-	 */
-	public void print(){
-		System.out.println(token + "\t" + tag);
-	}
+    /**
+     * Sets the tag.
+     *
+     * @param t the new tag
+     */
+    public void setTag(String t) {
+        tag = t;
+    }
 
-	/**
-	 * Prints the.
-	 *
-	 * @param out the out
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void print(Writer out) throws IOException{
-		if (tag == null)
-			System.out.println(tag);
-		out.write(token + "\t" + tag + "\n");
-	}
+    /**
+     * Gets the secondary tag.
+     *
+     * @param i the i
+     * @return the secondary tag
+     */
+    public String getSecondaryTag(int i) {
+        // i is the predefined position of secondary tag
+        // For example: in named entity recognition (which are main tag)
+        // i=0 can be used for POS tag
+        // i=1 can be used for noun phase tag, etc...
+        if (secondaryTags != null) {
+            return secondaryTags.get(i);
+        } else return null;
+    }
+
+    //DEBUG
+
+    /**
+     * Prints the.
+     */
+    public void print() {
+        System.out.println(token + "\t" + tag);
+    }
+
+    /**
+     * Prints the.
+     *
+     * @param out the out
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    public void print(Writer out) throws IOException {
+        if (tag == null) System.out.println(tag);
+        out.write(token + "\t" + tag + "\n");
+    }
 }

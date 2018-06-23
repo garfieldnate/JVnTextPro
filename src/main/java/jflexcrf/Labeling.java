@@ -29,6 +29,7 @@ package jflexcrf;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import jvntextpro.data.DataReader;
 import jvntextpro.data.DataWriter;
 import jvntextpro.data.Sentence;
@@ -36,220 +37,238 @@ import jvntextpro.data.TaggingData;
 
 public class Labeling {
 
-	//-----------------------------------------------
-	// Member Variables
-	//-----------------------------------------------
-	/** The model dir. */
-	private String modelDir = "";
+    //-----------------------------------------------
+    // Member Variables
+    //-----------------------------------------------
+    /**
+     * The model dir.
+     */
+    private String modelDir = "";
 
-	/** The tagger maps. */
-	public Maps taggerMaps = null;
+    /**
+     * The tagger maps.
+     */
+    public Maps taggerMaps = null;
 
-	/** The tagger dict. */
-	public Dictionary taggerDict = null;
+    /**
+     * The tagger dict.
+     */
+    public Dictionary taggerDict = null;
 
-	/** The tagger f gen. */
-	private FeatureGen taggerFGen = null;
+    /**
+     * The tagger f gen.
+     */
+    private FeatureGen taggerFGen = null;
 
-	/** The tagger vtb. */
-	private Viterbi taggerVtb = null;
+    /**
+     * The tagger vtb.
+     */
+    private Viterbi taggerVtb = null;
 
-	/** The tagger model. */
-	private Model taggerModel = null;
+    /**
+     * The tagger model.
+     */
+    private Model taggerModel = null;
 
-	/** The data tagger. */
-	private TaggingData dataTagger = null;
+    /**
+     * The data tagger.
+     */
+    private TaggingData dataTagger = null;
 
-	/** The data reader. */
-	private DataReader dataReader = null;
+    /**
+     * The data reader.
+     */
+    private DataReader dataReader = null;
 
-	/** The data writer. */
-	private DataWriter dataWriter = null;
+    /**
+     * The data writer.
+     */
+    private DataWriter dataWriter = null;
 
-	//-----------------------------------------------
-	// Initilization
-	//-----------------------------------------------
-	/**
-	 * Instantiates a new labeling.
-	 *
-	 * @param modelDir the model dir
-	 * @param dataTagger the data tagger
-	 * @param dataReader the data reader
-	 * @param dataWriter the data writer
-	 */
-	public Labeling (String modelDir, TaggingData dataTagger,
-			DataReader dataReader, DataWriter dataWriter){
-		init(modelDir);
-		this.dataTagger = dataTagger;
-		this.dataWriter = dataWriter;
-		this.dataReader = dataReader;
-	}
+    //-----------------------------------------------
+    // Initilization
+    //-----------------------------------------------
 
-	/**
-	 * Inits the.
-	 *
-	 * @param modelDir the model dir
-	 * @return true, if successful
-	 */
-	public boolean init(String modelDir) {
-		this.modelDir = modelDir;
+    /**
+     * Instantiates a new labeling.
+     *
+     * @param modelDir   the model dir
+     * @param dataTagger the data tagger
+     * @param dataReader the data reader
+     * @param dataWriter the data writer
+     */
+    public Labeling(String modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) {
+        init(modelDir);
+        this.dataTagger = dataTagger;
+        this.dataWriter = dataWriter;
+        this.dataReader = dataReader;
+    }
 
-		Option taggerOpt = new Option(this.modelDir);
-		if (!taggerOpt.readOptions()) {
-			return false;
-		}
+    /**
+     * Inits the.
+     *
+     * @param modelDir the model dir
+     * @return true, if successful
+     */
+    public boolean init(String modelDir) {
+        this.modelDir = modelDir;
 
-		taggerMaps = new Maps();
-		taggerDict = new Dictionary();
-		taggerFGen = new FeatureGen(taggerMaps, taggerDict);
-		taggerVtb = new Viterbi();
+        Option taggerOpt = new Option(this.modelDir);
+        if (!taggerOpt.readOptions()) {
+            return false;
+        }
 
-		taggerModel = new Model(taggerOpt, taggerMaps, taggerDict, taggerFGen,
-				taggerVtb);
-		if (!taggerModel.init()) {
-			System.out.println("Couldn't load the model");
-			System.out.println("Check the <model directory> and the <model file> again");
-			return false;
-		}
-		return true;
-	}
+        taggerMaps = new Maps();
+        taggerDict = new Dictionary();
+        taggerFGen = new FeatureGen(taggerMaps, taggerDict);
+        taggerVtb = new Viterbi();
 
-	/**
-	 * Sets the data reader.
-	 *
-	 * @param reader the new data reader
-	 */
-	public void setDataReader (DataReader reader){
-		dataReader = reader;
-	}
+        taggerModel = new Model(taggerOpt, taggerMaps, taggerDict, taggerFGen, taggerVtb);
+        if (!taggerModel.init()) {
+            System.out.println("Couldn't load the model");
+            System.out.println("Check the <model directory> and the <model file> again");
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Sets the data tagger.
-	 *
-	 * @param tagger the new data tagger
-	 */
-	public void setDataTagger(TaggingData tagger){
-		dataTagger = tagger;
-	}
+    /**
+     * Sets the data reader.
+     *
+     * @param reader the new data reader
+     */
+    public void setDataReader(DataReader reader) {
+        dataReader = reader;
+    }
 
-	/**
-	 * Sets the data writer.
-	 *
-	 * @param writer the new data writer
-	 */
-	public void setDataWriter(DataWriter writer){
-		dataWriter = writer;
-	}
+    /**
+     * Sets the data tagger.
+     *
+     * @param tagger the new data tagger
+     */
+    public void setDataTagger(TaggingData tagger) {
+        dataTagger = tagger;
+    }
 
-	//---------------------------------------------------------
-	// labeling methods
-	//---------------------------------------------------------
-	/**
-	 * labeling observation sequences.
-	 *
-	 * @param data list of sequences with specified format which can be read by DataReader
-	 * @return a list of sentences with tags annotated
-	 */
-	@SuppressWarnings("unchecked")
-	public List seqLabeling(String data){
-		List<Sentence> obsvSeqs = dataReader.readString(data);
-		return labeling(obsvSeqs);
-	}
+    /**
+     * Sets the data writer.
+     *
+     * @param writer the new data writer
+     */
+    public void setDataWriter(DataWriter writer) {
+        dataWriter = writer;
+    }
 
-	/**
-	 * labeling observation sequences.
-	 *
-	 * @param file the file
-	 * @return  a list of sentences with tags annotated
-	 */
-	@SuppressWarnings("unchecked")
-	public List seqLabeling(File file){
-		List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
-		return labeling(obsvSeqs);
-	}
+    //---------------------------------------------------------
+    // labeling methods
+    //---------------------------------------------------------
 
-	/**
-	 * labeling observation sequences.
-	 *
-	 * @param data the data
-	 * @return string representing label sequences, the format is specified by writer
-	 */
-	@SuppressWarnings("unchecked")
-	public String strLabeling(String data){
-		List lblSeqs = seqLabeling(data);
-		String ret = dataWriter.writeString(lblSeqs);
-		return ret;
-	}
+    /**
+     * labeling observation sequences.
+     *
+     * @param data list of sequences with specified format which can be read by DataReader
+     * @return a list of sentences with tags annotated
+     */
+    @SuppressWarnings("unchecked")
+    public List seqLabeling(String data) {
+        List<Sentence> obsvSeqs = dataReader.readString(data);
+        return labeling(obsvSeqs);
+    }
 
-	/**
-	 * labeling observation sequences.
-	 *
-	 * @param file contains a list of observation sequence, this file has a format wich can be read by DataReader
-	 * @return string representing label sequences, the format is specified by writer
-	 */
-	public String strLabeling(File file){
-		List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
-		List lblSeqs = labeling(obsvSeqs);
-		String ret = dataWriter.writeString(lblSeqs);
-		return ret;
-	}
+    /**
+     * labeling observation sequences.
+     *
+     * @param file the file
+     * @return a list of sentences with tags annotated
+     */
+    @SuppressWarnings("unchecked")
+    public List seqLabeling(File file) {
+        List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
+        return labeling(obsvSeqs);
+    }
 
-	/**
-	 * Labeling.
-	 *
-	 * @param obsvSeqs the obsv seqs
-	 * @return the list
-	 */
-	@SuppressWarnings("unchecked")
-	private List labeling(List<Sentence> obsvSeqs){
-		List labelSeqs = new ArrayList();
+    /**
+     * labeling observation sequences.
+     *
+     * @param data the data
+     * @return string representing label sequences, the format is specified by writer
+     */
+    @SuppressWarnings("unchecked")
+    public String strLabeling(String data) {
+        List lblSeqs = seqLabeling(data);
+        String ret = dataWriter.writeString(lblSeqs);
+        return ret;
+    }
 
-		for (int i = 0; i < obsvSeqs.size(); ++i){//ith sentence
-			List sequence = new ArrayList();
-			Sentence sentence = obsvSeqs.get(i);
+    /**
+     * labeling observation sequences.
+     *
+     * @param file contains a list of observation sequence, this file has a format wich can be read by DataReader
+     * @return string representing label sequences, the format is specified by writer
+     */
+    public String strLabeling(File file) {
+        List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
+        List lblSeqs = labeling(obsvSeqs);
+        String ret = dataWriter.writeString(lblSeqs);
+        return ret;
+    }
 
-			for (int j = 0; j < sentence.size(); ++j){//jth observation
-				Observation obsv = new Observation();
-				obsv.originalData = sentence.getWordAt(j);
+    /**
+     * Labeling.
+     *
+     * @param obsvSeqs the obsv seqs
+     * @return the list
+     */
+    @SuppressWarnings("unchecked")
+    private List labeling(List<Sentence> obsvSeqs) {
+        List labelSeqs = new ArrayList();
 
-				String [] strCps = dataTagger.getContext(sentence, j);
+        for (int i = 0; i < obsvSeqs.size(); ++i) {//ith sentence
+            List sequence = new ArrayList();
+            Sentence sentence = obsvSeqs.get(i);
 
-				ArrayList<Integer> tempCpsInt = new ArrayList<Integer>();
+            for (int j = 0; j < sentence.size(); ++j) {//jth observation
+                Observation obsv = new Observation();
+                obsv.originalData = sentence.getWordAt(j);
 
-				for (int k = 0; k < strCps.length; k++) {
-					Integer cpInt = (Integer) taggerMaps.cpStr2Int.get(strCps[k]);
-					if (cpInt == null) {
-						continue;
-					}
-					tempCpsInt.add(cpInt);
-				}
+                String[] strCps = dataTagger.getContext(sentence, j);
 
-				obsv.cps = new int[tempCpsInt.size()];
-				for (int k = 0; k < tempCpsInt.size(); ++k){
-					obsv.cps[k] = tempCpsInt.get(k).intValue();
-				}
-				sequence.add(obsv);
-			}
+                ArrayList<Integer> tempCpsInt = new ArrayList<Integer>();
 
-			labelSeqs.add(sequence);
-		}
+                for (int k = 0; k < strCps.length; k++) {
+                    Integer cpInt = (Integer) taggerMaps.cpStr2Int.get(strCps[k]);
+                    if (cpInt == null) {
+                        continue;
+                    }
+                    tempCpsInt.add(cpInt);
+                }
 
-		taggerModel.inferenceAll(labelSeqs);
+                obsv.cps = new int[tempCpsInt.size()];
+                for (int k = 0; k < tempCpsInt.size(); ++k) {
+                    obsv.cps[k] = tempCpsInt.get(k).intValue();
+                }
+                sequence.add(obsv);
+            }
 
-		//assign labels to list of sentences
-		for (int i = 0; i < obsvSeqs.size(); ++i){
-			Sentence sent = obsvSeqs.get(i);
-			List seq = (List) labelSeqs.get(i);
+            labelSeqs.add(sequence);
+        }
 
-			for (int j = 0; j < sent.size(); ++j){
-				Observation obsrv = (Observation) seq.get(j);
-				String label = (String) taggerMaps.lbInt2Str.get(obsrv.modelLabel);
+        taggerModel.inferenceAll(labelSeqs);
 
-				sent.getTWordAt(j).setTag(label);
-			}
-		}
+        //assign labels to list of sentences
+        for (int i = 0; i < obsvSeqs.size(); ++i) {
+            Sentence sent = obsvSeqs.get(i);
+            List seq = (List) labelSeqs.get(i);
 
-		return obsvSeqs;
-	}
+            for (int j = 0; j < sent.size(); ++j) {
+                Observation obsrv = (Observation) seq.get(j);
+                String label = (String) taggerMaps.lbInt2Str.get(obsrv.modelLabel);
+
+                sent.getTWordAt(j).setTag(label);
+            }
+        }
+
+        return obsvSeqs;
+    }
 
 }

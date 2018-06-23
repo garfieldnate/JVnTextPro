@@ -34,19 +34,19 @@ import java.util.List;
  */
 abstract public class DataReader {
 
-	/**
-	 * Read file.
-	 *
-	 * @param datafile the datafile
-	 * @return the list
-	 */
-	public abstract List<Sentence> readFile(String datafile);
+    /**
+     * Read file.
+     *
+     * @param datafile the datafile
+     * @return the list
+     */
+    public abstract List<Sentence> readFile(String datafile);
 
-	/**
-	 * Read string.
-	 *
-	 * @param dataStr the data str
-	 * @return the list
-	 */
-	public abstract List<Sentence> readString(String dataStr);
+    /**
+     * Read string.
+     *
+     * @param dataStr the data str
+     * @return the list
+     */
+    public abstract List<Sentence> readString(String dataStr);
 }

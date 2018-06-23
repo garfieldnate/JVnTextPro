@@ -39,64 +39,62 @@ import jvntextpro.data.TWord;
 
 // TODO: Read data in IOB2 format which is the same as training data provided
 // in the previous version of JVnSegmenter (v.1.0)
+
 /**
  * The Class IOB2DataReader.
  */
 public class IOB2DataReader extends DataReader {
 
-	/* (non-Javadoc)
-	 * @see jvntextpro.data.DataReader#readFile(java.lang.String)
-	 */
-	@Override
-	public List<Sentence> readFile(String datafile) {
-		// read all data into a data string
-		String dataStr = "";
-		try{
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					new FileInputStream(datafile), "UTF-8"));
-			String line;
-			int count = 0;
-			while ((line = in.readLine()) != null){
-				System.out.println("Line " + count++);
-				dataStr += line + "\n";
-			}
-			in.close();
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			return null;
-		}
-		return readString(dataStr);
-	}
+    /* (non-Javadoc)
+     * @see jvntextpro.data.DataReader#readFile(java.lang.String)
+     */
+    @Override
+    public List<Sentence> readFile(String datafile) {
+        // read all data into a data string
+        String dataStr = "";
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(datafile), "UTF-8"));
+            String line;
+            int count = 0;
+            while ((line = in.readLine()) != null) {
+                System.out.println("Line " + count++);
+                dataStr += line + "\n";
+            }
+            in.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+        return readString(dataStr);
+    }
 
-	/* (non-Javadoc)
-	 * @see jvntextpro.data.DataReader#readString(java.lang.String)
-	 */
-	@Override
-	public List<Sentence> readString(String dataStr) {
-		dataStr = dataStr + "$";
-		String  [] lines = dataStr.split("\\n");
+    /* (non-Javadoc)
+     * @see jvntextpro.data.DataReader#readString(java.lang.String)
+     */
+    @Override
+    public List<Sentence> readString(String dataStr) {
+        dataStr = dataStr + "$";
+        String[] lines = dataStr.split("\\n");
 
-		List<Sentence> data = new ArrayList<Sentence>();
-		Sentence sent = new Sentence();
-		for (String line : lines){
-			System.out.println(".");
-			if (line.isEmpty() || line.equalsIgnoreCase("$")){
-				data.add(sent);
-				sent = new Sentence();
-			}
-			else{
-				StringTokenizer tk = new StringTokenizer(line, "\t");
-				if (tk.countTokens() != 2) continue;
-				else {
-					String token = tk.nextToken();
-					String tag = tk.nextToken();
-					TWord tw = new TWord(token, tag);
-					sent.addTWord(tw);
-				}
-			}
-		}
-		return data;
-	}
+        List<Sentence> data = new ArrayList<Sentence>();
+        Sentence sent = new Sentence();
+        for (String line : lines) {
+            System.out.println(".");
+            if (line.isEmpty() || line.equalsIgnoreCase("$")) {
+                data.add(sent);
+                sent = new Sentence();
+            } else {
+                StringTokenizer tk = new StringTokenizer(line, "\t");
+                if (tk.countTokens() != 2) continue;
+                else {
+                    String token = tk.nextToken();
+                    String tag = tk.nextToken();
+                    TWord tw = new TWord(token, tag);
+                    sent.addTWord(tw);
+                }
+            }
+        }
+        return data;
+    }
 
 }

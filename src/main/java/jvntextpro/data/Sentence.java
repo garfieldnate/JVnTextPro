@@ -34,113 +34,116 @@ import java.util.List;
 
 public class Sentence {
 
-	/** The sentence. */
-	List<TWord> sentence = null;
+    /**
+     * The sentence.
+     */
+    List<TWord> sentence = null;
 
-	/**
-	 * Instantiates a new sentence.
-	 */
-	public Sentence(){
-		sentence = new ArrayList<TWord>();
-	}
+    /**
+     * Instantiates a new sentence.
+     */
+    public Sentence() {
+        sentence = new ArrayList<TWord>();
+    }
 
-	/**
-	 * Adds the t word.
-	 *
-	 * @param tword the tword
-	 */
-	public void addTWord(TWord tword){
-		sentence.add(tword);
-	}
+    /**
+     * Adds the t word.
+     *
+     * @param tword the tword
+     */
+    public void addTWord(TWord tword) {
+        sentence.add(tword);
+    }
 
-	/**
-	 * Adds the t word.
-	 *
-	 * @param word the word
-	 * @param tag the tag
-	 */
-	public void addTWord(String word, String tag){
-		TWord tword = new TWord(word, tag);
-		sentence.add(tword);
-	}
+    /**
+     * Adds the t word.
+     *
+     * @param word the word
+     * @param tag  the tag
+     */
+    public void addTWord(String word, String tag) {
+        TWord tword = new TWord(word, tag);
+        sentence.add(tword);
+    }
 
-	/**
-	 * Adds the t word.
-	 *
-	 * @param word the word
-	 */
-	public void addTWord(String word){
-		sentence.add(new TWord(word));
-	}
+    /**
+     * Adds the t word.
+     *
+     * @param word the word
+     */
+    public void addTWord(String word) {
+        sentence.add(new TWord(word));
+    }
 
-	/**
-	 * Gets the word at.
-	 *
-	 * @param pos the pos
-	 * @return the word at
-	 */
-	public String getWordAt(int pos){
-		return sentence.get(pos).getWord();
-	}
+    /**
+     * Gets the word at.
+     *
+     * @param pos the pos
+     * @return the word at
+     */
+    public String getWordAt(int pos) {
+        return sentence.get(pos).getWord();
+    }
 
-	/**
-	 * Gets the tag at.
-	 *
-	 * @param pos the pos
-	 * @return the tag at
-	 */
-	public String getTagAt(int pos){
-		return sentence.get(pos).getTag();
-	}
+    /**
+     * Gets the tag at.
+     *
+     * @param pos the pos
+     * @return the tag at
+     */
+    public String getTagAt(int pos) {
+        return sentence.get(pos).getTag();
+    }
 
-	/**
-	 * Gets the t word at.
-	 *
-	 * @param pos the pos
-	 * @return the t word at
-	 */
-	public TWord getTWordAt(int pos){
-		return sentence.get(pos);
-	}
+    /**
+     * Gets the t word at.
+     *
+     * @param pos the pos
+     * @return the t word at
+     */
+    public TWord getTWordAt(int pos) {
+        return sentence.get(pos);
+    }
 
-	/**
-	 * Clear.
-	 */
-	public void clear(){
-		sentence.clear();
-	}
+    /**
+     * Clear.
+     */
+    public void clear() {
+        sentence.clear();
+    }
 
-	/**
-	 * Size.
-	 *
-	 * @return the int
-	 */
-	public int size(){
-		return sentence.size();
-	}
+    /**
+     * Size.
+     *
+     * @return the int
+     */
+    public int size() {
+        return sentence.size();
+    }
 
-	//DEBUG
-	/**
-	 * Prints the.
-	 */
-	public void print(){
-		for (int i = 0; i < sentence.size(); ++i){
-			sentence.get(i).print();
-		}
+    //DEBUG
 
-		System.out.print("\n");
-	}
+    /**
+     * Prints the.
+     */
+    public void print() {
+        for (int i = 0; i < sentence.size(); ++i) {
+            sentence.get(i).print();
+        }
 
-	/**
-	 * Prints the.
-	 *
-	 * @param out the out
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void print(Writer out) throws IOException{
-		for (int i = 0; i < sentence.size(); ++i){
-			sentence.get(i).print(out);
-		}
-		out.write("\n");
-	}
+        System.out.print("\n");
+    }
+
+    /**
+     * Prints the.
+     *
+     * @param out the out
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    public void print(Writer out) throws IOException {
+        for (int i = 0; i < sentence.size(); ++i) {
+            sentence.get(i).print(out);
+        }
+        out.write("\n");
+    }
 }

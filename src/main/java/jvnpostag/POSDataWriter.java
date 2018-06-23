@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -36,33 +36,31 @@ import jvntextpro.data.DataWriter;
 import jvntextpro.data.Sentence;
 
 public class POSDataWriter extends DataWriter {
-	
-	public void writeFile(List lblSeqs, String filename){		
-		try {
-			String ret = writeString(lblSeqs);
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(filename), "UTF-8"));
-			out.write(ret);
-			out.close();
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	
-	public String writeString(List lblSeqs){
-		String ret = "";
-		for (int i = 0; i < lblSeqs.size(); ++i){
-			Sentence sent = (Sentence) lblSeqs.get(i);
-			
-			for (int j = 0; j < sent.size(); ++j){
-				ret += sent.getWordAt(j) + "/" + sent.getTagAt(j) + " ";
-			}
-			ret = ret.trim() + "\n";
-		}		
-		
-		return ret.trim();
-	}
-	
+
+    public void writeFile(List lblSeqs, String filename) {
+        try {
+            String ret = writeString(lblSeqs);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
+            out.write(ret);
+            out.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public String writeString(List lblSeqs) {
+        String ret = "";
+        for (int i = 0; i < lblSeqs.size(); ++i) {
+            Sentence sent = (Sentence) lblSeqs.get(i);
+
+            for (int j = 0; j < sent.size(); ++j) {
+                ret += sent.getWordAt(j) + "/" + sent.getTagAt(j) + " ";
+            }
+            ret = ret.trim() + "\n";
+        }
+
+        return ret.trim();
+    }
+
 }

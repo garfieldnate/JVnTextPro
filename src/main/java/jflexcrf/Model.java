@@ -26,28 +26,44 @@
 
 package jflexcrf;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
 public class Model {
 
-    /** The tagger opt. */
+    /**
+     * The tagger opt.
+     */
     public Option taggerOpt = null;
 
-    /** The tagger maps. */
+    /**
+     * The tagger maps.
+     */
     public Maps taggerMaps = null;
 
-    /** The tagger dict. */
+    /**
+     * The tagger dict.
+     */
     public Dictionary taggerDict = null;
 
-    /** The tagger f gen. */
+    /**
+     * The tagger f gen.
+     */
     public FeatureGen taggerFGen = null;
 
-    /** The tagger vtb. */
+    /**
+     * The tagger vtb.
+     */
     public Viterbi taggerVtb = null;
 
     // feature weight
-    /** The lambda. */
+    /**
+     * The lambda.
+     */
     double[] lambda = null;
 
     /**
@@ -59,81 +75,81 @@ public class Model {
     /**
      * Instantiates a new model.
      *
-     * @param taggerOpt the tagger opt
+     * @param taggerOpt  the tagger opt
      * @param taggerMaps the tagger maps
      * @param taggerDict the tagger dict
      * @param taggerFGen the tagger f gen
-     * @param taggerVtb the tagger vtb
+     * @param taggerVtb  the tagger vtb
      */
-    public Model(Option taggerOpt, Maps taggerMaps, Dictionary taggerDict,
-		FeatureGen taggerFGen, Viterbi taggerVtb) {
-	this.taggerOpt = taggerOpt;
-	this.taggerMaps = taggerMaps;
-	this.taggerDict = taggerDict;
-	this.taggerFGen = taggerFGen;
-	this.taggerVtb = taggerVtb;
+    public Model(Option taggerOpt, Maps taggerMaps, Dictionary taggerDict, FeatureGen taggerFGen, Viterbi taggerVtb) {
+        this.taggerOpt = taggerOpt;
+        this.taggerMaps = taggerMaps;
+        this.taggerDict = taggerDict;
+        this.taggerFGen = taggerFGen;
+        this.taggerVtb = taggerVtb;
     }
 
     // load the model
+
     /**
      * Inits the.
      *
      * @return true, if successful
      */
     public boolean init() {
-	// open model file to load model here ... complete later
-	BufferedReader fin = null;
-	String modelFile = taggerOpt.modelDir + File.separator + taggerOpt.modelFile;
+        // open model file to load model here ... complete later
+        BufferedReader fin = null;
+        String modelFile = taggerOpt.modelDir + File.separator + taggerOpt.modelFile;
 
-	try {
-	    fin = new BufferedReader(new InputStreamReader(new FileInputStream(modelFile), "UTF-8"));
+        try {
+            fin = new BufferedReader(new InputStreamReader(new FileInputStream(modelFile), "UTF-8"));
 
-	    // read context predicate map and label map
-	    taggerMaps.readCpMaps(fin);
+            // read context predicate map and label map
+            taggerMaps.readCpMaps(fin);
 
-	    System.gc();
+            System.gc();
 
-	    taggerMaps.readLbMaps(fin);
+            taggerMaps.readLbMaps(fin);
 
-	    System.gc();
+            System.gc();
 
-	    // read dictionary
-	    taggerDict.readDict(fin);
+            // read dictionary
+            taggerDict.readDict(fin);
 
-	    System.gc();
+            System.gc();
 
-	    // read features
-	    taggerFGen.readFeatures(fin);
+            // read features
+            taggerFGen.readFeatures(fin);
 
-	    System.gc();
+            System.gc();
 
-	    // close model file
-	    fin.close();
+            // close model file
+            fin.close();
 
-	} catch (IOException e) {
-	    System.out.println("Couldn't open model file: " + modelFile);
-	    System.out.println(e.toString());
+        } catch (IOException e) {
+            System.out.println("Couldn't open model file: " + modelFile);
+            System.out.println(e.toString());
 
-	    return false;
-	}
+            return false;
+        }
 
-	// update feature weights
-	if (lambda == null) {
-	    int numFeatures = taggerFGen.numFeatures();
-	    lambda = new double[numFeatures];
-	    for (int i = 0; i < numFeatures; i++) {
-		Feature f = (Feature)taggerFGen.features.get(i);
+        // update feature weights
+        if (lambda == null) {
+            int numFeatures = taggerFGen.numFeatures();
+            lambda = new double[numFeatures];
+            for (int i = 0; i < numFeatures; i++) {
+                Feature f = (Feature) taggerFGen.features.get(i);
                 //System.out.println(f.idx);
-		lambda[f.idx] = f.wgt;
-	    }
-	}
+                lambda[f.idx] = f.wgt;
+            }
+        }
 
-	// call init method of Viterbi object
-	if (taggerVtb != null) {
-	    taggerVtb.init(this);
-	}
+        // call init method of Viterbi object
+        if (taggerVtb != null) {
+            taggerVtb.init(this);
+        }
 
-	return true;
+        return true;
     }
 
     /**
@@ -142,7 +158,7 @@ public class Model {
      * @param seq the seq
      */
     public void inference(List seq) {
-	taggerVtb.viterbiInference(seq);
+        taggerVtb.viterbiInference(seq);
     }
 
     /**
@@ -151,22 +167,22 @@ public class Model {
      * @param data the data
      */
     public void inferenceAll(List data) {
-	System.out.println("Starting inference ...");
+        System.out.println("Starting inference ...");
 
-	long start, stop, elapsed;
-	start = System.currentTimeMillis();
+        long start, stop, elapsed;
+        start = System.currentTimeMillis();
 
-	for (int i = 0; i < data.size(); i++) {
-	    System.out.println("sequence " + Integer.toString(i + 1));
-	    List seq = (List)data.get(i);
-	    inference(seq);
-	}
+        for (int i = 0; i < data.size(); i++) {
+            System.out.println("sequence " + Integer.toString(i + 1));
+            List seq = (List) data.get(i);
+            inference(seq);
+        }
 
-	stop = System.currentTimeMillis();
-	elapsed = stop - start;
+        stop = System.currentTimeMillis();
+        elapsed = stop - start;
 
-	System.out.println("Inference " + Integer.toString(data.size()) + " sequences completed!");
-	System.out.println("Inference time: " + Double.toString((double)elapsed / 1000) + " seconds");
+        System.out.println("Inference " + Integer.toString(data.size()) + " sequences completed!");
+        System.out.println("Inference time: " + Double.toString((double) elapsed / 1000) + " seconds");
     }
 
 } // end of class Model

@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+
 import jvnpostag.MaxentTagger;
 import jvnsegmenter.CRFSegmenter;
 import jvnsensegmenter.JVnSenSegmenter;
@@ -39,266 +40,272 @@ import jvntokenizer.PennTokenizer;
 
 public class JVnTextPro {
 
-	//==============================================
-	// Instance Variables
-	//==============================================
-	/** The vn sen segmenter. */
-	JVnSenSegmenter vnSenSegmenter = null;
+    //==============================================
+    // Instance Variables
+    //==============================================
+    /**
+     * The vn sen segmenter.
+     */
+    JVnSenSegmenter vnSenSegmenter = null;
 
-	/** The vn segmenter. */
-	CRFSegmenter vnSegmenter = null;
+    /**
+     * The vn segmenter.
+     */
+    CRFSegmenter vnSegmenter = null;
 
-	/** The vn pos tagger. */
-	MaxentTagger vnPosTagger = null;
+    /**
+     * The vn pos tagger.
+     */
+    MaxentTagger vnPosTagger = null;
 
-	/** The is tokenization. */
-	boolean isTokenization = false;
+    /**
+     * The is tokenization.
+     */
+    boolean isTokenization = false;
 
-	/** The convertor. */
-	public CompositeUnicode2Unicode convertor;
+    /**
+     * The convertor.
+     */
+    public CompositeUnicode2Unicode convertor;
 
-	//==============================================
-	// Constructors
-	//==============================================
+    //==============================================
+    // Constructors
+    //==============================================
 
-	/**
-	 * Instantiates a new j vn text pro.
-	 */
-	public JVnTextPro(){
-		//do nothing
-		convertor = new CompositeUnicode2Unicode();
-	}
+    /**
+     * Instantiates a new j vn text pro.
+     */
+    public JVnTextPro() {
+        //do nothing
+        convertor = new CompositeUnicode2Unicode();
+    }
 
-	//==============================================
-	// initial methods
-	//==============================================
-	/**
-	 * Initialize the sentence segmetation for Vietnamese
-	 * return true if the initialization is successful and false otherwise.
-	 *
-	 * @param modelDir the model dir
-	 * @return true, if successful
-	 */
-	public boolean initSenSegmenter(String modelDir){
-		System.out.println("Initilize JVnSenSegmenter ...");
+    //==============================================
+    // initial methods
+    //==============================================
 
-		//initialize sentence segmentation
-		vnSenSegmenter = new JVnSenSegmenter();
-		if (!vnSenSegmenter.init(modelDir)){
-			System.out.println("Error while initilizing JVnSenSegmenter");
-			vnSenSegmenter = null;
-			return false;
-		}
+    /**
+     * Initialize the sentence segmetation for Vietnamese return true if the initialization is successful and false
+     * otherwise.
+     *
+     * @param modelDir the model dir
+     * @return true, if successful
+     */
+    public boolean initSenSegmenter(String modelDir) {
+        System.out.println("Initilize JVnSenSegmenter ...");
 
-		return true;
-	}
+        //initialize sentence segmentation
+        vnSenSegmenter = new JVnSenSegmenter();
+        if (!vnSenSegmenter.init(modelDir)) {
+            System.out.println("Error while initilizing JVnSenSegmenter");
+            vnSenSegmenter = null;
+            return false;
+        }
 
-	/**
-	 * Initialize the word segmetation for Vietnamese.
-	 *
-	 * @param modelDir the model dir
-	 * @return true if the initialization is successful and false otherwise
-	 */
-	public boolean initSegmenter(String modelDir){
-		System.out.println("Initilize JVnSegmenter ...");
-		System.out.println(modelDir);
-		vnSegmenter = new CRFSegmenter();
+        return true;
+    }
 
-		try{
-			vnSegmenter.init(modelDir);
-		}
-		catch (Exception e){
-			System.out.println("Error while initializing JVnSegmenter");
-			vnSegmenter = null;
-			return false;
-		}
+    /**
+     * Initialize the word segmetation for Vietnamese.
+     *
+     * @param modelDir the model dir
+     * @return true if the initialization is successful and false otherwise
+     */
+    public boolean initSegmenter(String modelDir) {
+        System.out.println("Initilize JVnSegmenter ...");
+        System.out.println(modelDir);
+        vnSegmenter = new CRFSegmenter();
 
-		//initialize taggerData
-		return true;
-	}
+        try {
+            vnSegmenter.init(modelDir);
+        } catch (Exception e) {
+            System.out.println("Error while initializing JVnSegmenter");
+            vnSegmenter = null;
+            return false;
+        }
 
-	/**
-	 * Initialize the pos tagger for Vietnamese.
-	 *
-	 * @param modelDir the model dir
-	 * @return true if the initialization is successful and false otherwise
-	 */
-	public boolean initPosTagger(String modelDir){
-		try{
-			this.vnPosTagger = new MaxentTagger(modelDir);
-		}
-		catch (Exception e){
-			System.out.println("Error while initializing POS TAgger");
-			vnPosTagger = null;
-			return false;
-		}
-		return true;
-	}
+        //initialize taggerData
+        return true;
+    }
 
-	/**
-	 * Initialize the sentence tokenization.
-	 */
-	public void initSenTokenization(){
-		isTokenization = true;
-	}
-	//==============================================
-	// public methods
-	//==============================================
+    /**
+     * Initialize the pos tagger for Vietnamese.
+     *
+     * @param modelDir the model dir
+     * @return true if the initialization is successful and false otherwise
+     */
+    public boolean initPosTagger(String modelDir) {
+        try {
+            this.vnPosTagger = new MaxentTagger(modelDir);
+        } catch (Exception e) {
+            System.out.println("Error while initializing POS TAgger");
+            vnPosTagger = null;
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Process the text and return the processed text
-	 * pipeline : sentence segmentation, tokenization, word segmentation, part of speech tagging.
-	 *
-	 * @param text text to be processed
-	 * @return processed text
-	 */
-	public String process(String text){
-		String ret = text;
+    /**
+     * Initialize the sentence tokenization.
+     */
+    public void initSenTokenization() {
+        isTokenization = true;
+    }
+    //==============================================
+    // public methods
+    //==============================================
 
-		//Pipeline
-		ret = convertor.convert(ret);
-		ret = senSegment(ret);
-		ret = senTokenize(ret);
-		ret = wordSegment(ret);
-		ret = postProcessing(ret);
-		ret = posTagging(ret);
-		return ret;
-	}
+    /**
+     * Process the text and return the processed text pipeline : sentence segmentation, tokenization, word segmentation,
+     * part of speech tagging.
+     *
+     * @param text text to be processed
+     * @return processed text
+     */
+    public String process(String text) {
+        String ret = text;
 
-	/**
-	 * Process a file and return the processed text
-	 * pipeline : sentence segmentation, tokenization, tone recover, word segmentation.
-	 *
-	 * @param infile data file
-	 * @return processed text
-	 */
-	public String process(File infile){
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(infile), "UTF-8"));
+        //Pipeline
+        ret = convertor.convert(ret);
+        ret = senSegment(ret);
+        ret = senTokenize(ret);
+        ret = wordSegment(ret);
+        ret = postProcessing(ret);
+        ret = posTagging(ret);
+        return ret;
+    }
 
-			String line, data = "";
-			while((line = reader.readLine()) != null){
-				data += line + "\n";
-			}
-			reader.close();
+    /**
+     * Process a file and return the processed text pipeline : sentence segmentation, tokenization, tone recover, word
+     * segmentation.
+     *
+     * @param infile data file
+     * @return processed text
+     */
+    public String process(File infile) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(infile), "UTF-8"));
 
-			String ret =  process(data);
-			return ret;
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return "";
-		}
-	}
+            String line, data = "";
+            while ((line = reader.readLine()) != null) {
+                data += line + "\n";
+            }
+            reader.close();
 
-	/**
-	 * Do sentence segmentation.
-	 *
-	 * @param text text to have sentences segmented
-	 * @return the string
-	 */
-	public String senSegment(String text){
-		String ret = text;
+            String ret = process(data);
+            return ret;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return "";
+        }
+    }
 
-		//Segment sentences
-		if (vnSenSegmenter != null){
-			ret = vnSenSegmenter.senSegment(text);
-		}
+    /**
+     * Do sentence segmentation.
+     *
+     * @param text text to have sentences segmented
+     * @return the string
+     */
+    public String senSegment(String text) {
+        String ret = text;
 
-		return ret.trim();
-	}
+        //Segment sentences
+        if (vnSenSegmenter != null) {
+            ret = vnSenSegmenter.senSegment(text);
+        }
 
-	/**
-	 * Do sentence tokenization.
-	 *
-	 * @param text to be tokenized
-	 * @return the string
-	 */
-	public String senTokenize(String text){
-		String ret = text;
+        return ret.trim();
+    }
 
-		if (isTokenization){
-			ret = PennTokenizer.tokenize(text);
-		}
+    /**
+     * Do sentence tokenization.
+     *
+     * @param text to be tokenized
+     * @return the string
+     */
+    public String senTokenize(String text) {
+        String ret = text;
 
-		return ret.trim();
-	}
+        if (isTokenization) {
+            ret = PennTokenizer.tokenize(text);
+        }
 
-	/**
-	 * Do word segmentation.
-	 *
-	 * @param text to be segmented by words
-	 * @return text with words segmented, syllables in words are joined by '_'
-	 */
-	public String wordSegment(String text){
-		String ret = text;
+        return ret.trim();
+    }
 
-		if (vnSegmenter == null) return ret;
-		ret = vnSegmenter.segmenting(ret);
-		return ret;
-	}
+    /**
+     * Do word segmentation.
+     *
+     * @param text to be segmented by words
+     * @return text with words segmented, syllables in words are joined by '_'
+     */
+    public String wordSegment(String text) {
+        String ret = text;
 
-	/**
-	 * Do pos tagging.
-	 *
-	 * @param text to be tagged with POS of speech (need to have words segmented)
-	 * @return the string
-	 */
-	public String posTagging(String text){
-		String ret = text;
-		if (vnPosTagger != null){
-			ret = vnPosTagger.tagging(text);
-		}
+        if (vnSegmenter == null) return ret;
+        ret = vnSegmenter.segmenting(ret);
+        return ret;
+    }
 
-		return ret;
-	}
+    /**
+     * Do pos tagging.
+     *
+     * @param text to be tagged with POS of speech (need to have words segmented)
+     * @return the string
+     */
+    public String posTagging(String text) {
+        String ret = text;
+        if (vnPosTagger != null) {
+            ret = vnPosTagger.tagging(text);
+        }
 
-	/**
-	 * Do post processing for word segmentation: break not valid vietnamese words into single syllables.
-	 *
-	 * @param text the text
-	 * @return the string
-	 */
-	public String postProcessing(String text){
+        return ret;
+    }
 
-		String [] lines = text.split("\n");
-		String ret = "";
+    /**
+     * Do post processing for word segmentation: break not valid vietnamese words into single syllables.
+     *
+     * @param text the text
+     * @return the string
+     */
+    public String postProcessing(String text) {
 
-		for (String line : lines){
-			String [] words = line.split("[ \t]");
-			String templine = "";
+        String[] lines = text.split("\n");
+        String ret = "";
 
-			for (String currentWord : words ){
-				//break word into syllable and check if one of it is not valid vi syllable
-				String [] syllables = currentWord.split("_");
-				boolean isContainNotValidSyll = false;
+        for (String line : lines) {
+            String[] words = line.split("[ \t]");
+            String templine = "";
 
-				for (String syllable : syllables){
-					VnSyllParser parser = new VnSyllParser(syllable.toLowerCase());
+            for (String currentWord : words) {
+                //break word into syllable and check if one of it is not valid vi syllable
+                String[] syllables = currentWord.split("_");
+                boolean isContainNotValidSyll = false;
 
-					if (!parser.isValidVnSyllable()){
-						isContainNotValidSyll = true;
-						break;
-					}
-				}
+                for (String syllable : syllables) {
+                    VnSyllParser parser = new VnSyllParser(syllable.toLowerCase());
 
-				if (isContainNotValidSyll){
-					String temp = "";
+                    if (!parser.isValidVnSyllable()) {
+                        isContainNotValidSyll = true;
+                        break;
+                    }
+                }
 
-					for (String syll : syllables){
-						temp += syll + " ";
-					}
+                if (isContainNotValidSyll) {
+                    String temp = "";
 
-					templine += temp.trim() + " ";
-				}
-				else templine += currentWord + " ";
-			}
+                    for (String syll : syllables) {
+                        temp += syll + " ";
+                    }
 
-			ret += templine.trim() + "\n";
-		}
+                    templine += temp.trim() + " ";
+                } else templine += currentWord + " ";
+            }
 
-		return ret.trim();
-	}
+            ret += templine.trim() + "\n";
+        }
+
+        return ret.trim();
+    }
 }

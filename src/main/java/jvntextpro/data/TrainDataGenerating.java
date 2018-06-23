@@ -34,68 +34,70 @@ import java.util.ArrayList;
 
 public abstract class TrainDataGenerating {
 
-	/** The reader. */
-	protected DataReader reader;
+    /**
+     * The reader.
+     */
+    protected DataReader reader;
 
-	/** The tagger. */
-	protected TaggingData tagger;
+    /**
+     * The tagger.
+     */
+    protected TaggingData tagger;
 
-	/**
-	 * Initialize reader, tagger for reading input data and generating context
-	 * predicates for each observation.
-	 */
-	public abstract void init();
+    /**
+     * Initialize reader, tagger for reading input data and generating context predicates for each observation.
+     */
+    public abstract void init();
 
-	/**
-	 * Generate train data.
-	 *
-	 * @param inputPath the input path (file or dictionary)
-	 * @param outputPath the output path
-	 */
-	public void generateTrainData(String inputPath, String outputPath){
-		try{
-			File file = new File(inputPath);
-        	ArrayList<Sentence> data = new ArrayList<Sentence>();
-        	if (file.isFile()){
-        		System.out.println("Reading " + file.getName());
-        		data = (ArrayList<Sentence>) reader.readFile(inputPath);
-        	}
-        	else if (file.isDirectory()){
-        		String [] filenames = file.list();
-        		for (String filename: filenames){
-        			System.out.println("Reading " + filename);
-        			ArrayList<Sentence> temp = (ArrayList<Sentence>) reader.readFile(file.getPath() + File.separator + filename);
-        			data.addAll(temp);
-        		}
-        	}
+    /**
+     * Generate train data.
+     *
+     * @param inputPath  the input path (file or dictionary)
+     * @param outputPath the output path
+     */
+    public void generateTrainData(String inputPath, String outputPath) {
+        try {
+            File file = new File(inputPath);
+            ArrayList<Sentence> data = new ArrayList<Sentence>();
+            if (file.isFile()) {
+                System.out.println("Reading " + file.getName());
+                data = (ArrayList<Sentence>) reader.readFile(inputPath);
+            } else if (file.isDirectory()) {
+                String[] filenames = file.list();
+                for (String filename : filenames) {
+                    System.out.println("Reading " + filename);
+                    ArrayList<Sentence> temp = (ArrayList<Sentence>) reader.readFile(
+                        file.getPath() + File.separator + filename);
+                    data.addAll(temp);
+                }
+            }
 
-        	String result = "";
-        	System.out.println(data.size() + "sentences read");
-        	for (int i = 0; i < data.size(); ++i){
-        		if (i % 20 == 0) System.out.println("Finished " + i + " in " + data.size() + " sentences");
-        		Sentence sent = data.get(i);
+            String result = "";
+            System.out.println(data.size() + "sentences read");
+            for (int i = 0; i < data.size(); ++i) {
+                if (i % 20 == 0) System.out.println("Finished " + i + " in " + data.size() + " sentences");
+                Sentence sent = data.get(i);
 
-        		for (int j = 0; j < sent.size(); ++j){
-        			//result += sent.getWordAt(j) + " ";
-        			String line = "";
-        			String context = tagger.getContextStr(sent, j);
-        		    line = context + " ";
-        			line += sent.getTagAt(j);
-        			result += line + "\n";
-        		}
-        		result += "\n";
-        	}
+                for (int j = 0; j < sent.size(); ++j) {
+                    //result += sent.getWordAt(j) + " ";
+                    String line = "";
+                    String context = tagger.getContextStr(sent, j);
+                    line = context + " ";
+                    line += sent.getTagAt(j);
+                    result += line + "\n";
+                }
+                result += "\n";
+            }
 
-        	BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-        			new FileOutputStream(outputPath + ".tagged"), "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                outputPath + ".tagged"), "UTF-8"));
 
-        	writer.write(result);
-        	writer.close();
-		}
-	  catch (Exception e){
-        	System.out.println("Error while generating training data");
-        	System.out.println(e.getMessage());
-        	e.printStackTrace();
+            writer.write(result);
+            writer.close();
+        } catch (Exception e) {
+            System.out.println("Error while generating training data");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-	}
+    }
 }

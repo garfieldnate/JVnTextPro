@@ -28,13 +28,19 @@ package jflexcrf;
 
 public class DoubleMatrix {
 
-    /** The mtrx. */
+    /**
+     * The mtrx.
+     */
     public double[][] mtrx = null;
 
-    /** The rows. */
+    /**
+     * The rows.
+     */
     public int rows = 0;
 
-    /** The cols. */
+    /**
+     * The cols.
+     */
     public int cols = 0;
 
     /**
@@ -50,9 +56,9 @@ public class DoubleMatrix {
      * @param cols the cols
      */
     public DoubleMatrix(int rows, int cols) {
-	this.rows = rows;
-	this.cols = cols;
-	mtrx = new double[rows][cols];
+        this.rows = rows;
+        this.cols = cols;
+        mtrx = new double[rows][cols];
     }
 
     /**
@@ -63,9 +69,9 @@ public class DoubleMatrix {
      * @param mtrx the mtrx
      */
     public DoubleMatrix(int rows, int cols, double[][] mtrx) {
-	this.rows = rows;
-	this.cols = cols;
-	this.mtrx = new double[rows][cols];
+        this.rows = rows;
+        this.cols = cols;
+        this.mtrx = new double[rows][cols];
     }
 
     /**
@@ -74,15 +80,15 @@ public class DoubleMatrix {
      * @param dm the dm
      */
     public DoubleMatrix(DoubleMatrix dm) {
-	rows = dm.rows;
-	cols = dm.cols;
-	mtrx = new double[rows][cols];
+        rows = dm.rows;
+        cols = dm.cols;
+        mtrx = new double[rows][cols];
 
-	for (int i = 0; i < rows; i++) {
-	    for (int j = 0; j < cols; j++) {
-		mtrx[i][j] = dm.mtrx[i][j];
-	    }
-	}
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                mtrx[i][j] = dm.mtrx[i][j];
+            }
+        }
     }
 
     /**
@@ -91,11 +97,11 @@ public class DoubleMatrix {
      * @param val the val
      */
     public void assign(double val) {
-	for (int i = 0; i < rows; i++) {
-	    for (int j = 0; j < cols; j++) {
-		mtrx[i][j] = val;
-	    }
-	}
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                mtrx[i][j] = val;
+            }
+        }
     }
 
     /**
@@ -104,11 +110,11 @@ public class DoubleMatrix {
      * @param dm the dm
      */
     public void assign(DoubleMatrix dm) {
-	for (int i = 0; i < rows; i++) {
-	    for (int j = 0; j < cols; j++) {
-		mtrx[i][j] = dm.mtrx[i][j];
-	    }
-	}
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                mtrx[i][j] = dm.mtrx[i][j];
+            }
+        }
     }
 
 } // end of class DoubleMatrix

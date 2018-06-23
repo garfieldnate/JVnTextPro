@@ -27,36 +27,49 @@
 
 package jmaxent;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class Observation {
 
-    /** The original data. */
+    /**
+     * The original data.
+     */
     public String originalData = "";
 
-    /** The cps. */
+    /**
+     * The cps.
+     */
     public int[] cps = null;
 
-    /** The human label. */
+    /**
+     * The human label.
+     */
     public int humanLabel = -1;
 
-    /** The model label. */
+    /**
+     * The model label.
+     */
     public int modelLabel = -1;
 
     //context predicate id representing the identity of current word
     //curWordCp == -1 means this word is not in the training data
-    /** The cur word cp. */
+    /**
+     * The cur word cp.
+     */
     public int curWordCp = -1;
 
     //curWordCp == -1 && dictLabel != -1, modelLabel = dictLabel
-    /** The dict label. */
+    /**
+     * The dict label.
+     */
     public int dictLabel = -1;
 
     /**
      * Instantiates a new observation.
      */
     public Observation() {
-	// do nothing
+        // do nothing
     }
 
     /**
@@ -65,11 +78,11 @@ public class Observation {
      * @param cps the cps
      */
     public Observation(int[] cps) {
-	this.cps = new int[cps.length];
+        this.cps = new int[cps.length];
 
-	for (int i = 0; i < cps.length; i++) {
-	    this.cps[i] = cps[i];
-	}
+        for (int i = 0; i < cps.length; i++) {
+            this.cps[i] = cps[i];
+        }
     }
 
     /**
@@ -78,28 +91,28 @@ public class Observation {
      * @param intCps the int cps
      */
     public Observation(List intCps) {
-	this.cps = new int[intCps.size()];
+        this.cps = new int[intCps.size()];
 
-	for (int i = 0; i < intCps.size(); i++) {
-	    Integer intCp = (Integer)intCps.get(i);
+        for (int i = 0; i < intCps.size(); i++) {
+            Integer intCp = (Integer) intCps.get(i);
 
-	    this.cps[i] = intCp.intValue();
-	}
+            this.cps[i] = intCp.intValue();
+        }
     }
 
     /**
      * Instantiates a new observation.
      *
      * @param humanLabel the human label
-     * @param cps the cps
+     * @param cps        the cps
      */
     public Observation(int humanLabel, int[] cps) {
-	this.humanLabel = humanLabel;
-	this.cps = new int[cps.length];
+        this.humanLabel = humanLabel;
+        this.cps = new int[cps.length];
 
-	for (int i = 0; i < cps.length; i++) {
-	    this.cps[i] = cps[i];
-	}
+        for (int i = 0; i < cps.length; i++) {
+            this.cps[i] = cps[i];
+        }
     }
 
     /**
@@ -109,14 +122,14 @@ public class Observation {
      * @return the string
      */
     public String toString(Map lbInt2Str) {
-	String res = originalData;
+        String res = originalData;
 
-	String modelLabelStr = (String)lbInt2Str.get(new Integer(modelLabel));
-	if (modelLabelStr != null) {
-	    res += Option.labelSeparator + modelLabelStr;
-	}
+        String modelLabelStr = (String) lbInt2Str.get(new Integer(modelLabel));
+        if (modelLabelStr != null) {
+            res += Option.labelSeparator + modelLabelStr;
+        }
 
-	return res;
+        return res;
     }
 
 } // end of class Observation

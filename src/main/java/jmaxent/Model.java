@@ -27,79 +27,94 @@
 
 package jmaxent;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintWriter;
+import java.util.List;
 
 public class Model {
 
-    /** The option. */
+    /**
+     * The option.
+     */
     public Option option = null;
 
-    /** The data. */
+    /**
+     * The data.
+     */
     public Data data = null;
 
-    /** The dict. */
+    /**
+     * The dict.
+     */
     public Dictionary dict = null;
 
-    /** The fea gen. */
+    /**
+     * The fea gen.
+     */
     public FeatureGen feaGen = null;
 
-    /** The train. */
+    /**
+     * The train.
+     */
     public Train train = null;
 
-    /** The inference. */
+    /**
+     * The inference.
+     */
     public Inference inference = null;
 
-    /** The evaluation. */
+    /**
+     * The evaluation.
+     */
     public Evaluation evaluation = null;
 
     // feature weight
-    /** The lambda. */
+    /**
+     * The lambda.
+     */
     double[] lambda = null;
 
     /**
      * Instantiates a new model.
      */
     public Model() {
-	// do nothing
+        // do nothing
     }
 
     /**
      * Instantiates a new model.
      *
-     * @param option the option
-     * @param data the data
-     * @param dict the dict
-     * @param feaGen the fea gen
-     * @param train the train
-     * @param inference the inference
+     * @param option     the option
+     * @param data       the data
+     * @param dict       the dict
+     * @param feaGen     the fea gen
+     * @param train      the train
+     * @param inference  the inference
      * @param evaluation the evaluation
      */
-    public Model(Option option, Data data, Dictionary dict, FeatureGen feaGen,
-		Train train, Inference inference, Evaluation evaluation) {
-	this.option = option;
-	this.data = data;
-	this.dict = dict;
-	this.feaGen = feaGen;
-	this.evaluation = evaluation;
+    public Model(Option option, Data data, Dictionary dict, FeatureGen feaGen, Train train, Inference inference, Evaluation evaluation) {
+        this.option = option;
+        this.data = data;
+        this.dict = dict;
+        this.feaGen = feaGen;
+        this.evaluation = evaluation;
 
-	if (train != null) {
-	    this.train = train;
-	    this.train.model = this;
-	    this.train.init();
-	}
+        if (train != null) {
+            this.train = train;
+            this.train.model = this;
+            this.train.init();
+        }
 
-	if (inference != null) {
-	    this.inference = inference;
-	    this.inference.model = this;
-	    this.inference.init();
-	}
+        if (inference != null) {
+            this.inference = inference;
+            this.inference.model = this;
+            this.inference.init();
+        }
 
-	if (evaluation != null) {
-	    this.evaluation = evaluation;
-	    this.evaluation.model = this;
-	    this.evaluation.init();
-	}
+        if (evaluation != null) {
+            this.evaluation = evaluation;
+            this.evaluation.model = this;
+            this.evaluation.init();
+        }
     }
 
     /**
@@ -108,42 +123,42 @@ public class Model {
      * @param fout the fout
      */
     public void doTrain(PrintWriter fout) {
-	if (lambda == null) {
-	    lambda = new double[feaGen.numFeatures()];
-	}
+        if (lambda == null) {
+            lambda = new double[feaGen.numFeatures()];
+        }
 
-	// call this to train
-	train.doTrain(fout);
+        // call this to train
+        train.doTrain(fout);
 
-	// call this to update the feature weights
-	updateFeatures();
+        // call this to update the feature weights
+        updateFeatures();
     }
 
     /**
      * Update features.
      */
     public void updateFeatures() {
-	for (int i = 0; i < feaGen.features.size(); i++) {
-	    Feature f = (Feature)feaGen.features.get(i);
-	    f.wgt = lambda[f.idx];
-	}
+        for (int i = 0; i < feaGen.features.size(); i++) {
+            Feature f = (Feature) feaGen.features.get(i);
+            f.wgt = lambda[f.idx];
+        }
     }
 
     /**
      * Inits the inference.
      */
     public void initInference() {
-	if (lambda == null) {
-	    System.out.println("numFetures: " + feaGen.numFeatures());
-	    lambda = new double[feaGen.numFeatures() + 1];
+        if (lambda == null) {
+            System.out.println("numFetures: " + feaGen.numFeatures());
+            lambda = new double[feaGen.numFeatures() + 1];
 
-	    // reading feature weights from the feature list
-	    for (int i = 0; i < feaGen.features.size(); i++) {
-		Feature f = (Feature)feaGen.features.get(i);
+            // reading feature weights from the feature list
+            for (int i = 0; i < feaGen.features.size(); i++) {
+                Feature f = (Feature) feaGen.features.get(i);
 
-		lambda[f.idx] = f.wgt;
-	    }
-	}
+                lambda[f.idx] = f.wgt;
+            }
+        }
     }
 
     /**
@@ -152,17 +167,17 @@ public class Model {
      * @param data the data
      */
     public void doInference(List data) {
-	if (lambda == null) {
-	    lambda = new double[feaGen.numFeatures()];
+        if (lambda == null) {
+            lambda = new double[feaGen.numFeatures()];
 
-	    // reading feature weights from the feature list
-	    for (int i = 0; i < feaGen.features.size(); i++) {
-		Feature f = (Feature)feaGen.features.get(i);
-		lambda[f.idx] = f.wgt;
-	    }
-	}
+            // reading feature weights from the feature list
+            for (int i = 0; i < feaGen.features.size(); i++) {
+                Feature f = (Feature) feaGen.features.get(i);
+                lambda[f.idx] = f.wgt;
+            }
+        }
 
-	inference.doInference(data);
+        inference.doInference(data);
     }
 
 } // end of class Model

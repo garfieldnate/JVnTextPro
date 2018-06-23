@@ -27,32 +27,38 @@
 
 package jmaxent;
 
-import java.util.*;
+import java.util.List;
 
 public class Inference {
 
-    /** The model. */
+    /**
+     * The model.
+     */
     public Model model = null;
 
-    /** The num labels. */
+    /**
+     * The num labels.
+     */
     public int numLabels = 0;
 
     // for classification
-    /** The temp. */
+    /**
+     * The temp.
+     */
     double[] temp = null;
 
     /**
      * Instantiates a new inference.
      */
     public Inference() {
-	// do nothing
+        // do nothing
     }
 
     /**
      * Inits the.
      */
     public void init() {
-    	numLabels = model.data.numLabels();
+        numLabels = model.data.numLabels();
         temp = new double[numLabels];
     }
 
@@ -63,28 +69,28 @@ public class Inference {
      */
     public void classify(Observation obsr) {
 
-	int i;
-	for (i = 0; i < numLabels; i++) {
-	    temp[i] = 0.0;
-	}
+        int i;
+        for (i = 0; i < numLabels; i++) {
+            temp[i] = 0.0;
+        }
 
-	model.feaGen.startScanFeatures(obsr);
-	while (model.feaGen.hasNextFeature()) {
-	    Feature f = model.feaGen.nextFeature();
+        model.feaGen.startScanFeatures(obsr);
+        while (model.feaGen.hasNextFeature()) {
+            Feature f = model.feaGen.nextFeature();
 
-	    temp[f.label] += model.lambda[f.idx] * f.val;
-	}
+            temp[f.label] += model.lambda[f.idx] * f.val;
+        }
 
-	double max = temp[0];
-	int maxLabel = 0;
-	for (i = 1; i < numLabels; i++) {
-	    if (max < temp[i]) {
-		max = temp[i];
-		maxLabel = i;
-	    }
-	}
+        double max = temp[0];
+        int maxLabel = 0;
+        for (i = 1; i < numLabels; i++) {
+            if (max < temp[i]) {
+                max = temp[i];
+                maxLabel = i;
+            }
+        }
 
-	obsr.modelLabel = maxLabel;
+        obsr.modelLabel = maxLabel;
     }
 
     /**
@@ -93,11 +99,11 @@ public class Inference {
      * @param data the data
      */
     public void doInference(List data) {
-	for (int i = 0; i < data.size(); i++) {
-	    Observation obsr = (Observation)data.get(i);
+        for (int i = 0; i < data.size(); i++) {
+            Observation obsr = (Observation) data.get(i);
 
-	    classify(obsr);
-	}
+            classify(obsr);
+        }
     }
 
 } // end of class Inference

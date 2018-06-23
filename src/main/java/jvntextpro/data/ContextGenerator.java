@@ -30,12 +30,12 @@ package jvntextpro.data;
 
 public abstract class ContextGenerator {
 
-	/**
-	 * Gets the context.
-	 *
-	 * @param sent the sent
-	 * @param pos the pos
-	 * @return the context
-	 */
-	abstract public String [] getContext (Sentence sent, int pos);
+    /**
+     * Gets the context.
+     *
+     * @param sent the sent
+     * @param pos  the pos
+     * @return the context
+     */
+    abstract public String[] getContext(Sentence sent, int pos);
 }
