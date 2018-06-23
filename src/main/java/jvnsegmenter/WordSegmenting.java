@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -32,10 +32,6 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.OutputStreamWriter;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class WordSegmenting.
- */
 public class WordSegmenting {
 
 	/**
@@ -44,16 +40,16 @@ public class WordSegmenting {
 	 * @param args the arguments
 	 */
 	public static void main(String [] args){
-		displayCopyright();        
+		displayCopyright();
         if (!checkArgs(args)) {
             displayHelp();
             return;
         }
-        
+
       //get model dir
         String modelDir = args[1];
         CRFSegmenter segmenter = new CRFSegmenter(modelDir);
-        
+
       //tagging
         try {
         	System.out.println(args[2]);
@@ -62,9 +58,9 @@ public class WordSegmenting {
 	        	File inputFile = new File(args[3]);
 	        	BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 	        			new FileOutputStream(inputFile.getPath() + ".wseg"), "UTF-8"));
-	        	
+
 	        	String result = segmenter.segmenting(inputFile);
-	        	
+
 	        	writer.write(result);
 	        	writer.close();
 	        }
@@ -73,26 +69,26 @@ public class WordSegmenting {
 	        	 if (inputDir.endsWith(File.separator)) {
 		                inputDir = inputDir.substring(0, inputDir.length() - 1);
 		            }
-		            
+
 		            File dir = new File(inputDir);
 		            String[] children = dir.list(new FilenameFilter() {
 		                public boolean accept(File dir, String name) {
 		                    return name.endsWith(".tkn");
 		                }
-		            });    
-		            
+		            });
+
 		            for (int i = 0; i < children.length; i++) {
 		            	System.out.println("Segmenting " + children[i]);
 		            	String filename = inputDir + File.separator + children[i];
 			                if ((new File(filename)).isDirectory()) {
 			                    continue;
 			            }
-			                
+
 			            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 				        			new FileOutputStream(filename + ".wseg"), "UTF-8"));
-			             
+
 			            writer.write(segmenter.segmenting(new File(filename)));
-			             
+
 			            writer.close();
 		            }
 	        }
@@ -103,30 +99,30 @@ public class WordSegmenting {
         	e.printStackTrace();
         }
 	}
-	
+
 	/**
 	 * Check args.
 	 *
 	 * @param args the args
 	 * @return true, if successful
 	 */
-	public static boolean checkArgs(String[] args) {        
+	public static boolean checkArgs(String[] args) {
         if (args.length < 4) {
             return false;
         }
-        
+
         if (args[0].compareToIgnoreCase("-modeldir") != 0) {
             return false;
         }
-        
+
         if (!(args[2].compareToIgnoreCase("-inputfile") == 0 ||
                 args[2].compareToIgnoreCase("-inputdir") == 0)) {
             return false;
         }
-        
+
         return true;
     }
-	
+
 	/**
 	 * Display copyright.
 	 */
@@ -140,7 +136,7 @@ public class WordSegmenting {
         System.out.println("Email: {ncamtu@gmail.com ; pxhieu@gmail.com}");
         System.out.println();
     }
-    
+
     /**
      * Display help.
      */
@@ -148,7 +144,7 @@ public class WordSegmenting {
         System.out.println("Usage:");
         System.out.println("\tCase 1: WordSegmenting -modeldir <model directory> -inputfile <input data file>");
         System.out.println("\tCase 2: WordSegmenting -modeldir <model directory> -inputdir <input data directory>");
-        System.out.println("Where:");        
+        System.out.println("Where:");
         System.out.println("\t<model directory> is the directory contain the model and option files");
         System.out.println("\t<input data file> is the file containing input sentences that need to");
         System.out.println("\tbe tagged (each sentence on a line)");

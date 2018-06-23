@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -28,15 +28,11 @@ package jvnpostag;
 import jvntextpro.data.TaggingData;
 import jvntextpro.data.TrainDataGenerating;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class POSTrainGenerating.
- */
 public class POSTrainGenerating extends TrainDataGenerating {
-	
+
 	/** The template file. */
 	String templateFile;
-	
+
 	/**
 	 * Instantiates a new pOS train generating.
 	 *
@@ -47,13 +43,12 @@ public class POSTrainGenerating extends TrainDataGenerating {
 		this.templateFile = templateFile;
 		init();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jvntextpro.data.TrainDataGenerating#init()
 	 */
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		this.reader =  new POSDataReader(true);
 		this.tagger = new TaggingData();
 		tagger.addContextGenerator(new POSContextGenerator(templateFile));
@@ -73,8 +68,8 @@ public class POSTrainGenerating extends TrainDataGenerating {
 			System.out.println("Input File/Folder: file/folder name containing data manually tagged for training");
 			return;
 		}
-		
+
 		POSTrainGenerating trainGen = new POSTrainGenerating(args[0]);
-		trainGen.generateTrainData(args[1], args[1]);		
+		trainGen.generateTrainData(args[1], args[1]);
 	}
 }

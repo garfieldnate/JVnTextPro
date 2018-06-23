@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -30,44 +30,40 @@ package jmaxent;
 import java.io.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Model.
- */
 public class Model {
-    
+
     /** The option. */
     public Option option = null;
-    
+
     /** The data. */
     public Data data = null;
-    
+
     /** The dict. */
     public Dictionary dict = null;
-    
+
     /** The fea gen. */
     public FeatureGen feaGen = null;
-    
+
     /** The train. */
     public Train train = null;
-    
+
     /** The inference. */
     public Inference inference = null;
-    
+
     /** The evaluation. */
     public Evaluation evaluation = null;
-    
+
     // feature weight
     /** The lambda. */
     double[] lambda = null;
-    
+
     /**
      * Instantiates a new model.
      */
-    public Model() {	
+    public Model() {
 	// do nothing
     }
-    
+
     /**
      * Instantiates a new model.
      *
@@ -89,23 +85,23 @@ public class Model {
 
 	if (train != null) {
 	    this.train = train;
-	    this.train.model = this;	    
+	    this.train.model = this;
 	    this.train.init();
 	}
 
-	if (inference != null) {	
+	if (inference != null) {
 	    this.inference = inference;
 	    this.inference.model = this;
 	    this.inference.init();
 	}
-	
+
 	if (evaluation != null) {
 	    this.evaluation = evaluation;
 	    this.evaluation.model = this;
 	    this.evaluation.init();
 	}
     }
-        
+
     /**
      * Do train.
      *
@@ -115,24 +111,24 @@ public class Model {
 	if (lambda == null) {
 	    lambda = new double[feaGen.numFeatures()];
 	}
-	
+
 	// call this to train
 	train.doTrain(fout);
-	
+
 	// call this to update the feature weights
 	updateFeatures();
     }
-    
+
     /**
      * Update features.
      */
     public void updateFeatures() {
 	for (int i = 0; i < feaGen.features.size(); i++) {
 	    Feature f = (Feature)feaGen.features.get(i);
-	    f.wgt = lambda[f.idx];    
+	    f.wgt = lambda[f.idx];
 	}
     }
-    
+
     /**
      * Inits the inference.
      */
@@ -140,16 +136,16 @@ public class Model {
 	if (lambda == null) {
 	    System.out.println("numFetures: " + feaGen.numFeatures());
 	    lambda = new double[feaGen.numFeatures() + 1];
-	    
+
 	    // reading feature weights from the feature list
 	    for (int i = 0; i < feaGen.features.size(); i++) {
 		Feature f = (Feature)feaGen.features.get(i);
 
 		lambda[f.idx] = f.wgt;
-	    }	    	    
-	}    
+	    }
+	}
     }
-    
+
     /**
      * Do inference.
      *
@@ -158,16 +154,16 @@ public class Model {
     public void doInference(List data) {
 	if (lambda == null) {
 	    lambda = new double[feaGen.numFeatures()];
-	    
+
 	    // reading feature weights from the feature list
 	    for (int i = 0; i < feaGen.features.size(); i++) {
 		Feature f = (Feature)feaGen.features.get(i);
-		lambda[f.idx] = f.wgt;    
-	    }	    
+		lambda[f.idx] = f.wgt;
+	    }
 	}
-	
-	inference.doInference(data);	
+
+	inference.doInference(data);
     }
-        
+
 } // end of class Model
 

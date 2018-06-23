@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -35,10 +35,6 @@ import org.w3c.dom.Element;
 import jvntextpro.data.Sentence;
 import jvntextpro.util.StringUtils;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class SyllableContextGenerator.
- */
 public class SyllableContextGenerator extends BasicContextGenerator {
 
 	//constructor
@@ -50,15 +46,15 @@ public class SyllableContextGenerator extends BasicContextGenerator {
 	public SyllableContextGenerator(Element node){
 		readFeatureParameters(node);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
 	 */
 	@Override
 	public String[] getContext(Sentence sent, int pos) {
 	List<String> cps = new ArrayList<String>();
-		
-		for (int it = 0; it < cpnames.size(); ++it){			
+
+		for (int it = 0; it < cpnames.size(); ++it){
 			String cp = cpnames.get(it);
 			Vector<Integer> paras = this.paras.get(it);
 			String cpvalue = "";
@@ -75,13 +71,13 @@ public class SyllableContextGenerator extends BasicContextGenerator {
 				if (pos + paras.get(0) == 0)
 					cpvalue = "fi:" + paras.get(0);
 			}
-			
+
 			if (!cpvalue.equals("")) cps.add(cpvalue);
 		}
-		String [] ret = new String[cps.size()];		
+		String [] ret = new String[cps.size()];
 		return cps.toArray(ret);
 	}
-	
+
 	/**
 	 * Ic.
 	 *
@@ -95,15 +91,15 @@ public class SyllableContextGenerator extends BasicContextGenerator {
 		if (0 <= (pos + i) && (pos + i) < sent.size()){
 			String word = sent.getWordAt(pos + i);
 			cp = "ic:" + word;
-			
+
 			if (!StringUtils.isFirstCap(word))
 				cp = "";
 		}
 		else cp = "";
-		
+
 		return cp;
 	}
-	
+
 	/**
 	 * Ac.
 	 *
@@ -116,26 +112,26 @@ public class SyllableContextGenerator extends BasicContextGenerator {
 		String cp;
 		if (0 <= (pos + i) && (pos + i) < sent.size()){
 			String word = sent.getWordAt(pos + i);
-			cp = "ac:" + word;		
-			
+			cp = "ac:" + word;
+
 			boolean isAllCap = true;
-			
+
 			for (int j = 0 ; j < word.length(); ++j){
 				if (word.charAt(j) == '_' || word.charAt(j) == '.') continue;
-				
+
 				if (!Character.isUpperCase(word.charAt(j))){
 					isAllCap = false;
 					break;
 				}
 			}
-			
+
 			if (!isAllCap)
 				cp = "";
 		}
 		else cp = "";
 		return cp;
 	}
-	
+
 	/**
 	 * Mk.
 	 *
@@ -148,13 +144,13 @@ public class SyllableContextGenerator extends BasicContextGenerator {
 		String cp;
 		if (0 <= (pos + i) && (pos + i) < sent.size()){
 			String word = sent.getWordAt(pos + i);
-			cp = "ma:" + word;			
+			cp = "ma:" + word;
 			if (!StringUtils.isPunc(word))
 				cp = "";
 		}
 		else cp = "";
-		
+
 		return cp;
-	} 
+	}
 
 }

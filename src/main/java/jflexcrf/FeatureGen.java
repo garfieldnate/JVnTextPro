@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -29,24 +29,20 @@ package jflexcrf;
 import java.io.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class FeatureGen.
- */
 public class FeatureGen {
-    
+
     /** The features. */
     List features = null;	// list of features
-    
+
     /** The fmap. */
     Map fmap = null;		// feature map
-    
+
     /** The maps. */
     Maps maps = null;		// context predicate and label maps
-    
+
     /** The dict. */
     Dictionary dict = null;	// dictionary
-        
+
     /**
      * Instantiates a new feature gen.
      *
@@ -55,9 +51,9 @@ public class FeatureGen {
      */
     public FeatureGen(Maps maps, Dictionary dict) {
 	this.maps = maps;
-	this.dict = dict;	
+	this.dict = dict;
     }
-    
+
     // adding a feature
     /**
      * Adds the feature.
@@ -68,7 +64,7 @@ public class FeatureGen {
 	f.strId2IdxAdd(fmap);
 	features.add(f);
     }
-    
+
     /**
      * Num features.
      *
@@ -81,7 +77,7 @@ public class FeatureGen {
 	    return features.size();
 	}
     }
-    
+
     /**
      * Read features.
      *
@@ -94,27 +90,27 @@ public class FeatureGen {
 	} else {
 	    features = new ArrayList();
 	}
-	
+
 	if (fmap != null) {
-	    fmap.clear(); 
+	    fmap.clear();
 	} else {
 	    fmap = new HashMap();
 	}
-	
+
 	if (eFeatures != null) {
 	    eFeatures.clear();
 	} else {
 	    eFeatures = new ArrayList();
 	}
-	
+
 	if (sFeatures != null) {
 	    sFeatures.clear();
 	} else {
 	    sFeatures = new ArrayList();
 	}
-	
+
 	String line;
-	
+
 	// get the number of features
 	if ((line = fin.readLine()) == null) {
 	    System.out.println("Unknown number of features");
@@ -126,9 +122,9 @@ public class FeatureGen {
 	    System.out.println("Invalid number of features");
 	    return;
 	}
-	
+
 	System.out.println("Reading features ...");
-	
+
 	// main loop for reading features
 	for (int i = 0; i < numFeatures; i++) {
 	    line = fin.readLine();
@@ -136,41 +132,41 @@ public class FeatureGen {
 		// invalid feature line, ignore it
 		continue;
 	    }
-	    
+
 	    StringTokenizer strTok = new StringTokenizer(line, " ");
 	    if (strTok.countTokens() != 3) {
 		// invalid feature line, ignore it
 		continue;
 	    }
-	    
+
 	    // create a new feature by parsing the line
 	    Feature f = new Feature(line, maps.cpStr2Int, maps.lbStr2Int);
-	    
+
 	    Integer fidx = (Integer)fmap.get(f.strId);
 	    if (fidx == null) {
 		// insert the feature into the feature map
         //        System.out.println("\tinsert into the feature map");
 		fmap.put(f.strId, new Integer(f.idx));
 		features.add(f);
-		
+
 		if (f.ftype == Feature.EDGE_FEATURE1) {
 		    eFeatures.add(f);
 		}
 	    }
-	
+
             else {
             	features.add(f);
-                  //System.out.println(line + "-----------> [" + f.strId + "]");            
-            }      
-            
+                  //System.out.println(line + "-----------> [" + f.strId + "]");
+            }
+
 	}
-	
+
 	System.out.println("Reading " + Integer.toString(features.size()) + " features completed!");
-	
+
 	// read the line ###...
 	line = fin.readLine();
     }
-    
+
     // start to scan features at a particular position in a data sequence
     /**
      * Start scan features at.
@@ -182,7 +178,7 @@ public class FeatureGen {
 	startScanSFeaturesAt(seq, pos);
 	startScanEFeatures();
     }
-    
+
     /**
      * Checks for next feature.
      *
@@ -191,7 +187,7 @@ public class FeatureGen {
     public boolean hasNextFeature() {
 	return (hasNextSFeature() || hasNextEFeature());
     }
-    
+
     /**
      * Next feature.
      *
@@ -199,7 +195,7 @@ public class FeatureGen {
      */
     public Feature nextFeature() {
 	Feature f = null;
-    
+
 	if (hasNextSFeature()) {
 	    f = nextSFeature();
 	} else if (hasNextEFeature()) {
@@ -207,36 +203,36 @@ public class FeatureGen {
 	} else {
 	    // do nothing
 	}
-	
+
 	return f;
     }
-    
+
     // start to scan state features
     /** The s features. */
     List sFeatures = null;
-    
+
     /** The s feature idx. */
     int sFeatureIdx = 0;
-    
+
     /**
      * Start scan s features at.
      *
      * @param seq the seq
      * @param pos the pos
      */
-    void startScanSFeaturesAt(List seq, int pos) {	
+    void startScanSFeaturesAt(List seq, int pos) {
 	sFeatures.clear();
 	sFeatureIdx = 0;
-	
+
 	Observation obsr = (Observation)seq.get(pos);
-	    
+
 	// scan over all context predicates
 	for (int i = 0; i < obsr.cps.length; i++) {
 	    Element elem = (Element)dict.dict.get(new Integer(obsr.cps[i]));
 	    if (elem == null) {
 		continue;
 	    }
-	    
+
 	    if (!(elem.isScanned)) {
 		// scan all labels for state feature
 		Iterator it = elem.lbCntFidxes.keySet().iterator();
@@ -248,20 +244,20 @@ public class FeatureGen {
 			Feature sF = new Feature();
 			sF.sFeature1Init(label.intValue(), obsr.cps[i]);
 			sF.idx = cntFidx.fidx;
-			
+
 			elem.cpFeatures.add(sF);
-		    }	    
-		}		
-		
+		    }
+		}
+
 		elem.isScanned = true;
 	    }
-	    
+
 	    for (int j = 0; j < elem.cpFeatures.size(); j++) {
 		sFeatures.add(elem.cpFeatures.get(j));
 	    }
-	}		
-    }    
-    
+	}
+    }
+
     /**
      * Checks for next s feature.
      *
@@ -270,7 +266,7 @@ public class FeatureGen {
     boolean hasNextSFeature() {
 	return (sFeatureIdx < sFeatures.size());
     }
-    
+
     /**
      * Next s feature.
      *
@@ -281,21 +277,21 @@ public class FeatureGen {
 	sFeatureIdx++;
 	return sF;
     }
-    
+
     // start to scan edge features
     /** The e features. */
     List eFeatures = null;
-    
+
     /** The e feature idx. */
     int eFeatureIdx = 0;
-    
+
     /**
      * Start scan e features.
      */
     void startScanEFeatures() {
 	eFeatureIdx = 0;
     }
-    
+
     /**
      * Checks for next e feature.
      *
@@ -304,7 +300,7 @@ public class FeatureGen {
     boolean hasNextEFeature() {
 	return (eFeatureIdx < eFeatures.size());
     }
-    
+
     /**
      * Next e feature.
      *
@@ -315,6 +311,6 @@ public class FeatureGen {
 	eFeatureIdx++;
 	return eF;
     }
-    
+
 } // end of class FeatureGen
 

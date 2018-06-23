@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -28,12 +28,8 @@
 
 package jvntextpro.data;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ContextGenerator.
- */
 public abstract class ContextGenerator {
-	
+
 	/**
 	 * Gets the context.
 	 *

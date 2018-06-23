@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -27,18 +27,14 @@
 
 package jmaxent;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CountFIdx.
- */
 public class CountFIdx {
 
     /** The count. */
     public int count = 0;
-    
+
     /** The fidx. */
     public int fidx = -1;
-    
+
     /**
      * Instantiates a new count f idx.
      *
@@ -49,6 +45,6 @@ public class CountFIdx {
 	this.count = count;
 	this.fidx = fidx;
     }
-    
+
 } // end of class CountFeatureIdx
 

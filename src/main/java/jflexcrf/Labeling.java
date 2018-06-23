@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -34,42 +34,38 @@ import jvntextpro.data.DataWriter;
 import jvntextpro.data.Sentence;
 import jvntextpro.data.TaggingData;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Labeling.
- */
 public class Labeling {
-	
+
 	//-----------------------------------------------
 	// Member Variables
 	//-----------------------------------------------
 	/** The model dir. */
-	private String modelDir = "";	
-	
+	private String modelDir = "";
+
 	/** The tagger maps. */
 	public Maps taggerMaps = null;
-	
+
 	/** The tagger dict. */
 	public Dictionary taggerDict = null;
-	
+
 	/** The tagger f gen. */
 	private FeatureGen taggerFGen = null;
-	
+
 	/** The tagger vtb. */
 	private Viterbi taggerVtb = null;
-	
+
 	/** The tagger model. */
 	private Model taggerModel = null;
-	
+
 	/** The data tagger. */
 	private TaggingData dataTagger = null;
-	
+
 	/** The data reader. */
 	private DataReader dataReader = null;
-	
+
 	/** The data writer. */
 	private DataWriter dataWriter = null;
-	
+
 	//-----------------------------------------------
 	// Initilization
 	//-----------------------------------------------
@@ -81,14 +77,14 @@ public class Labeling {
 	 * @param dataReader the data reader
 	 * @param dataWriter the data writer
 	 */
-	public Labeling (String modelDir, TaggingData dataTagger, 
+	public Labeling (String modelDir, TaggingData dataTagger,
 			DataReader dataReader, DataWriter dataWriter){
 		init(modelDir);
 		this.dataTagger = dataTagger;
 		this.dataWriter = dataWriter;
-		this.dataReader = dataReader;		
+		this.dataReader = dataReader;
 	}
-	
+
 	/**
 	 * Inits the.
 	 *
@@ -97,7 +93,7 @@ public class Labeling {
 	 */
 	public boolean init(String modelDir) {
 		this.modelDir = modelDir;
-		
+
 		Option taggerOpt = new Option(this.modelDir);
 		if (!taggerOpt.readOptions()) {
 			return false;
@@ -117,7 +113,7 @@ public class Labeling {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Sets the data reader.
 	 *
@@ -126,7 +122,7 @@ public class Labeling {
 	public void setDataReader (DataReader reader){
 		dataReader = reader;
 	}
-	
+
 	/**
 	 * Sets the data tagger.
 	 *
@@ -135,7 +131,7 @@ public class Labeling {
 	public void setDataTagger(TaggingData tagger){
 		dataTagger = tagger;
 	}
-	
+
 	/**
 	 * Sets the data writer.
 	 *
@@ -144,7 +140,7 @@ public class Labeling {
 	public void setDataWriter(DataWriter writer){
 		dataWriter = writer;
 	}
-	
+
 	//---------------------------------------------------------
 	// labeling methods
 	//---------------------------------------------------------
@@ -158,8 +154,8 @@ public class Labeling {
 	public List seqLabeling(String data){
 		List<Sentence> obsvSeqs = dataReader.readString(data);
 		return labeling(obsvSeqs);
-	}	
-	
+	}
+
 	/**
 	 * labeling observation sequences.
 	 *
@@ -171,7 +167,7 @@ public class Labeling {
 		List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
 		return labeling(obsvSeqs);
 	}
-	
+
 	/**
 	 * labeling observation sequences.
 	 *
@@ -184,7 +180,7 @@ public class Labeling {
 		String ret = dataWriter.writeString(lblSeqs);
 		return ret;
 	}
-	
+
 	/**
 	 * labeling observation sequences.
 	 *
@@ -197,7 +193,7 @@ public class Labeling {
 		String ret = dataWriter.writeString(lblSeqs);
 		return ret;
 	}
-	
+
 	/**
 	 * Labeling.
 	 *
@@ -207,17 +203,17 @@ public class Labeling {
 	@SuppressWarnings("unchecked")
 	private List labeling(List<Sentence> obsvSeqs){
 		List labelSeqs = new ArrayList();
-		
+
 		for (int i = 0; i < obsvSeqs.size(); ++i){//ith sentence
 			List sequence = new ArrayList();
 			Sentence sentence = obsvSeqs.get(i);
-			
+
 			for (int j = 0; j < sentence.size(); ++j){//jth observation
 				Observation obsv = new Observation();
 				obsv.originalData = sentence.getWordAt(j);
-				
+
 				String [] strCps = dataTagger.getContext(sentence, j);
-				
+
 				ArrayList<Integer> tempCpsInt = new ArrayList<Integer>();
 
 				for (int k = 0; k < strCps.length; k++) {
@@ -227,33 +223,33 @@ public class Labeling {
 					}
 					tempCpsInt.add(cpInt);
 				}
-				
+
 				obsv.cps = new int[tempCpsInt.size()];
 				for (int k = 0; k < tempCpsInt.size(); ++k){
 					obsv.cps[k] = tempCpsInt.get(k).intValue();
 				}
 				sequence.add(obsv);
 			}
-			
+
 			labelSeqs.add(sequence);
 		}
-		
-		taggerModel.inferenceAll(labelSeqs);	
-		
+
+		taggerModel.inferenceAll(labelSeqs);
+
 		//assign labels to list of sentences
 		for (int i = 0; i < obsvSeqs.size(); ++i){
 			Sentence sent = obsvSeqs.get(i);
 			List seq = (List) labelSeqs.get(i);
-			
+
 			for (int j = 0; j < sent.size(); ++j){
-				Observation obsrv = (Observation) seq.get(j);			
+				Observation obsrv = (Observation) seq.get(j);
 				String label = (String) taggerMaps.lbInt2Str.get(obsrv.modelLabel);
-				
+
 				sent.getTWordAt(j).setTag(label);
 			}
 		}
-		
+
 		return obsvSeqs;
 	}
-	
+
 }

@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -29,30 +29,26 @@ package jflexcrf;
 import java.io.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Maps.
- */
 public class Maps {
-    
+
     /** The cp str2 int. */
     public Map cpStr2Int = null;
-    
+
     /** The cp int2 str. */
     public Map cpInt2Str = null;
-    
+
     /** The lb str2 int. */
     public Map lbStr2Int = null;
-    
+
     /** The lb int2 str. */
     public Map lbInt2Str = null;
-    
+
     /**
      * Instantiates a new maps.
      */
     public Maps() {
     }
-    
+
     /**
      * Read cp maps.
      *
@@ -65,15 +61,15 @@ public class Maps {
 	} else {
 	    cpStr2Int = new HashMap();
 	}
-	
+
 	if (cpInt2Str != null) {
 	    cpInt2Str.clear();
 	} else {
 	    cpInt2Str = new HashMap();
 	}
-	
+
 	String line;
-	
+
 	// get size of context predicate map
 	if ((line = fin.readLine()) == null) {
 	    System.out.println("No context predicate map size information");
@@ -84,35 +80,35 @@ public class Maps {
 	    System.out.println("Invalid mapping size");
 	    return;
 	}
-	
+
 	System.out.println("Reading the context predicate maps ...");
-		
+
 	for (int i = 0; i < numCps; i++) {
 	    line = fin.readLine();
 	    if (line == null) {
 		System.out.println("Invalid context predicate mapping line");
 		return;
 	    }
-	    
+
 	    StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
 	    if (strTok.countTokens() != 2) {
 		continue;
 	    }
-	    
+
 	    String cpStr = strTok.nextToken();
 	    String cpInt = strTok.nextToken();
-	    
+
 	    cpStr2Int.put(cpStr, new Integer(cpInt));
 	    cpInt2Str.put(new Integer(cpInt), cpStr);
 	}
-	
-	System.out.println("Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + 
+
+	System.out.println("Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) +
 		    " entries) completed!");
-	
+
 	// read the line ###...
 	line = fin.readLine();
     }
-    
+
     /**
      * Read lb maps.
      *
@@ -125,7 +121,7 @@ public class Maps {
 	} else {
 	    lbStr2Int = new HashMap();
 	}
-	
+
 	if (lbInt2Str != null) {
 	    lbInt2Str.clear();
 	} else {
@@ -133,7 +129,7 @@ public class Maps {
 	}
 
 	String line;
-	
+
 	// get size of label map
 	if ((line = fin.readLine()) == null) {
 	    System.out.println("No label map size information");
@@ -144,35 +140,35 @@ public class Maps {
 	    System.out.println("Invalid label map size");
 	    return;
 	}
-	
+
 	System.out.println("Reading label maps ...");
-	
+
 	for (int i = 0; i < numLabels; i++) {
 	    line = fin.readLine();
 	    if (line == null) {
 		System.out.println("Invalid label map line");
 		return;
 	    }
-	    
+
 	    StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
 	    if (strTok.countTokens() != 2) {
 		continue;
 	    }
-	    
+
 	    String lbStr = strTok.nextToken();
 	    String lbInt = strTok.nextToken();
-	    
+
 	    lbStr2Int.put(lbStr, new Integer(lbInt));
 	    lbInt2Str.put(new Integer(lbInt), lbStr);
 	}
-	
-	System.out.println("Reading label maps (" + Integer.toString(lbStr2Int.size()) + 
+
+	System.out.println("Reading label maps (" + Integer.toString(lbStr2Int.size()) +
 		    " entries) completed!");
-	
+
 	// read the line ###...
 	line = fin.readLine();
     }
-    
+
     /**
      * Num cps.
      *
@@ -185,7 +181,7 @@ public class Maps {
 	    return cpStr2Int.size();
 	}
     }
-    
+
     /**
      * Num labels.
      *
@@ -198,6 +194,6 @@ public class Maps {
 	    return lbStr2Int.size();
 	}
     }
-    
+
 } // end of class Maps
 

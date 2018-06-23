@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -32,24 +32,20 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class TrainDataGenerating.
- */
 public abstract class TrainDataGenerating {
-	
+
 	/** The reader. */
 	protected DataReader reader;
-	
+
 	/** The tagger. */
 	protected TaggingData tagger;
-	
+
 	/**
 	 * Initialize reader, tagger for reading input data and generating context
 	 * predicates for each observation.
 	 */
 	public abstract void init();
-	
+
 	/**
 	 * Generate train data.
 	 *
@@ -72,13 +68,13 @@ public abstract class TrainDataGenerating {
         			data.addAll(temp);
         		}
         	}
-        	
+
         	String result = "";
         	System.out.println(data.size() + "sentences read");
         	for (int i = 0; i < data.size(); ++i){
         		if (i % 20 == 0) System.out.println("Finished " + i + " in " + data.size() + " sentences");
         		Sentence sent = data.get(i);
-        		
+
         		for (int j = 0; j < sent.size(); ++j){
         			//result += sent.getWordAt(j) + " ";
         			String line = "";
@@ -89,12 +85,12 @@ public abstract class TrainDataGenerating {
         		}
         		result += "\n";
         	}
-        	
+
         	BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-        			new FileOutputStream(outputPath + ".tagged"), "UTF-8"));	        	
-        	
+        			new FileOutputStream(outputPath + ".tagged"), "UTF-8"));
+
         	writer.write(result);
-        	writer.close();	     
+        	writer.close();
 		}
 	  catch (Exception e){
         	System.out.println("Error while generating training data");

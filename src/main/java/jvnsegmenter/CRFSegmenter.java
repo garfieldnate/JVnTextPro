@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -36,24 +36,20 @@ import jvntextpro.data.DataReader;
 import jvntextpro.data.DataWriter;
 import jvntextpro.data.TaggingData;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CRFSegmenter.
- */
 public class CRFSegmenter {
-	
+
 	/** The reader. */
 	DataReader reader = new WordDataReader();
-	
+
 	/** The writer. */
 	DataWriter writer = new WordDataWriter();
-	
+
 	/** The data tagger. */
 	TaggingData dataTagger = new TaggingData();
-	
+
 	/** The labeling. */
 	Labeling labeling = null;
-	
+
 	/**
 	 * Instantiates a new cRF segmenter.
 	 *
@@ -62,7 +58,7 @@ public class CRFSegmenter {
 	public CRFSegmenter(String modelDir){
 		init(modelDir);
 	}
-	
+
 	/**
 	 * Instantiates a new cRF segmenter.
 	 */
@@ -78,18 +74,18 @@ public class CRFSegmenter {
 	public void init(String modelDir) {
 		//Read feature template file
 		String templateFile = modelDir + File.separator + "featuretemplate.xml";
-		Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile); 
-		
+		Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
+
 		for (int i = 0; i < nodes.size(); ++i){
 			Element node = nodes.get(i);
 			String cpType = node.getAttribute("value");
 			BasicContextGenerator contextGen = null;
-			
+
 			if (cpType.equals("Conjunction")){
 				contextGen = new ConjunctionContextGenerator(node);
 			}
 			else if (cpType.equals("Lexicon")){
-				contextGen = new LexiconContextGenerator(node);	
+				contextGen = new LexiconContextGenerator(node);
 				LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
 				LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
 				LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
@@ -103,11 +99,11 @@ public class CRFSegmenter {
 			else if (cpType.equals("ViSyllableFeature")){
 				contextGen = new VietnameseContextGenerator(node);
 			}
-			
+
 			if (contextGen != null)
 				dataTagger.addContextGenerator(contextGen);
 		}
-		
+
 		//create context generators
 		labeling = new Labeling(modelDir, dataTagger, reader, writer);
 	}
@@ -131,7 +127,7 @@ public class CRFSegmenter {
 	public String segmenting(File file) {
 		return labeling.strLabeling(file);
 	}
-	
+
 	/**
 	 * Sets the data reader.
 	 *
@@ -140,7 +136,7 @@ public class CRFSegmenter {
 	public void setDataReader(DataReader reader){
 		this.reader = reader;
 	}
-	
+
 	/**
 	 * Sets the data writer.
 	 *

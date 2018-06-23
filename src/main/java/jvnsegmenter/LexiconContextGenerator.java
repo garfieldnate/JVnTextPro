@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -26,6 +26,8 @@
  */
 package jvnsegmenter;
 
+import org.w3c.dom.Element;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -34,21 +36,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 
-import org.w3c.dom.Element;
-
 import jvntextpro.data.Sentence;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LexiconContextGenerator.
- */
 public class LexiconContextGenerator extends BasicContextGenerator {
 	//------------------------------
 	//Variables
 	//------------------------------
 	/** The hs vietnamese dict. */
 	private static HashSet hsVietnameseDict;
-	
+
 	/** The hs vi family names. */
 	private static HashSet hsViFamilyNames;
 
@@ -72,21 +68,20 @@ public class LexiconContextGenerator extends BasicContextGenerator {
 	public LexiconContextGenerator(Element node){
 		readFeatureParameters(node);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
 	 */
 	@Override
 	public String[] getContext(Sentence sent, int pos) {
-		// TODO Auto-generated method stub
 		// get the context information from sequence
 		List<String> cps = new ArrayList<String>();
-		
-		for (int it = 0; it < cpnames.size(); ++it){			
+
+		for (int it = 0; it < cpnames.size(); ++it){
 			String cp = cpnames.get(it);
 			Vector<Integer> paras = this.paras.get(it);
 			String cpvalue = "";
-			
+
 			String suffix = "";
 			String word = "";
 			boolean outOfArrayIndex = false;
@@ -96,20 +91,20 @@ public class LexiconContextGenerator extends BasicContextGenerator {
 					outOfArrayIndex = true;
 					break;
 				}
-	
+
 				suffix += paras.get(i) + ":";
 				word += sent.getWordAt(pos + paras.get(i)) + " ";
 			}
-			word = word.trim();			
+			word = word.trim();
 			if (suffix.endsWith(":"))
 				suffix = suffix.substring(0, suffix.length() - 1);
-			
+
 			if (outOfArrayIndex) continue;
-			
+
 			if (cp.equals("vietnamese_dict")) {
 				word = word.toLowerCase();
 				if (inVietnameseDict(word)){
-					cpvalue = "d:" + suffix;					
+					cpvalue = "d:" + suffix;
 				}
 			} else if (cp.equals("family_name")) {
 				if (inViFamilyNameList(word))
@@ -127,7 +122,7 @@ public class LexiconContextGenerator extends BasicContextGenerator {
 
 			if (!cpvalue.equals("")) cps.add(cpvalue);
 		}
-		String [] ret = new String[cps.size()];		
+		String [] ret = new String[cps.size()];
 		return cps.toArray(ret);
 	}
 
@@ -277,7 +272,7 @@ public class LexiconContextGenerator extends BasicContextGenerator {
 						new InputStreamReader(in, "UTF-8"));
 				String line;
 				while ((line = reader.readLine()) != null) {
-					String word = line.trim();				
+					String word = line.trim();
 					hsViLocations.add(word);
 				}
 			}

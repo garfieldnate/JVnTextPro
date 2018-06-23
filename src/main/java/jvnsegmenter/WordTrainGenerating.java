@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -26,23 +26,19 @@
  */
 package jvnsegmenter;
 
+import org.w3c.dom.Element;
+
 import java.io.File;
 import java.util.Vector;
-
-import org.w3c.dom.Element;
 
 import jvntextpro.data.TaggingData;
 import jvntextpro.data.TrainDataGenerating;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class WordTrainGenerating.
- */
 public class WordTrainGenerating extends TrainDataGenerating {
-	
+
 	/** The model dir. */
 	String modelDir;
-	
+
 	/**
 	 * Instantiates a new word train generating.
 	 *
@@ -52,30 +48,29 @@ public class WordTrainGenerating extends TrainDataGenerating {
 		this.modelDir = modelDir;
 		init();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jvntextpro.data.TrainDataGenerating#init()
 	 */
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		reader = new IOB2DataReader();
 		tagger = new TaggingData();
-		
+
 		//Read feature template file
 		String templateFile = modelDir + File.separator + "featuretemplate.xml";
-		Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile); 
-		
+		Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
+
 		for (int i = 0; i < nodes.size(); ++i){
 			Element node = nodes.get(i);
 			String cpType = node.getAttribute("value");
 			BasicContextGenerator contextGen = null;
-			
+
 			if (cpType.equals("Conjunction")){
 				contextGen = new ConjunctionContextGenerator(node);
 			}
 			else if (cpType.equals("Lexicon")){
-				contextGen = new LexiconContextGenerator(node);	
+				contextGen = new LexiconContextGenerator(node);
 				LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
 				LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
 				LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
@@ -89,12 +84,12 @@ public class WordTrainGenerating extends TrainDataGenerating {
 			else if (cpType.equals("ViSyllableFeature")){
 				contextGen = new VietnameseContextGenerator(node);
 			}
-			
+
 			if (contextGen != null)
 				tagger.addContextGenerator(contextGen);
 		}
 	}
-	
+
 	/**
 	 * The main method.
 	 *
@@ -109,9 +104,9 @@ public class WordTrainGenerating extends TrainDataGenerating {
 			System.out.println("Input File/Folder: file/folder name containing data manually tagged for training");
 			return;
 		}
-		
+
 		WordTrainGenerating trainGen = new WordTrainGenerating(args[0]);
-		trainGen.generateTrainData(args[1], args[1]);		
+		trainGen.generateTrainData(args[1], args[1]);
 	}
 
 }

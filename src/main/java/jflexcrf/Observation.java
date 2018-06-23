@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -26,21 +26,16 @@
 
 package jflexcrf;
 
-import java.io.*;
-import java.util.*;
+import java.util.Map;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Observation.
- */
 public class Observation {
-    
+
     /** The original data. */
     public String originalData = "";	// original data (before generating context predicates)
-    
+
     /** The cps. */
     public int[] cps = null;		// array of context predicates
-    
+
     /** The model label. */
     public int modelLabel = -1;		// label predicted by model
 
@@ -50,7 +45,7 @@ public class Observation {
     public Observation() {
 	// do nothing currently
     }
-    
+
     /**
      * To string.
      *
@@ -59,14 +54,14 @@ public class Observation {
      */
     public String toString(Map lbInt2Str) {
 	String res = originalData;
-	
+
 	String labelStr = (String)lbInt2Str.get(new Integer(modelLabel));
 	if (labelStr != null) {
 	    res += Option.outputSeparator + labelStr.toUpperCase();
 	}
-	
+
 	return res;
     }
-    
+
 } // end of class Observation
 

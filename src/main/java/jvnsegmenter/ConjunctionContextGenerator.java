@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -34,10 +34,6 @@ import org.w3c.dom.Element;
 
 import jvntextpro.data.Sentence;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ConjunctionContextGenerator.
- */
 public class ConjunctionContextGenerator extends BasicContextGenerator {
 
 	/**
@@ -48,38 +44,38 @@ public class ConjunctionContextGenerator extends BasicContextGenerator {
 	public ConjunctionContextGenerator(Element node){
 		readFeatureParameters(node);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
 	 */
 	@Override
 	public String[] getContext(Sentence sent, int pos) {
 		List<String> cps = new ArrayList<String>();
-		
-		for (int it = 0; it < cpnames.size(); ++it){			
+
+		for (int it = 0; it < cpnames.size(); ++it){
 			String cp = cpnames.get(it);
 			Vector<Integer> paras = this.paras.get(it);
 			String cpvalue = "";
-			
+
 			if (cp.equals("syll_conj_gen")){
 				String prefix = "s:";
-				String suffix = "";			
+				String suffix = "";
 				for (int i = 0; i < paras.size(); ++i) {
 					if (pos + paras.get(i) < 0 || pos + paras.get(i)>= sent.size()){
 						cpvalue = "";
 						continue;
 					}
-		
+
 					prefix += paras.get(i) + ":";
 					suffix += sent.getWordAt(pos + paras.get(i)) + ":";
-				}			
-				
+				}
+
 				if (suffix.endsWith(":"))
 					cpvalue = prefix + suffix.substring(0, suffix.length() - 1);
 			}
 			if (!cpvalue.equals("")) cps.add(cpvalue);
 		}
-		String [] ret = new String[cps.size()];		
+		String [] ret = new String[cps.size()];
 		return cps.toArray(ret);
 	}
 

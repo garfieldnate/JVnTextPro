@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -35,29 +35,25 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class TaggingClient.
- */
 public class TaggingClient {
 	//-----------------------
 	// Data
 	//-----------------------
 	/** The host. */
 	String host;
-	
+
 	/** The port. */
 	int port;
-	
+
 	/** The in. */
 	private BufferedReader in;
-	
+
 	/** The out. */
 	private BufferedWriter out;
-	
+
 	/** The sock. */
 	private Socket sock;
-	
+
 	//-----------------------
 	// Methods
 	//-----------------------
@@ -71,7 +67,7 @@ public class TaggingClient {
 		this.host = host;
 		this.port = port;
 	}
-	
+
 	/**
 	 * Connect.
 	 *
@@ -91,7 +87,7 @@ public class TaggingClient {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Process.
 	 *
@@ -103,14 +99,14 @@ public class TaggingClient {
 			out.write(data);
 			out.write((char)0);
 			out.flush();
-			
+
 			//Get data from server
 			String tagged = "";
-			while (true){				
+			while (true){
 				int ch = in.read();
-				
+
 				if (ch == 0) break;
-				tagged += (char) ch;			
+				tagged += (char) ch;
 			}
 			return tagged;
 		}
@@ -118,9 +114,9 @@ public class TaggingClient {
 			System.out.println(e.getMessage());
 			return "";
 		}
-		
+
 	}
-	
+
 	/**
 	 * Close.
 	 */
@@ -132,7 +128,7 @@ public class TaggingClient {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	//----------------------------------
 	// main method, testing this client
 	//---------------------------------
@@ -146,37 +142,37 @@ public class TaggingClient {
 			System.out.println("TaggingClient [inputfile] [outputfile]");
 			return;
 		}
-		
+
 		try {
 			// Create a tagging client, open connection
-			TaggingClient client = new TaggingClient("localhost", 2929);			
-			
+			TaggingClient client = new TaggingClient("localhost", 2929);
+
 			// read data from file
-			// process data, save into another file			
+			// process data, save into another file
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(args[0]), "UTF-8"));
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(args[1]), "UTF-8"));
-			
+
 			client.connect();
 			String line;
-			String input = "";			
+			String input = "";
 			while ((line = reader.readLine()) != null){
-				input += line + "\n";					
+				input += line + "\n";
 			}
-			
+
 			String tagged = client.process(input);
 			writer.write(tagged + "\n");
-			
+
 			client.close();
 			reader.close();
 			writer.close();
-			
+
 		}
 		catch (Exception e){
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 	}
-	
+
 }

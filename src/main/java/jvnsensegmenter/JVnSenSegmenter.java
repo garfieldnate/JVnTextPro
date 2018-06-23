@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -27,32 +27,39 @@
 
 package jvnsensegmenter;
 
-import jmaxent.*;
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.StringTokenizer;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class JVnSenSegmenter.
- */
+import jmaxent.Classification;
+
 public class JVnSenSegmenter {
-    
+
     /** The positive label. */
     public static String positiveLabel = "y";
-    
+
     /** The classifier. */
     public Classification classifier = null;
-    
+
     /** The fea gen. */
-    public FeatureGenerator feaGen = null;    
-    
+    public FeatureGenerator feaGen = null;
+
     /**
      * Creates a new instance of JVnSenSegmenter.
      *
      * @param modelDir the model dir
      * @return true, if successful
      */
-  
+
     public boolean init(String modelDir){
     	try {
 	    	classifier = new Classification(modelDir);
@@ -65,7 +72,7 @@ public class JVnSenSegmenter {
     		return false;
     	}
     }
-    
+
     /**
      * Sen segment.
      *
@@ -73,33 +80,33 @@ public class JVnSenSegmenter {
      * @return the string
      */
     public String senSegment(String text){
-        //text normalization         
+        //text normalization
         text = text.replaceAll("([\t \n])+", "$1");
         //System.out.println(text);
-        
+
         //generate context predicates
         List markList = new ArrayList();
         List data = FeatureGenerator.doFeatureGen(new HashMap(), text, markList, false);
 
         if (markList.isEmpty())
             return text + "\n";
-        
+
         //classify
         List labels = classifier.classify(data);
-	 
+
         String result = text.substring(0, ((Integer)markList.get(0)).intValue());
 
-        for (int i =0; i < markList.size(); ++i){        
-            int curPos = ((Integer) markList.get(i)).intValue();            
+        for (int i =0; i < markList.size(); ++i){
+            int curPos = ((Integer) markList.get(i)).intValue();
 
             if ( ((String)labels.get(i)).equals(positiveLabel)){
-                result += " " + text.charAt(curPos) + "\n";            
+                result += " " + text.charAt(curPos) + "\n";
             }
             else result += text.charAt(curPos);
 
-            if (i < markList.size() - 1){                    
-                int nexPos = ((Integer) markList.get(i + 1)).intValue();                                
-                result += text.substring(curPos + 1, nexPos);           
+            if (i < markList.size() - 1){
+                int nexPos = ((Integer) markList.get(i + 1)).intValue();
+                result += text.substring(curPos + 1, nexPos);
             }
         }
 
@@ -107,12 +114,12 @@ public class JVnSenSegmenter {
         result += text.substring(finalMarkPos + 1, text.length());
 
         //System.out.println(result);
-        result = result.replaceAll("\n ", "\n");        
+        result = result.replaceAll("\n ", "\n");
         result = result.replaceAll("\n\n", "\n");
         result = result.replaceAll("\\.\\. \\.", "...");
         return result;
     }
-    
+
     /**
      * Sen segment.
      *
@@ -122,11 +129,11 @@ public class JVnSenSegmenter {
     public void senSegment(String text, List senList){
         senList.clear();
         String resultStr = senSegment(text);
-    
+
         StringTokenizer senTknr = new StringTokenizer(resultStr, "\n");
         while(senTknr.hasMoreTokens()){
             senList.add(senTknr.nextToken());
-        }        
+        }
     }
 
 /**
@@ -136,21 +143,21 @@ public class JVnSenSegmenter {
  * @param args the arguments
  */
     public static void main(String args[]){
-        if (args.length != 4){            
+        if (args.length != 4){
             displayHelp();
             System.exit(1);
         }
-        
+
         try{
             JVnSenSegmenter senSegmenter = new JVnSenSegmenter();
             senSegmenter.init(args[1]);
-            
+
             String option = args[2];
             if (option.equalsIgnoreCase("-inputfile"))
             {
                senSegmentFile(args[3], args[3] + ".sent", senSegmenter);
             }
-            
+
             else if (option.equalsIgnoreCase("-inputdir")){
                 //segment only files ends with .txt
                 File inputDir = new File(args[3]);
@@ -159,24 +166,24 @@ public class JVnSenSegmenter {
                         return name.endsWith(".txt");
                     }
                 });
-                
+
                 for (int i = 0; i <childrent.length; ++i)
                 {
                     System.out.println("Segmenting sentences in " + childrent[i]);
                     senSegmentFile(childrent[i].getPath(), childrent[i].getPath() + ".sent", senSegmenter);
-                }                
+                }
             }
-            else 
+            else
                 displayHelp();
         }
         catch (Exception e)
-        {            
+        {
             System.out.println(e.getMessage());
             return;
         }
-        
+
     }
-    
+
     /**
      * Segment sentences.
      *
@@ -192,27 +199,27 @@ public class JVnSenSegmenter {
                  new FileOutputStream(outfile), "UTF-8"));
 
          String para = "", line = "", text = "";
-         while ((line = in.readLine()) != null){                    
+         while ((line = in.readLine()) != null){
              if (!line.equals("")){
                  if (line.charAt(0) == '#'){
                      //skip comment line
                      text += line + "\n";
                      continue;
                  }
-                 
-                 para = senSegmenter.senSegment(line).trim();                                        
+
+                 para = senSegmenter.senSegment(line).trim();
                  text += para.trim() + "\n\n";
              }
              else{
                  //blank line
-                 text += "\n";                        
+                 text += "\n";
              }
          }
          text = text.trim();
-         
+
          out.write(text);
          out.newLine();
-         
+
          in.close();
          out.close();
     	}
@@ -220,7 +227,7 @@ public class JVnSenSegmenter {
     		System.out.println("Error in sensegment file " + infile);
     	}
     }
-    
+
     /**
      * Display help.
      */
@@ -234,5 +241,5 @@ public class JVnSenSegmenter {
 	System.out.println("\thave sentences segmented (each sentence on a line)");
 	System.out.println("\t<input data directory> is the directory containing multiple input .tkn files");
 	System.out.println();
-    }     
+    }
 }

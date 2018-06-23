@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -31,29 +31,25 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Vector;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class TWord.
- */
 public class TWord {
-	
+
 	/** The token. */
 	private String token;
-	
+
 	/** The tag. */
-	private String tag = null; //null if this word is not tagged	
-	
+	private String tag = null; //null if this word is not tagged
+
 	// this is necessary for further processing
 	// Example: in noun phase chunking
 	// we may have information about pos tag (secondary tag)
 	// chunking tags are main tags
-	
+
 	//or named entity recognition
 	// we may have information about pos tag, chunk phase, verb phase,  (secondary tags) etc.
-		
+
 	/** The secondary tags. */
-	private Vector<String> secondaryTags = null; 
-	
+	private Vector<String> secondaryTags = null;
+
 	//constructors
 	/**
 	 * Instantiates a new t word.
@@ -61,20 +57,20 @@ public class TWord {
 	 * @param _word the _word
 	 * @param _tag the _tag
 	 */
-	public TWord(String _word, String _tag){		
+	public TWord(String _word, String _tag){
 		token = _word.replaceAll(" ","_");;
-		tag = _tag;		
+		tag = _tag;
 	}
-	
+
 	/**
 	 * Instantiates a new t word.
 	 *
 	 * @param _word the _word
 	 */
 	public TWord(String _word){
-		token = _word.replaceAll(" ","_");		
+		token = _word.replaceAll(" ","_");
 	}
-	
+
 	//get methods
 	/**
 	 * Gets the word.
@@ -84,7 +80,7 @@ public class TWord {
 	public String getWord(){
 		return token;
 	}
-	
+
 	/**
 	 * Gets the tag.
 	 *
@@ -93,7 +89,7 @@ public class TWord {
 	public String getTag(){
 		return tag;
 	}
-	
+
 	/**
 	 * Sets the tag.
 	 *
@@ -102,7 +98,7 @@ public class TWord {
 	public void setTag(String t){
 		tag = t;
 	}
-	
+
 	/**
 	 * Gets the secondary tag.
 	 *
@@ -119,7 +115,7 @@ public class TWord {
 		}
 		else return null;
 	}
-	
+
 	//DEBUG
 	/**
 	 * Prints the.
@@ -127,7 +123,7 @@ public class TWord {
 	public void print(){
 		System.out.println(token + "\t" + tag);
 	}
-	
+
 	/**
 	 * Prints the.
 	 *
@@ -136,7 +132,7 @@ public class TWord {
 	 */
 	public void print(Writer out) throws IOException{
 		if (tag == null)
-			System.out.println(tag);			
-		out.write(token + "\t" + tag + "\n");		
+			System.out.println(tag);
+		out.write(token + "\t" + tag + "\n");
 	}
 }

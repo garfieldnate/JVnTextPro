@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -36,21 +36,17 @@ import java.net.Socket;
 import java.util.Vector;
 import jvntextpro.JVnTextPro;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Session.
- */
 public class Session extends Thread {
-	
+
 	//------------------------
 	// Data
 	//------------------------
 	/** The textpro. */
 	JVnTextPro textpro;
-	
+
 	/** The incoming. */
 	private Socket incoming;
-	
+
 	//-----------------------
 	// Methods
 	//-----------------------
@@ -59,10 +55,10 @@ public class Session extends Thread {
 	 *
 	 * @param textpro the textpro
 	 */
-	public Session(JVnTextPro textpro){		
+	public Session(JVnTextPro textpro){
 		this.textpro = textpro;
 	}
-		 	    
+
 	/**
 	 * Sets the socket.
 	 *
@@ -72,50 +68,50 @@ public class Session extends Thread {
 		this.incoming = s;
 		notify();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Thread#run()
 	 */
-	public synchronized void run(){	
+	public synchronized void run(){
 		while (true){
 			try {
 				if (incoming == null) {
-		            wait();	            
+		            wait();
 		        }
-				
+
 				System.out.println("Socket opening ...");
 				BufferedReader in = new BufferedReader(new InputStreamReader(
-						incoming.getInputStream(), "UTF-8"));				
+						incoming.getInputStream(), "UTF-8"));
 				//PrintStream out = (PrintStream) incoming.getOutputStream();
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
 						incoming.getOutputStream(), "UTF-8"));
-				
+
 				String content = "";
-				
-				while (true){				
+
+				while (true){
 					int ch = in.read();
 					if (ch == 0) //end of string
 						break;
-					
+
 					content += (char) ch;
 				}
-				
+
 				//System.out.println(content);
 				String tagged = textpro.process(content);
 				//Thread.sleep(4000);
-				
+
 				out.write(tagged.trim());
 				out.write((char)0);
 				out.flush();
 			}
 			catch (InterruptedIOException e){
-				System.out.println("The conection is interrupted");	
+				System.out.println("The conection is interrupted");
 			}
 			catch (Exception e){
 				System.out.println(e);
 				e.printStackTrace();
 			}
-			
+
 			//update pool
 			//go back in wait queue if there is fewer than max
 			this.setSocket(null);
@@ -125,7 +121,7 @@ public class Session extends Thread {
 					/* too many threads, exit this one*/
 					return;
 				}
-				else {				
+				else {
 					pool.addElement(this);
 				}
 			}

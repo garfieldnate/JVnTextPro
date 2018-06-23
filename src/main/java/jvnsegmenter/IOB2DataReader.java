@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -37,8 +37,7 @@ import jvntextpro.data.DataReader;
 import jvntextpro.data.Sentence;
 import jvntextpro.data.TWord;
 
-// TODO: Auto-generated Javadoc
-// TODO: Read data in IOB2 format which is the same as training data provided 
+// TODO: Read data in IOB2 format which is the same as training data provided
 // in the previous version of JVnSegmenter (v.1.0)
 /**
  * The Class IOB2DataReader.
@@ -50,7 +49,6 @@ public class IOB2DataReader extends DataReader {
 	 */
 	@Override
 	public List<Sentence> readFile(String datafile) {
-		// TODO Auto-generated method stub
 		// read all data into a data string
 		String dataStr = "";
 		try{
@@ -62,7 +60,7 @@ public class IOB2DataReader extends DataReader {
 				System.out.println("Line " + count++);
 				dataStr += line + "\n";
 			}
-			in.close();			
+			in.close();
 		}
 		catch (Exception e){
 			System.out.println(e.getMessage());
@@ -76,17 +74,16 @@ public class IOB2DataReader extends DataReader {
 	 */
 	@Override
 	public List<Sentence> readString(String dataStr) {
-		// TODO Auto-generated method stub
 		dataStr = dataStr + "$";
 		String  [] lines = dataStr.split("\\n");
-		
+
 		List<Sentence> data = new ArrayList<Sentence>();
 		Sentence sent = new Sentence();
 		for (String line : lines){
 			System.out.println(".");
-			if (line.isEmpty() || line.equalsIgnoreCase("$")){								
+			if (line.isEmpty() || line.equalsIgnoreCase("$")){
 				data.add(sent);
-				sent = new Sentence();				
+				sent = new Sentence();
 			}
 			else{
 				StringTokenizer tk = new StringTokenizer(line, "\t");

@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -29,24 +29,20 @@ package jflexcrf;
 import java.io.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Option.
- */
 public class Option {
-    
+
     /** The Constant FIRST_ORDER. */
     static public final int FIRST_ORDER = 1;
     // second-order Markov is not supported currently
     /** The Constant SECOND_ORDER. */
     static public final int SECOND_ORDER = 2;
-    
+
     /** The Constant inputSeparator. */
     public static final String inputSeparator = "|";
-    
+
     /** The Constant outputSeparator. */
     public static final String outputSeparator = "|";
-    
+
     // model directory, default is current dir
     /** The model dir. */
     public String modelDir = ".";
@@ -56,16 +52,16 @@ public class Option {
     // option file
     /** The option file. */
     public final String optionFile = "option.txt";
-    
+
     /** The order. */
     public int order = FIRST_ORDER;	// 1: first-order Markov; 2: second-order Markov
-    
+
     /**
      * Instantiates a new option.
      */
     public Option() {
     }
-    
+
     /**
      * Instantiates a new option.
      *
@@ -78,7 +74,7 @@ public class Option {
 	    this.modelDir = modelDir;
 	}
     }
-    
+
     /**
      * Read options.
      *
@@ -88,12 +84,12 @@ public class Option {
 	String filename = modelDir + File.separator + optionFile;
 	BufferedReader fin = null;
 	String line;
-	
+
 	try {
 	    fin = new BufferedReader(new FileReader(filename));
 
 	    System.out.println("Reading options ...");
-	    	    
+
 	    // read option lines
 	    while ((line = fin.readLine()) != null) {
 		String trimLine = line.trim();
@@ -101,34 +97,34 @@ public class Option {
 		    // comment line
 		    continue;
 		}
-		
+
 		StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
 		int len = strTok.countTokens();
 		if (len != 2) {
 		    // invalid parameter line, ignore it
 		    continue;
 		}
-		
+
 		String strOpt = strTok.nextToken();
 		String strVal = strTok.nextToken();
-		
+
 		if (strOpt.compareToIgnoreCase("order") == 0) {
 		    int numTemp = Integer.parseInt(strVal);
 		    order = numTemp;
-		}		
+		}
 	    }
-	    
+
 	    System.out.println("Reading options completed!");
-	
+
 	} catch (IOException e) {
 	    System.out.println("Couldn't open and read option file: " + optionFile);
 	    System.out.println(e.toString());
 	    return false;
 	}
-	
-	return true;	
+
+	return true;
     }
-    
+
     /**
      * Open model file.
      *
@@ -137,16 +133,16 @@ public class Option {
     public BufferedReader openModelFile() {
 	String filename = modelDir + File.separator + modelFile;
 	BufferedReader fin = null;
-	
+
 	try {
 	    fin = new BufferedReader(new FileReader(filename));
-	    
+
 	} catch (IOException e) {
 	    System.out.println("Couldn't open model file: " + filename);
 	    System.out.println(e.toString());
 	    fin = null;
 	}
-	
+
 	return fin;
     }
 

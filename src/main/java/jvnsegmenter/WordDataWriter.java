@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -33,10 +33,6 @@ import java.util.List;
 import jvntextpro.data.DataWriter;
 import jvntextpro.data.Sentence;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class WordDataWriter.
- */
 public class WordDataWriter extends DataWriter {
 
 	/* (non-Javadoc)
@@ -52,7 +48,7 @@ public class WordDataWriter extends DataWriter {
 			out.close();
 		}
 		catch (Exception e){
-			
+
 		}
 	}
 
@@ -64,7 +60,7 @@ public class WordDataWriter extends DataWriter {
 		String ret = "";
 		for (int i = 0; i < lblSeqs.size(); ++i){
 			Sentence sent = (Sentence) lblSeqs.get(i);
-			
+
 			boolean start = true;
 			String word = "";
 			String sentStr = "";
@@ -76,20 +72,20 @@ public class WordDataWriter extends DataWriter {
 				else if (start && curTag.equalsIgnoreCase("I-W")){
 					start = false;
 				}
-				
+
 				if (start){
 					sentStr  += " " + word;
 					word = sent.getWordAt(j);
 				}
 				else {
 					word = word + "_" + sent.getWordAt(j);
-				}			
+				}
 			}
 			sentStr += " " + word;
-			ret = ret + "\n" + sentStr.trim();			
-		}		
-		
-		return ret.trim();		
+			ret = ret + "\n" + sentStr.trim();
+		}
+
+		return ret.trim();
 	}
 
 }

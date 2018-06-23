@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -30,34 +30,30 @@ package jmaxent;
 import java.io.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class FeatureGen.
- */
 public class FeatureGen {
-    
+
     /** The features. */
     List features = null;	// list of features
-    
+
     /** The fmap. */
     Map fmap = null;		// feature map
-    
+
     /** The option. */
     Option option = null;	// option object
-    
+
     /** The data. */
     Data data = null;		// data object
-    
+
     /** The dict. */
     Dictionary dict = null;	// dictionary object
 
     // for scan feature only
     /** The current features. */
     List currentFeatures = null;
-    
+
     /** The current feature idx. */
     int currentFeatureIdx = 0;
-        
+
     /**
      * Instantiates a new feature gen.
      *
@@ -70,7 +66,7 @@ public class FeatureGen {
 	this.data = data;
 	this.dict = dict;
     }
-    
+
     // adding a feature
     /**
      * Adds the feature.
@@ -81,7 +77,7 @@ public class FeatureGen {
 	f.strId2IdxAdd(fmap);
 	features.add(f);
     }
-    
+
     // generating features
     /**
      * Generate features.
@@ -91,74 +87,74 @@ public class FeatureGen {
 	    features.clear();
 	} else {
 	    features = new ArrayList();
-	}		
-	
+	}
+
 	if (fmap != null) {
-	    fmap.clear(); 
+	    fmap.clear();
 	} else {
 	    fmap = new HashMap();
-	}	
-	
+	}
+
 	if (currentFeatures != null) {
 	    currentFeatures.clear();
 	} else {
 	    currentFeatures = new ArrayList();
 	}
-	
+
 	if (data.trnData == null || dict.dict == null) {
 	    System.out.println("No data or dictionary for generating features");
 	    return;
 	}
-	
+
 	// scan over data list
 	for (int i = 0; i < data.trnData.size(); i++) {
 	    Observation obsr = (Observation)data.trnData.get(i);
-	    
+
 	    for (int j = 0; j < obsr.cps.length; j++) {
 		Element elem = null;
 		CountFIdx cntFIdx = null;
-		
+
 		elem = (Element)dict.dict.get(new Integer(obsr.cps[j]));
 		if (elem != null) {
 		    if (elem.count <= option.cpRareThreshold) {
 			// skip this context predicate, it is too rare
 			continue;
 		    }
-		    
+
 		    cntFIdx = (CountFIdx)elem.lbCntFidxes.get(new Integer(obsr.humanLabel));
 		    if (cntFIdx != null) {
 			if (cntFIdx.count <= option.fRareThreshold) {
 			    // skip this feature, it is too rare
 			    continue;
-			}			
-			
+			}
+
 		    } else {
 			// not found in the dictionary, then skip
 			continue;
-		    }		    
-		    
+		    }
+
 		} else {
 		    // not found in the dictionary, then skip
 		    continue;
 		}
-		
-		// update the feature		
+
+		// update the feature
 		Feature f = new Feature(obsr.humanLabel, obsr.cps[j]);
 		f.strId2Idx(fmap);
 		if (f.idx < 0) {
 		    // new feature, add to the feature list
 		    addFeature(f);
-		    
+
 		    // update the feature index in the dictionary
 		    cntFIdx.fidx = f.idx;
 		    elem.chosen = 1;
 		}
 	    }
 	}
-	
+
 	option.numFeatures = features.size();
     }
-    
+
     /**
      * Num features.
      *
@@ -171,7 +167,7 @@ public class FeatureGen {
 	    return features.size();
 	}
     }
-    
+
     /**
      * Read features.
      *
@@ -184,21 +180,21 @@ public class FeatureGen {
 	} else {
 	    features = new ArrayList();
 	}
-	
+
 	if (fmap != null) {
-	    fmap.clear(); 
+	    fmap.clear();
 	} else {
 	    fmap = new HashMap();
 	}
-	
+
 	if (currentFeatures != null) {
 	    currentFeatures.clear();
 	} else {
 	    currentFeatures = new ArrayList();
 	}
-	
+
 	String line;
-	
+
 	// get the number of features
 	if ((line = fin.readLine()) == null) {
 	    System.out.println("Unknown number of features");
@@ -209,9 +205,9 @@ public class FeatureGen {
 	    System.out.println("Invalid number of features");
 	    return;
 	}
-	
+
 	System.out.println("Reading features ...");
-	
+
 	// main loop for reading features
 	for (int i = 0; i < numFeatures; i++) {
 	    line = fin.readLine();
@@ -219,17 +215,17 @@ public class FeatureGen {
 		// invalid feature line, ignore it
 		continue;
 	    }
-	    
+
 	    StringTokenizer strTok = new StringTokenizer(line, " ");
 	    if (strTok.countTokens() != 4) {
 		System.out.println(i + " invalid feature line ");
 		// invalid feature line, ignore it
 		continue;
 	    }
-	    
+
 	    // create a new feature by parsing the line
 	    Feature f = new Feature(line, data.cpStr2Int, data.lbStr2Int);
-	    
+
 	    Integer fidx = (Integer)fmap.get(f.strId);
 	    if (fidx == null) {
 		// insert the feature into the feature map
@@ -237,19 +233,19 @@ public class FeatureGen {
 		features.add(f);
 	    }
 	    else {
-	    fmap.put(f.strId, new Integer(f.idx));	    	
+	    fmap.put(f.strId, new Integer(f.idx));
 		features.add(f);
 	    }
 	}
-	
+
 	System.out.println("Reading " + Integer.toString(features.size()) + " features completed!");
-	
+
 	// read the line ###...
 	line = fin.readLine();
-	
+
 	option.numFeatures = features.size();
     }
-    
+
     /**
      * Write features.
      *
@@ -259,39 +255,39 @@ public class FeatureGen {
     public void writeFeatures(PrintWriter fout) throws IOException {
 	// write the number of features
 	fout.println(Integer.toString(features.size()));
-	
+
 	for (int i = 0; i < features.size(); i++) {
 	    Feature f = (Feature)features.get(i);
 	    fout.println(f.toString(data.cpInt2Str, data.lbInt2Str));
 	}
-	
+
 	// wirte the line ###...
 	fout.println(Option.modelSeparator);
     }
-    
+
     /**
      * Scan reset.
      */
     public void scanReset() {
 	currentFeatureIdx = 0;
-    }    
-    
+    }
+
     /**
      * Start scan features.
      *
      * @param obsr the obsr
      */
-    public void startScanFeatures(Observation obsr) {	
+    public void startScanFeatures(Observation obsr) {
 	currentFeatures.clear();
 	currentFeatureIdx = 0;
-	
+
 	// scan over all context predicates
 	for (int i = 0; i < obsr.cps.length; i++) {
 	    Element elem = (Element)dict.dict.get(new Integer(obsr.cps[i]));
 	    if (elem == null) {//this context predicate doesn't appear in the dictionary of training data
 		continue;
 	    }
-	    
+
 	    if (!(elem.isScanned)) {
 		// scan all labels for features
 		Iterator it = elem.lbCntFidxes.keySet().iterator();
@@ -303,20 +299,20 @@ public class FeatureGen {
 			Feature f = new Feature();
 			f.FeatureInit(labelInt.intValue(), obsr.cps[i]);
 			f.idx = cntFIdx.fidx;
-			
+
 			elem.cpFeatures.add(f);
-		    }	    
-		}		
-		
+		    }
+		}
+
 		elem.isScanned = true;
 	    }
-	    
+
 	    for (int j = 0; j < elem.cpFeatures.size(); j++) {
 		currentFeatures.add(elem.cpFeatures.get(j));
 	    }
-	}		
-    }    
-    
+	}
+    }
+
     /**
      * Checks for next feature.
      *
@@ -325,7 +321,7 @@ public class FeatureGen {
     public boolean hasNextFeature() {
 	return (currentFeatureIdx < currentFeatures.size());
     }
-    
+
     /**
      * Next feature.
      *
@@ -336,6 +332,6 @@ public class FeatureGen {
 	currentFeatureIdx++;
 	return f;
     }
-    
+
 } // end of class FeatureGen
 

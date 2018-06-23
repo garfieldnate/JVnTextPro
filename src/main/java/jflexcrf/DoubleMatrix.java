@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -26,27 +26,23 @@
 
 package jflexcrf;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DoubleMatrix.
- */
 public class DoubleMatrix {
-    
+
     /** The mtrx. */
     public double[][] mtrx = null;
-    
+
     /** The rows. */
     public int rows = 0;
-    
+
     /** The cols. */
     public int cols = 0;
-    
+
     /**
      * Instantiates a new double matrix.
      */
     public DoubleMatrix() {
     }
-    
+
     /**
      * Instantiates a new double matrix.
      *
@@ -58,7 +54,7 @@ public class DoubleMatrix {
 	this.cols = cols;
 	mtrx = new double[rows][cols];
     }
-    
+
     /**
      * Instantiates a new double matrix.
      *
@@ -68,10 +64,10 @@ public class DoubleMatrix {
      */
     public DoubleMatrix(int rows, int cols, double[][] mtrx) {
 	this.rows = rows;
-	this.cols = cols;	
+	this.cols = cols;
 	this.mtrx = new double[rows][cols];
     }
-    
+
     /**
      * Instantiates a new double matrix.
      *
@@ -79,16 +75,16 @@ public class DoubleMatrix {
      */
     public DoubleMatrix(DoubleMatrix dm) {
 	rows = dm.rows;
-	cols = dm.cols;	
+	cols = dm.cols;
 	mtrx = new double[rows][cols];
-	
+
 	for (int i = 0; i < rows; i++) {
 	    for (int j = 0; j < cols; j++) {
 		mtrx[i][j] = dm.mtrx[i][j];
 	    }
 	}
     }
-    
+
     /**
      * Assign.
      *
@@ -101,7 +97,7 @@ public class DoubleMatrix {
 	    }
 	}
     }
-    
+
     /**
      * Assign.
      *
@@ -113,7 +109,7 @@ public class DoubleMatrix {
 		mtrx[i][j] = dm.mtrx[i][j];
 	    }
 	}
-    }    
-    
+    }
+
 } // end of class DoubleMatrix
 

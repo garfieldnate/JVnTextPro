@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -26,6 +26,8 @@
  */
 package jvnsegmenter;
 
+import org.w3c.dom.Element;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -33,12 +35,6 @@ import java.util.Vector;
 import jvntextpro.data.Sentence;
 import jvntextpro.util.VnSyllParser;
 
-import org.w3c.dom.Element;
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class VietnameseContextGenerator.
- */
 public class VietnameseContextGenerator extends BasicContextGenerator{
 
 	//------------------------------
@@ -52,37 +48,37 @@ public class VietnameseContextGenerator extends BasicContextGenerator{
 	public VietnameseContextGenerator(Element node){
 		readFeatureParameters(node);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jvntextpro.data.ContextGenerator#getContext(jvntextpro.data.Sentence, int)
 	 */
 	@Override
 	public String[] getContext(Sentence sent, int pos) {
 		List<String> cps = new ArrayList<String>();
-		
-		for (int it = 0; it < cpnames.size(); ++it){			
+
+		for (int it = 0; it < cpnames.size(); ++it){
 			String cp = cpnames.get(it);
 			Vector<Integer> paras = this.paras.get(it);
 			String cpvalue = "";
-			
+
 			String word = "";
 			for (int i = 0; i < paras.size(); ++i) {
 				if (pos + paras.get(i) < 0 || pos + paras.get(i)>= sent.size()){
 					cpvalue = "";
 					continue;
 				}
-	
+
 				word += sent.getWordAt(pos + paras.get(i)) + " ";
 			}
 			word = word.trim().toLowerCase();
-			
+
 			VnSyllParser parser = new VnSyllParser(word);
 			if (!parser.isValidVnSyllable() && cp.equals("not_valid_vnsyll"))
 				cpvalue = "nvs:" + word;
-			
+
 			if (!cpvalue.equals("")) cps.add(cpvalue);
 		}
-		String [] ret = new String[cps.size()];		
+		String [] ret = new String[cps.size()];
 		return cps.toArray(ret);
 	}
 }

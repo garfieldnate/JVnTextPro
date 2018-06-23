@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -26,18 +26,14 @@
 
 package jflexcrf;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DoubleVector.
- */
 public class DoubleVector {
-    
+
     /** The vect. */
     public double[] vect = null;
-    
+
     /** The len. */
     public int len = 0;
-    
+
     /**
      * Instantiates a new double vector.
      */
@@ -45,7 +41,7 @@ public class DoubleVector {
 	len = 0;
 	vect = null;
     }
-    
+
     /**
      * Instantiates a new double vector.
      *
@@ -55,7 +51,7 @@ public class DoubleVector {
 	this.len = len;
 	vect = new double[len];
     }
-    
+
     /**
      * Instantiates a new double vector.
      *
@@ -69,7 +65,7 @@ public class DoubleVector {
 	    this.vect[i] = vect[i];
 	}
     }
-    
+
     /**
      * Instantiates a new double vector.
      *
@@ -82,7 +78,7 @@ public class DoubleVector {
 	    vect[i] = dv.vect[i];
 	}
     }
-    
+
     /**
      * Size.
      *
@@ -91,7 +87,7 @@ public class DoubleVector {
     public int size() {
 	return len;
     }
-    
+
     /**
      * Assign.
      *
@@ -102,7 +98,7 @@ public class DoubleVector {
 	    vect[i] = val;
 	}
     }
-    
+
     /**
      * Assign.
      *
@@ -113,7 +109,7 @@ public class DoubleVector {
 	    vect[i] = dv.vect[i];
 	}
     }
-    
+
     /**
      * Sum.
      *
@@ -124,9 +120,9 @@ public class DoubleVector {
 	for (int i = 0; i < len; i++) {
 	    res += vect[i];
 	}
-	return res;	
+	return res;
     }
-    
+
     /**
      * Comp mult.
      *
@@ -137,7 +133,7 @@ public class DoubleVector {
 	    vect[i] *= val;
 	}
     }
-    
+
     /**
      * Comp mult.
      *

@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -37,20 +37,16 @@ import org.w3c.dom.NodeList;
 
 import jvntextpro.data.ContextGenerator;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class BasicContextGenerator.
- */
 public abstract class BasicContextGenerator extends ContextGenerator {
 
 	// common variables
 	/** The cpnames. */
 	Vector<String> cpnames;
-	
+
 	/** The paras. */
 	Vector<Vector<Integer>> paras;
-	
-	// common template reader methods	
+
+	// common template reader methods
 	/**
 	 * Read feature parameters.
 	 *
@@ -62,23 +58,23 @@ public abstract class BasicContextGenerator extends ContextGenerator {
 			NodeList childrent = node.getChildNodes();
 			cpnames = new Vector<String>();
 			paras = new Vector<Vector<Integer>>();
-			
+
 			for (int i = 0; i < childrent.getLength(); i++)
 				if (childrent.item(i) instanceof Element) {
 					Element child = (Element) childrent.item(i);
 					String value = child.getAttribute("value");
-					
+
 					//parse the value and get the parameters
 					String [] parastr = value.split(":");
 					Vector<Integer> para = new Vector<Integer>();
 					for (int j = 3; j < parastr.length; ++j){
 						para.add(Integer.parseInt(parastr[j]));
 					}
-					
+
 					cpnames.add(parastr[2]);
 					paras.add(para);
 				}
-			
+
 		}
 		catch (Exception e){
 			System.out.println(e.getMessage());
@@ -96,7 +92,7 @@ public abstract class BasicContextGenerator extends ContextGenerator {
 	 */
 	public static Vector<Element> readFeatureNodes(String templateFile){
 		Vector<Element> feaTypes = new Vector<Element>();
-		
+
 		try {
 			// Read feature template file........
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -104,7 +100,7 @@ public abstract class BasicContextGenerator extends ContextGenerator {
 
 			InputStream feaTplStream = new FileInputStream(templateFile);
 			Document doc = builder.parse(feaTplStream);
-		
+
 			Element root = doc.getDocumentElement();
 			NodeList childrent = root.getChildNodes();
 			for (int i = 0; i < childrent.getLength(); i++)
@@ -115,9 +111,9 @@ public abstract class BasicContextGenerator extends ContextGenerator {
 		}
 		catch (Exception e){
 			System.out.println("Reading featuretemplate fail " + e.getMessage());
-			e.printStackTrace();			
+			e.printStackTrace();
 		}
-		
-		return feaTypes;		
+
+		return feaTypes;
 	}
 }

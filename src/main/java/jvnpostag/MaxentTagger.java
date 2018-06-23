@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -41,71 +41,68 @@ public class MaxentTagger implements POSTagger {
 	DataReader reader = new POSDataReader();
 	DataWriter writer = new POSDataWriter();
 	TaggingData dataTagger = new TaggingData();
-	
+
 	Classification classifier = null;
-	
+
 	public MaxentTagger(String modelDir){
 		init(modelDir);
 	}
 	public void init(String modeldir) {
-		// TODO Auto-generated method stub
 		dataTagger.addContextGenerator(new POSContextGenerator(modeldir + File.separator + "featuretemplate.xml"));
-		classifier = new Classification(modeldir);	
+		classifier = new Classification(modeldir);
 	}
 
 	public String tagging(String instr) {
-		// TODO Auto-generated method stub
 		System.out.println("tagging ....");
 		List<Sentence> data = reader.readString(instr);
 		for (int i = 0; i < data.size(); ++i){
-        	
+
     		Sentence sent = data.get(i);
     		for (int j = 0; j < sent.size(); ++j){
     			String [] cps = dataTagger.getContext(sent, j);
     			String label = classifier.classify(cps);
-    			
+
     			if (label.equalsIgnoreCase("Mrk")){
     				if (StringUtils.isPunc(sent.getWordAt(j)))
     					label = sent.getWordAt(j);
     				else label = "X";
     			}
-    			
+
     			sent.getTWordAt(j).setTag(label);
     		}
     	}
-		
+
 		return writer.writeString(data);
 	}
 
-	
+
 	public String tagging(File file) {
-		// TODO Auto-generated method stub
 		List<Sentence> data = reader.readFile(file.getPath());
 		for (int i = 0; i < data.size(); ++i){
-        	
+
     		Sentence sent = data.get(i);
     		for (int j = 0; j < sent.size(); ++j){
     			String [] cps = dataTagger.getContext(sent, j);
     			String label = classifier.classify(cps);
-    			
+
     			if (label.equalsIgnoreCase("Mrk")){
     				if (StringUtils.isPunc(sent.getWordAt(j)))
     					label = sent.getWordAt(j);
     				else label = "X";
     			}
-    			
-    			sent.getTWordAt(j).setTag(label);    
+
+    			sent.getTWordAt(j).setTag(label);
     			//System.out.println(sent.getTagAt(j));
     		}
     	}
-		
+
 		return writer.writeString(data);
 	}
 
 	public void setDataReader(DataReader reader){
 		this.reader = reader;
 	}
-	
+
 	public void setDataWriter(DataWriter writer){
 		this.writer = writer;
 	}

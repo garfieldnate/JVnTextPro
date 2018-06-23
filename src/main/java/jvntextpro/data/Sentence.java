@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -32,22 +32,18 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Sentence.
- */
 public class Sentence {
-	
+
 	/** The sentence. */
 	List<TWord> sentence = null;
-	
+
 	/**
 	 * Instantiates a new sentence.
 	 */
 	public Sentence(){
 		sentence = new ArrayList<TWord>();
 	}
-	
+
 	/**
 	 * Adds the t word.
 	 *
@@ -56,7 +52,7 @@ public class Sentence {
 	public void addTWord(TWord tword){
 		sentence.add(tword);
 	}
-	
+
 	/**
 	 * Adds the t word.
 	 *
@@ -67,7 +63,7 @@ public class Sentence {
 		TWord tword = new TWord(word, tag);
 		sentence.add(tword);
 	}
-	
+
 	/**
 	 * Adds the t word.
 	 *
@@ -76,7 +72,7 @@ public class Sentence {
 	public void addTWord(String word){
 		sentence.add(new TWord(word));
 	}
-	
+
 	/**
 	 * Gets the word at.
 	 *
@@ -86,7 +82,7 @@ public class Sentence {
 	public String getWordAt(int pos){
 		return sentence.get(pos).getWord();
 	}
-	
+
 	/**
 	 * Gets the tag at.
 	 *
@@ -96,7 +92,7 @@ public class Sentence {
 	public String getTagAt(int pos){
 		return sentence.get(pos).getTag();
 	}
-	
+
 	/**
 	 * Gets the t word at.
 	 *
@@ -106,14 +102,14 @@ public class Sentence {
 	public TWord getTWordAt(int pos){
 		return sentence.get(pos);
 	}
-	
+
 	/**
 	 * Clear.
 	 */
 	public void clear(){
 		sentence.clear();
 	}
-	
+
 	/**
 	 * Size.
 	 *
@@ -122,7 +118,7 @@ public class Sentence {
 	public int size(){
 		return sentence.size();
 	}
-	
+
 	//DEBUG
 	/**
 	 * Prints the.
@@ -131,10 +127,10 @@ public class Sentence {
 		for (int i = 0; i < sentence.size(); ++i){
 			sentence.get(i).print();
 		}
-		
+
 		System.out.print("\n");
 	}
-	
+
 	/**
 	 * Prints the.
 	 *

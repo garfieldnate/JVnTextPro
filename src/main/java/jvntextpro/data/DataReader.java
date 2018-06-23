@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -29,14 +29,11 @@ package jvntextpro.data;
 
 import java.util.List;
 
-
-// TODO: Auto-generated Javadoc
-//return list of sentences
 /**
- * The Class DataReader.
+ * Returns lists of sentences read from files or strings.
  */
 abstract public class DataReader {
-	
+
 	/**
 	 * Read file.
 	 *
@@ -44,7 +41,7 @@ abstract public class DataReader {
 	 * @return the list
 	 */
 	public abstract List<Sentence> readFile(String datafile);
-	
+
 	/**
 	 * Read string.
 	 *

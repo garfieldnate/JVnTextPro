@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -37,35 +37,32 @@ import jvntextpro.data.TaggingData;
 public class CRFTagger implements POSTagger {
 	DataReader reader = new POSDataReader();
 	DataWriter writer = new POSDataWriter();
-	
+
 	TaggingData dataTagger = new TaggingData();
-	
+
 	Labeling labeling = null;
-	
+
 	public CRFTagger(String modelDir){
 		init(modelDir);
 	}
-	
+
 	public void init(String modelDir) {
-		// TODO Auto-generated method stub
 		dataTagger.addContextGenerator(new POSContextGenerator(modelDir + File.separator + "featuretemplate.xml"));
 		labeling = new Labeling(modelDir, dataTagger, reader, writer);
 	}
 
 	public String tagging(String instr) {
-		// TODO Auto-generated method stub
 		return labeling.strLabeling(instr);
 	}
 
 	public String tagging(File file) {
-		// TODO Auto-generated method stub
 		return labeling.strLabeling(file);
 	}
-	
+
 	public void setDataReader(DataReader reader){
 		this.reader = reader;
 	}
-	
+
 	public void setDataWriter(DataWriter writer){
 		this.writer = writer;
 	}

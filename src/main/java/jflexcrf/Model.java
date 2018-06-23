@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -29,37 +29,33 @@ package jflexcrf;
 import java.io.*;
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Model.
- */
 public class Model {
-    
+
     /** The tagger opt. */
     public Option taggerOpt = null;
-    
+
     /** The tagger maps. */
     public Maps taggerMaps = null;
-    
+
     /** The tagger dict. */
     public Dictionary taggerDict = null;
-    
+
     /** The tagger f gen. */
     public FeatureGen taggerFGen = null;
-    
+
     /** The tagger vtb. */
     public Viterbi taggerVtb = null;
-    
+
     // feature weight
     /** The lambda. */
     double[] lambda = null;
-    
+
     /**
      * Instantiates a new model.
      */
     public Model() {
     }
-    
+
     /**
      * Instantiates a new model.
      *
@@ -69,15 +65,15 @@ public class Model {
      * @param taggerFGen the tagger f gen
      * @param taggerVtb the tagger vtb
      */
-    public Model(Option taggerOpt, Maps taggerMaps, Dictionary taggerDict, 
+    public Model(Option taggerOpt, Maps taggerMaps, Dictionary taggerDict,
 		FeatureGen taggerFGen, Viterbi taggerVtb) {
 	this.taggerOpt = taggerOpt;
 	this.taggerMaps = taggerMaps;
 	this.taggerDict = taggerDict;
 	this.taggerFGen = taggerFGen;
-	this.taggerVtb = taggerVtb;	
+	this.taggerVtb = taggerVtb;
     }
-    
+
     // load the model
     /**
      * Inits the.
@@ -88,39 +84,39 @@ public class Model {
 	// open model file to load model here ... complete later
 	BufferedReader fin = null;
 	String modelFile = taggerOpt.modelDir + File.separator + taggerOpt.modelFile;
-	
+
 	try {
 	    fin = new BufferedReader(new InputStreamReader(new FileInputStream(modelFile), "UTF-8"));
-	    
+
 	    // read context predicate map and label map
 	    taggerMaps.readCpMaps(fin);
-	    
+
 	    System.gc();
 
 	    taggerMaps.readLbMaps(fin);
-	    
+
 	    System.gc();
-	    
-	    // read dictionary 
+
+	    // read dictionary
 	    taggerDict.readDict(fin);
-	    
+
 	    System.gc();
-	    
+
 	    // read features
 	    taggerFGen.readFeatures(fin);
-	    
+
 	    System.gc();
-	    
+
 	    // close model file
 	    fin.close();
-	    
+
 	} catch (IOException e) {
 	    System.out.println("Couldn't open model file: " + modelFile);
 	    System.out.println(e.toString());
-	    
-	    return false;	    
+
+	    return false;
 	}
-	
+
 	// update feature weights
 	if (lambda == null) {
 	    int numFeatures = taggerFGen.numFeatures();
@@ -128,18 +124,18 @@ public class Model {
 	    for (int i = 0; i < numFeatures; i++) {
 		Feature f = (Feature)taggerFGen.features.get(i);
                 //System.out.println(f.idx);
-		lambda[f.idx] = f.wgt;                
+		lambda[f.idx] = f.wgt;
 	    }
 	}
-    
+
 	// call init method of Viterbi object
 	if (taggerVtb != null) {
 	    taggerVtb.init(this);
 	}
-	
+
 	return true;
     }
-    
+
     /**
      * Inference.
      *
@@ -148,7 +144,7 @@ public class Model {
     public void inference(List seq) {
 	taggerVtb.viterbiInference(seq);
     }
-    
+
     /**
      * Inference all.
      *
@@ -159,19 +155,19 @@ public class Model {
 
 	long start, stop, elapsed;
 	start = System.currentTimeMillis();
-	
+
 	for (int i = 0; i < data.size(); i++) {
 	    System.out.println("sequence " + Integer.toString(i + 1));
 	    List seq = (List)data.get(i);
-	    inference(seq);	    
+	    inference(seq);
 	}
-	
+
 	stop = System.currentTimeMillis();
 	elapsed = stop - start;
-	
+
 	System.out.println("Inference " + Integer.toString(data.size()) + " sequences completed!");
 	System.out.println("Inference time: " + Double.toString((double)elapsed / 1000) + " seconds");
     }
-    
+
 } // end of class Model
 

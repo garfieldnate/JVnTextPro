@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -29,20 +29,16 @@ package jvntextpro.data;
 
 import java.util.ArrayList;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class TaggingData.
- */
 public class TaggingData {
-	
+
 	/** The cntx gen vector. */
 	protected ArrayList<ContextGenerator> cntxGenVector = null;
-	
+
 	/**
 	 * Instantiates a new tagging data.
 	 */
-	public TaggingData(){		
-		cntxGenVector = new ArrayList<ContextGenerator>();		
+	public TaggingData(){
+		cntxGenVector = new ArrayList<ContextGenerator>();
 	}
 
 	/**
@@ -50,20 +46,20 @@ public class TaggingData {
 	 *
 	 * @param _cntxGenVector the _cntx gen vector
 	 */
-	public TaggingData(ArrayList<ContextGenerator> _cntxGenVector){		
+	public TaggingData(ArrayList<ContextGenerator> _cntxGenVector){
 		cntxGenVector = _cntxGenVector;
 	}
-	
+
 	/**
 	 * Instantiates a new tagging data.
 	 *
 	 * @param cntxGen the cntx gen
 	 */
-	public TaggingData(ContextGenerator cntxGen){		
+	public TaggingData(ContextGenerator cntxGen){
 		cntxGenVector = new ArrayList<ContextGenerator>();
 		cntxGenVector.add(cntxGen);
 	}
-	
+
 	/**
 	 * Adds the context generator.
 	 *
@@ -72,7 +68,7 @@ public class TaggingData {
 	public void addContextGenerator(ContextGenerator cntxGen){
 		cntxGenVector.add(cntxGen);
 	}
-	
+
 	/**
 	 * Gets the context.
 	 *
@@ -82,7 +78,7 @@ public class TaggingData {
 	 */
 	public String [] getContext (Sentence sent, int wordIdx){
 		ArrayList<String> tempCps = new ArrayList<String>();
-		
+
 		for (int i = 0; i < cntxGenVector.size(); ++i){
 			String [] context = cntxGenVector.get(i).getContext(sent, wordIdx);
 			if (context != null){
@@ -92,21 +88,21 @@ public class TaggingData {
 				}
 			}
 		}
-		
+
 		String [] tempCpsArray = new String[tempCps.size()];
 		return tempCps.toArray(tempCpsArray);
 	}
-	
+
 	/**
 	 * Gets the context str.
 	 *
 	 * @param sent the sentence
 	 * @param wordIdx the word index
-	 * @return the string representing contexts extracted at wordIdx of the sentence sent 
+	 * @return the string representing contexts extracted at wordIdx of the sentence sent
 	 */
 	public String getContextStr(Sentence sent, int wordIdx){
 		String cpStr = "";
-		
+
 		for (int i = 0; i < cntxGenVector.size(); ++i){
 			String [] context = cntxGenVector.get(i).getContext(sent, wordIdx);
 			if (context != null){
@@ -116,7 +112,7 @@ public class TaggingData {
 				}
 			}
 		}
-		
+
 		return cpStr.trim();
 	}
 }

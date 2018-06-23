@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -29,27 +29,23 @@ package jmaxent;
 
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Feature.
- */
 public class Feature {
 
     /** The idx. */
     public int idx = -1; // feature index
-    
+
     /** The str id. */
     public String strId = ""; // string identifier
-    
+
     /** The label. */
     public int label = -1; // label
-    
+
     /** The cp. */
     public int cp = -1; // context predicate
-    
+
     /** The val. */
     public float val = 1; // feature value
-    
+
     /** The wgt. */
     public double wgt = 0.0; // feature weight
 
@@ -58,7 +54,7 @@ public class Feature {
      */
     public Feature() {
     }
-    
+
     /**
      * Instantiates a new feature.
      *
@@ -68,7 +64,7 @@ public class Feature {
     public Feature(int label, int cp) {
 	FeatureInit(label, cp);
     }
-    
+
     /**
      * Instantiates a new feature.
      *
@@ -81,7 +77,7 @@ public class Feature {
 	strId2IdxAdd(fmap);
     }
 
-    // create a feature from a string (e.g., reading from model file)    
+    // create a feature from a string (e.g., reading from model file)
     /**
      * Instantiates a new feature.
      *
@@ -89,10 +85,10 @@ public class Feature {
      * @param cpStr2Int the cp str2 int
      * @param lbStr2Int the lb str2 int
      */
-    public Feature(String str, Map cpStr2Int, Map lbStr2Int) {	
+    public Feature(String str, Map cpStr2Int, Map lbStr2Int) {
 	FeatureInit(str, cpStr2Int, lbStr2Int);
     }
-    
+
     // create a feature from a string and add it to the feature map
     /**
      * Instantiates a new feature.
@@ -106,7 +102,7 @@ public class Feature {
 	FeatureInit(str, cpStr2Int, lbStr2Int);
 	strId2IdxAdd(fmap);
     }
-    
+
     /**
      * Feature init.
      *
@@ -118,7 +114,7 @@ public class Feature {
 	this.cp = cp;
 	strId = Integer.toString(label) + " " + Integer.toString(cp);
     }
-    
+
     /**
      * Feature init.
      *
@@ -129,27 +125,27 @@ public class Feature {
     public void FeatureInit(String str, Map cpStr2Int, Map lbStr2Int) {
 	StringTokenizer strTok = new StringTokenizer(str, " \t\r\n");
 	// <label> <cp> <idx> <wgt>
-	
+
 	int len = strTok.countTokens();
 	if (len != 4) {
 	    return;
 	}
-	
+
 	String labelStr = strTok.nextToken();
 	String cpStr = strTok.nextToken();
 	int idx = Integer.parseInt(strTok.nextToken());
 	float val = 1;
 	double wgt = Double.parseDouble(strTok.nextToken());
-	
+
 	Integer labelInt = (Integer)lbStr2Int.get(labelStr);
 	Integer cpInt = (Integer)cpStr2Int.get(cpStr);
 	FeatureInit(labelInt.intValue(), cpInt.intValue());
-	
+
 	this.idx = idx;
 	this.val = val;
 	this.wgt = wgt;
     }
-    
+
     // mapping from string identifier to feature index
     /**
      * Str id2 idx.
@@ -162,10 +158,10 @@ public class Feature {
 	if (idxInt != null) {
 	    this.idx = idxInt.intValue();
 	}
-	
+
 	return this.idx;
     }
-    
+
     // mapping from string identifier to feature index (adding feature to the map
     // if the mapping does not exist
     /**
@@ -176,15 +172,15 @@ public class Feature {
      */
     public int strId2IdxAdd(Map fmap) {
 	strId2Idx(fmap);
-	
+
 	if (idx < 0) {
 	    idx = fmap.size();
 	    fmap.put(strId, new Integer(idx));
 	}
-	
+
 	return idx;
     }
-    
+
     // return the feature index
     /**
      * Index.
@@ -195,7 +191,7 @@ public class Feature {
     public int index(Map fmap) {
 	return strId2Idx(fmap);
     }
-    
+
     // convert feature to string: "<label> <cp> <idx> <weight>"
     /**
      * To string.
@@ -206,21 +202,21 @@ public class Feature {
      */
     public String toString(Map cpInt2Str, Map lbInt2Str) {
 	String str = "";
-	
+
 	String labelStr = (String)lbInt2Str.get(new Integer(label));
 	if (labelStr != null) {
 	    str += labelStr + " ";
 	}
-	
+
 	String cpStr = (String)cpInt2Str.get(new Integer(cp));
 	if (cpStr != null) {
 	    str += cpStr + " ";
 	}
-	
+
 	str += Integer.toString(idx) + " " + Double.toString(wgt);
-	
+
 	return str;
     }
-    
+
 } // end of class Feature
 

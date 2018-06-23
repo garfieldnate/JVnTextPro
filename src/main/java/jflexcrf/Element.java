@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -26,30 +26,28 @@
 
 package jflexcrf;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Element.
- */
 public class Element {
-    
+
     /** The count. */
     public int count = 0;	// the number of occurrences of this context predicate
-    
+
     /** The chosen. */
     public int chosen = 0;	// indicating whether or not it is incorporated into the model
-    
+
     /** The lb cnt fidxes. */
     Map lbCntFidxes = null;	// map of labels to CountFeatureIdxes
-    
+
     /** The cp features. */
     List cpFeatures = null;	// features associated with this context predicates
-    
+
     /** The is scanned. */
     boolean isScanned = false;	// be scanned or not
-    
+
     /**
      * Instantiates a new element.
      */
@@ -57,6 +55,6 @@ public class Element {
 	lbCntFidxes = new HashMap();
 	cpFeatures = new ArrayList();
     }
-    
+
 } // end of class Element
 

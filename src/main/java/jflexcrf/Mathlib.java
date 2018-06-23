@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -26,12 +26,8 @@
 
 package jflexcrf;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Mathlib.
- */
 public class Mathlib {
-    
+
     /**
      * Mult.
      *
@@ -41,23 +37,23 @@ public class Mathlib {
      * @param y the y
      * @param isTransposed the is transposed
      */
-    public static void mult(int size, DoubleVector x, DoubleMatrix A, 
+    public static void mult(int size, DoubleVector x, DoubleMatrix A,
 		DoubleVector y, boolean isTransposed) {
 	// isTransposed = false:	x = A * y
 	// isTransposed = true:		x^t = y^t * A^t
-	
+
 	int i, j;
-	
+
 	if (!isTransposed) {
 	    // for beta
 	    // x = A * y
-	    for (i = 0; i < size; i++) {	
+	    for (i = 0; i < size; i++) {
 		x.vect[i] = 0;
 		for (j = 0; j < size; j++) {
 		    x.vect[i] += A.mtrx[i][j] * y.vect[j];
 		}
 	    }
-	    
+
 	} else {
 	    // for alpha
 	    // x^t = y^t * A^t
@@ -66,8 +62,8 @@ public class Mathlib {
 		for (j = 0; j < size; j++) {
 		    x.vect[i] += y.vect[j] * A.mtrx[j][i];
 		}
-	    }	    
-	}	
+	    }
+	}
     }
 
 } // end of class Mathlib

@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -29,40 +29,36 @@ package jmaxent;
 
 import java.util.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Observation.
- */
 public class Observation {
-    
+
     /** The original data. */
     public String originalData = "";
-    
+
     /** The cps. */
     public int[] cps = null;
-    
+
     /** The human label. */
     public int humanLabel = -1;
-    
+
     /** The model label. */
     public int modelLabel = -1;
-    
+
     //context predicate id representing the identity of current word
     //curWordCp == -1 means this word is not in the training data
     /** The cur word cp. */
-    public int curWordCp = -1; 
-    
+    public int curWordCp = -1;
+
     //curWordCp == -1 && dictLabel != -1, modelLabel = dictLabel
     /** The dict label. */
-    public int dictLabel = -1;     
-    
+    public int dictLabel = -1;
+
     /**
      * Instantiates a new observation.
      */
     public Observation() {
-	// do nothing	
+	// do nothing
     }
-    
+
     /**
      * Instantiates a new observation.
      *
@@ -70,12 +66,12 @@ public class Observation {
      */
     public Observation(int[] cps) {
 	this.cps = new int[cps.length];
-	
+
 	for (int i = 0; i < cps.length; i++) {
 	    this.cps[i] = cps[i];
 	}
     }
-    
+
     /**
      * Instantiates a new observation.
      *
@@ -83,14 +79,14 @@ public class Observation {
      */
     public Observation(List intCps) {
 	this.cps = new int[intCps.size()];
-	
+
 	for (int i = 0; i < intCps.size(); i++) {
 	    Integer intCp = (Integer)intCps.get(i);
-	    
+
 	    this.cps[i] = intCp.intValue();
 	}
     }
-    
+
     /**
      * Instantiates a new observation.
      *
@@ -100,12 +96,12 @@ public class Observation {
     public Observation(int humanLabel, int[] cps) {
 	this.humanLabel = humanLabel;
 	this.cps = new int[cps.length];
-	
+
 	for (int i = 0; i < cps.length; i++) {
 	    this.cps[i] = cps[i];
 	}
-    }    
-    
+    }
+
     /**
      * To string.
      *
@@ -119,9 +115,9 @@ public class Observation {
 	if (modelLabelStr != null) {
 	    res += Option.labelSeparator + modelLabelStr;
 	}
-	
+
 	return res;
     }
-    
+
 } // end of class Observation
 

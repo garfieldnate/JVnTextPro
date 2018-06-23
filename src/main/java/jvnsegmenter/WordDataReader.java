@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
- * 	Cam-Tu Nguyen 
+ *
+ * 	Cam-Tu Nguyen
  *  ncamtu@ecei.tohoku.ac.jp or ncamtu@gmail.com
  *
- *  Xuan-Hieu Phan  
- *  pxhieu@gmail.com 
+ *  Xuan-Hieu Phan
+ *  pxhieu@gmail.com
  *
  *  College of Technology, Vietnamese University, Hanoi
  * 	Graduate School of Information Sciences, Tohoku University
@@ -36,18 +36,14 @@ import java.util.StringTokenizer;
 import jvntextpro.data.DataReader;
 import jvntextpro.data.Sentence;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class WordDataReader.
- */
 public class WordDataReader extends DataReader{
-	
+
 	/** The is train reading. */
 	protected boolean isTrainReading = false;
-	
+
 	/** The tags. */
 	protected String [] tags = {"B-W", "I-W", "O"};
-	
+
 	//------------------------------------
 	// Constructor
 	//------------------------------------
@@ -58,7 +54,7 @@ public class WordDataReader extends DataReader{
 		// do nothing now
 		isTrainReading = false;
 	}
-	
+
 	/**
 	 * Instantiates a new word data reader.
 	 *
@@ -66,8 +62,8 @@ public class WordDataReader extends DataReader{
 	 */
 	public WordDataReader(boolean isTrainReading){
 		this.isTrainReading = isTrainReading;
-	}	
-	
+	}
+
 	//-------------------------------------
 	// Override methods
 	//-------------------------------------
@@ -79,17 +75,17 @@ public class WordDataReader extends DataReader{
 		try{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(datafile), "UTF-8"));
-			
+
 			String line = null;
 			List<Sentence> data = new ArrayList<Sentence>();
-			
-			while ((line = reader.readLine()) != null){				
+
+			while ((line = reader.readLine()) != null){
 				Sentence sentence = new Sentence();
-				
+
 				if (line.startsWith("#"))
 					continue;
-				
-				StringTokenizer tk = new StringTokenizer(line, " ");	
+
+				StringTokenizer tk = new StringTokenizer(line, " ");
 				while (tk.hasMoreTokens()){
 					String word = "", tag = null;
 					if (!isTrainReading){
@@ -109,7 +105,7 @@ public class WordDataReader extends DataReader{
 						}
 						sentence.addTWord(word, tag);
 					}
-				}				
+				}
 				data.add(sentence);
 			}
 			reader.close();
@@ -120,7 +116,7 @@ public class WordDataReader extends DataReader{
 			return new ArrayList<Sentence>(); // empty array
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jvntextpro.data.DataReader#readString(java.lang.String)
 	 */
@@ -129,11 +125,11 @@ public class WordDataReader extends DataReader{
 		List<Sentence> data = new ArrayList<Sentence>();
 		for (String line : lines){
 			Sentence sentence = new Sentence();
-			
+
 			if (line.startsWith("#"))
 				continue;
-			
-			StringTokenizer tk = new StringTokenizer(line, " ");	
+
+			StringTokenizer tk = new StringTokenizer(line, " ");
 			while (tk.hasMoreTokens()){
 				String word = "", tag = null;
 				if (!isTrainReading){
@@ -148,10 +144,10 @@ public class WordDataReader extends DataReader{
 					tag = sltk.nextToken();
 					sentence.addTWord(word, tag);
 				}
-			}	
+			}
 			data.add(sentence);
 		}
-		
+
 		return data;
 	}
 }

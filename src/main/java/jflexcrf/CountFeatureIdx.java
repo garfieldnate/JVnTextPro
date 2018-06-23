@@ -1,11 +1,11 @@
 /*
  Copyright (C) 2010 by
- * 
+ *
  * 	Cam-Tu Nguyen	ncamtu@ecei.tohoku.ac.jp ncamtu@gmail.com
- *  Xuan-Hieu Phan  pxhieu@gmail.com 
- 
+ *  Xuan-Hieu Phan  pxhieu@gmail.com
+
  *  College of Technology, Vietnamese University, Hanoi
- * 
+ *
  * 	Graduate School of Information Sciences
  * 	Tohoku University
  *
@@ -26,18 +26,14 @@
 
 package jflexcrf;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CountFeatureIdx.
- */
 public class CountFeatureIdx {
-    
+
     /** The count. */
     public int count = 0;
-    
+
     /** The fidx. */
     public int fidx = -1;
-    
+
     /**
      * Instantiates a new count feature idx.
      *
