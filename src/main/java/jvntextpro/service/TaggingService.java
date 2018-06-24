@@ -71,7 +71,7 @@ public class TaggingService extends Thread {
     /**
      * The option.
      */
-    private ServiceOption option;
+    private Options option;
 
     //---------------------------
     // Constructor
@@ -83,7 +83,7 @@ public class TaggingService extends Thread {
      * @param p      the port
      * @param option the service option (specifying which tools to be used for text processing)
      */
-    public TaggingService(int p, ServiceOption option) {
+    public TaggingService(int p, Options option) {
         this.port = p;
         this.option = option;
 
@@ -94,7 +94,7 @@ public class TaggingService extends Thread {
      *
      * @param option the service option
      */
-    public TaggingService(ServiceOption option) {
+    public TaggingService(Options option) {
         this.option = option;
     }
 
@@ -173,7 +173,7 @@ public class TaggingService extends Thread {
      * @param args the arguments
      */
     public static void main(String[] args) {
-        ServiceOption option = new ServiceOption();
+        Options option = new Options();
         CmdLineParser parser = new CmdLineParser(option);
 
         if (args.length == 0) {
@@ -183,21 +183,21 @@ public class TaggingService extends Thread {
         }
         new TaggingService(option).run();
     }
-}
 
-class ServiceOption {
-    @Option(name = "-modeldir", usage = "Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
-    String modelDir;
+    private static class Options {
+        @Option(name = "-modeldir", usage = "Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
+        String modelDir;
 
-    @Option(name = "-senseg", usage = "Specify if doing sentence segmentation is set or not, not set by default")
-    boolean doSenSeg = false;
+        @Option(name = "-senseg", usage = "Specify if doing sentence segmentation is set or not, not set by default")
+        boolean doSenSeg = false;
 
-    @Option(name = "-wordseg", usage = "Specify if doing word segmentation is set or not, not set by default")
-    boolean doWordSeg = false;
+        @Option(name = "-wordseg", usage = "Specify if doing word segmentation is set or not, not set by default")
+        boolean doWordSeg = false;
 
-    @Option(name = "-sentoken", usage = "Specify if doing sentence tokenization is set or not, not set by default")
-    boolean doSenToken = false;
+        @Option(name = "-sentoken", usage = "Specify if doing sentence tokenization is set or not, not set by default")
+        boolean doSenToken = false;
 
-    @Option(name = "-postag", usage = "Specify if doing pos tagging or not is set or not, not set by default")
-    boolean doPosTagging = false;
+        @Option(name = "-postag", usage = "Specify if doing pos tagging or not is set or not, not set by default")
+        boolean doPosTagging = false;
+    }
 }

@@ -44,7 +44,7 @@ public class JVnTextProTest {
     private static CompositeUnicode2Unicode conversion;
     private static JVnTextPro vnTextPro = new JVnTextPro();
 
-    private static void init(JVnTextProTestOption option) throws IOException, InitializationException {
+    private static void init(Options option) throws IOException, InitializationException {
         vnTextPro.initSenTokenization();
         conversion = new CompositeUnicode2Unicode();
 
@@ -98,27 +98,27 @@ public class JVnTextProTest {
      * @param args the arguments
      */
     public static void main(String[] args) throws IOException, InitializationException {
-        JVnTextProTestOption option = parseArguments(args);
-        if (option == null) {
+        Options options = parseArguments(args);
+        if (options == null) {
             return;
         }
 
-        init(option);
+        init(options);
 
-        if (Files.isDirectory(option.inputPath)) {
+        if (Files.isDirectory(options.inputPath)) {
             // TODO: would be better to just accept the blob, but can we break backwards compatibility?
-            for(Path child: Files.newDirectoryStream(option.inputPath, "*" + option.fileType)) {
+            for(Path child: Files.newDirectoryStream(options.inputPath, "*" + options.fileType)) {
                 processFile(child);
             }
         } else {
             //Read and process file
-            processFile(option.inputPath);
+            processFile(options.inputPath);
         }
     }
 
-    private static JVnTextProTestOption parseArguments(String[] args) {
-        JVnTextProTestOption option = new JVnTextProTestOption();
-        CmdLineParser parser = new CmdLineParser(option);
+    private static Options parseArguments(String[] args) {
+        Options options = new Options();
+        CmdLineParser parser = new CmdLineParser(options);
         try {
             parser.parseArgument(args);
         } catch (CmdLineException cle) {
@@ -127,29 +127,29 @@ public class JVnTextProTest {
             parser.printUsage(System.out);
             return null;
         }
-        return option;
+        return options;
     }
-}
 
-class JVnTextProTestOption {
-    @Option(name = "-input", required = true, usage = "(required) Specify input file/directory")
-    Path inputPath;
+    private static class Options {
+        @Option(name = "-input", required = true, usage = "(required) Specify input file/directory")
+        Path inputPath;
 
-    @Option(name = "-filetype", usage = "Specify file types to process (in the case -input is a directory")
-    String fileType = ".txt";
+        @Option(name = "-filetype", usage = "Specify file types to process (in the case -input is a directory")
+        String fileType = ".txt";
 
-    @Option(name = "-modeldir", usage = "Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
-    Path modelDir;
+        @Option(name = "-modeldir", usage = "Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
+        Path modelDir;
 
-    @Option(name = "-senseg", usage = "Specify if doing sentence segmentation is set or not, not set by default")
-    boolean doSenSeg = false;
+        @Option(name = "-senseg", usage = "Specify if doing sentence segmentation is set or not, not set by default")
+        boolean doSenSeg = false;
 
-    @Option(name = "-wordseg", usage = "Specify if doing word segmentation is set or not, not set by default")
-    boolean doWordSeg = false;
+        @Option(name = "-wordseg", usage = "Specify if doing word segmentation is set or not, not set by default")
+        boolean doWordSeg = false;
 
-    @Option(name = "-sentoken", usage = "Run pre-normalizations on the text equivalent to that done for the Penn Treebank. Default false.")
-    boolean doSenToken = false;
+        @Option(name = "-sentoken", usage = "Run pre-normalizations on the text equivalent to that done for the Penn Treebank. Default false.")
+        boolean doSenToken = false;
 
-    @Option(name = "-postag", usage = "Specify if doing pos tagging or not is set or not, not set by default")
-    boolean doPosTagging = false;
+        @Option(name = "-postag", usage = "Specify if doing pos tagging or not is set or not, not set by default")
+        boolean doPosTagging = false;
+    }
 }
