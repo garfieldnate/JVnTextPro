@@ -132,6 +132,7 @@ public class JVnTextProTest {
                 }
             }
         } catch (CmdLineException cle) {
+            System.out.println("Error: " + cle.getLocalizedMessage());
             System.out.println("JVnTextProTest [options...] [arguments..]");
             parser.printUsage(System.out);
         } catch (Exception e) {
@@ -139,28 +140,27 @@ public class JVnTextProTest {
             e.printStackTrace();
         }
     }
-
 }
 
 class JVnTextProTestOption {
-    @Option(name = "-modeldir", usage = "(required) Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
-    File modelDir;
-
-    @Option(name = "-senseg", usage = " (optional) Specify if doing sentence segmentation is set or not, not set by default")
-    boolean doSenSeg = false;
-
-    @Option(name = "-wordseg", usage = "(optional) Specify if doing word segmentation is set or not, not set by default")
-    boolean doWordSeg = false;
-
-    @Option(name = "-sentoken", usage = "(optional) Specify if doing sentence tokenization is set or not, not set by default")
-    boolean doSenToken = false;
-
-    @Option(name = "-postag", usage = "(optional) Specify if doing pos tagging or not is set or not, not set by default")
-    boolean doPosTagging = false;
-
-    @Option(name = "-input", usage = "(required) Specify input file/directory")
+    @Option(name = "-input", required = true, usage = "(required) Specify input file/directory")
     File inFile;
 
-    @Option(name = "-filetype", usage = " (optional) Specify file types to process (in the case -input is a directory")
+    @Option(name = "-filetype", usage = "Specify file types to process (in the case -input is a directory")
     String fileType = ".txt";
+
+    @Option(name = "-modeldir", required = true, usage = "Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
+    File modelDir;
+
+    @Option(name = "-senseg", usage = "Specify if doing sentence segmentation is set or not, not set by default")
+    boolean doSenSeg = false;
+
+    @Option(name = "-wordseg", usage = "Specify if doing word segmentation is set or not, not set by default")
+    boolean doWordSeg = false;
+
+    @Option(name = "-sentoken", usage = "Run pre-normalizations on the text equivalent to that done for the Penn Treebank. Default false.")
+    boolean doSenToken = false;
+
+    @Option(name = "-postag", usage = "Specify if doing pos tagging or not is set or not, not set by default")
+    boolean doPosTagging = false;
 }
