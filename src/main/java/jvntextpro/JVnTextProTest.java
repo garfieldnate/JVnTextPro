@@ -35,6 +35,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
@@ -47,98 +48,94 @@ public class JVnTextProTest {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
-        JVnTextProTestOption option = new JVnTextProTestOption();
-        CmdLineParser parser = new CmdLineParser(option);
-
-        if (args.length == 0) {
-            System.out.println("JVnTextProTest [options...] [arguments..]");
-            parser.printUsage(System.out);
+    public static void main(String[] args) throws IOException {
+        JVnTextProTestOption option = parseArguments(args);
+        if (option == null) {
             return;
         }
 
         JVnTextPro vnTextPro = new JVnTextPro();
+        vnTextPro.initSenTokenization();
         CompositeUnicode2Unicode conversion = new CompositeUnicode2Unicode();
 
-        try {
-            parser.parseArgument(args);
+        if (option.doSenSeg) {
+            vnTextPro.initSenSegmenter(option.modelDir.getPath() + File.separator + "jvnsensegmenter");
+        }
+
+        if (option.doSenToken) {
             vnTextPro.initSenTokenization();
+        }
 
-            if (option.doSenSeg) {
-                vnTextPro.initSenSegmenter(option.modelDir.getPath() + File.separator + "jvnsensegmenter");
+        if (option.doWordSeg) {
+            vnTextPro.initSegmenter(option.modelDir.getPath() + File.separator + "jvnsegmenter");
+        }
+
+
+        if (option.doPosTagging) {
+            vnTextPro.initPosTagger(
+                option.modelDir.getPath() + File.separator + "jvnpostag" + File.separator + "maxent");
+        }
+
+
+        if (option.inFile.isFile()) {
+            //REad file, process and write file
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(option.inFile),
+                                                                             "UTF-8"
+            ));
+
+            String line;
+            StringBuilder sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                line = conversion.convert(line);
+                sb.append(vnTextPro.process(line).trim()).append("\n");
             }
 
-            if (option.doSenToken) {
-                vnTextPro.initSenTokenization();
-            }
+            reader.close();
 
-            if (option.doWordSeg) {
-                vnTextPro.initSegmenter(option.modelDir.getPath() + File.separator + "jvnsegmenter");
-            }
+            //write file
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                option.inFile.getPath() + ".pro"), "UTF-8"));
+            writer.write(sb.toString());
+            writer.close();
+        } else if (option.inFile.isDirectory()) {
+            File[] children = option.inFile.listFiles();
 
+            for (File child : children) {
+                if (!child.getName().endsWith(option.fileType)) continue;
 
-            if (option.doPosTagging) {
-                vnTextPro.initPosTagger(
-                    option.modelDir.getPath() + File.separator + "jvnpostag" + File.separator + "maxent");
-            }
-
-
-            if (option.inFile.isFile()) {
                 //REad file, process and write file
-                BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(option.inFile),
-                    "UTF-8"
-                ));
-                String line, ret = "";
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(child), "UTF-8"));
 
+                String line;
+                StringBuilder sb = new StringBuilder();
                 while ((line = reader.readLine()) != null) {
                     line = conversion.convert(line);
-                    ret += vnTextPro.process(line).trim() + "\n";
-
+                    sb.append(vnTextPro.process(line).trim()).append("\n");
                 }
 
                 reader.close();
 
                 //write file
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    option.inFile.getPath() + ".pro"), "UTF-8"));
-                writer.write(ret);
+                    child.getPath() + ".pro"), "UTF-8"));
+                writer.write(sb.toString());
                 writer.close();
-            } else if (option.inFile.isDirectory()) {
-                File[] childs = option.inFile.listFiles();
-
-                for (File child : childs) {
-                    if (!child.getName().endsWith(option.fileType)) continue;
-
-                    //REad file, process and write file
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(child),
-                        "UTF-8"
-                    ));
-                    String line, ret = "";
-
-                    while ((line = reader.readLine()) != null) {
-                        line = conversion.convert(line);
-                        ret += vnTextPro.process(line).trim() + "\n";
-                    }
-
-                    reader.close();
-
-                    //write file
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                        child.getPath() + ".pro"), "UTF-8"));
-                    writer.write(ret);
-                    writer.close();
-                }
             }
+        }
+    }
+
+    private static JVnTextProTestOption parseArguments(String[] args) {
+        JVnTextProTestOption option = new JVnTextProTestOption();
+        CmdLineParser parser = new CmdLineParser(option);
+        try {
+            parser.parseArgument(args);
         } catch (CmdLineException cle) {
             System.out.println("Error: " + cle.getLocalizedMessage());
             System.out.println("JVnTextProTest [options...] [arguments..]");
             parser.printUsage(System.out);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            return null;
         }
+        return option;
     }
 }
 
