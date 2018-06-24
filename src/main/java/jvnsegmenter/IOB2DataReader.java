@@ -26,9 +26,11 @@
  */
 package jvnsegmenter;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -49,23 +51,9 @@ public class IOB2DataReader extends DataReader {
      * @see jvntextpro.data.DataReader#readFile(java.lang.String)
      */
     @Override
-    public List<Sentence> readFile(String datafile) {
-        // read all data into a data string
-        String dataStr = "";
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(datafile), "UTF-8"));
-            String line;
-            int count = 0;
-            while ((line = in.readLine()) != null) {
-                System.out.println("Line " + count++);
-                dataStr += line + "\n";
-            }
-            in.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
-        return readString(dataStr);
+    public List<Sentence> readFile(String datafile) throws IOException {
+        String dataString = FileUtils.readFileToString(new File(datafile), StandardCharsets.UTF_8);
+        return readString(dataString);
     }
 
     /* (non-Javadoc)
@@ -74,6 +62,7 @@ public class IOB2DataReader extends DataReader {
     @Override
     public List<Sentence> readString(String dataStr) {
         dataStr = dataStr + "$";
+        //TODO: won't work with Windows newlines
         String[] lines = dataStr.split("\\n");
 
         List<Sentence> data = new ArrayList<Sentence>();
@@ -85,8 +74,7 @@ public class IOB2DataReader extends DataReader {
                 sent = new Sentence();
             } else {
                 StringTokenizer tk = new StringTokenizer(line, "\t");
-                if (tk.countTokens() != 2) continue;
-                else {
+                if (tk.countTokens() == 2) {
                     String token = tk.nextToken();
                     String tag = tk.nextToken();
                     TWord tw = new TWord(token, tag);

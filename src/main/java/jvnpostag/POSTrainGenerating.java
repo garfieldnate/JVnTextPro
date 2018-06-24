@@ -74,7 +74,7 @@ public class POSTrainGenerating extends TrainDataGenerating {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) throws InitializationException {
+    public static void main(String[] args) throws InitializationException, IOException {
         //tagging
         if (args.length != 2) {
             System.out.println("POSTrainGenerating [template File] [File/Folder]");

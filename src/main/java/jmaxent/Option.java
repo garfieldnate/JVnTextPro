@@ -295,18 +295,9 @@ public class Option {
      *
      * @return the prints the writer
      */
-    public PrintWriter openTrainLogFile() {
+    public PrintWriter openTrainLogFile() throws IOException {
         String filename = modelDir + File.separator + trainLogFile;
-        PrintWriter fout = null;
-
-        try {
-            fout = new PrintWriter(new OutputStreamWriter((new FileOutputStream(filename)), "UTF-8"));
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return null;
-        }
-
-        return fout;
+        return new PrintWriter(new OutputStreamWriter((new FileOutputStream(filename)), "UTF-8"));
     }
 
     /**
@@ -324,19 +315,9 @@ public class Option {
      *
      * @return the prints the writer
      */
-    public PrintWriter createModelFile() {
+    public PrintWriter createModelFile() throws IOException {
         String filename = modelDir + File.separator + modelFileName;
-        PrintWriter fout = null;
-
-        try {
-            fout = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
-
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return null;
-        }
-
-        return fout;
+        return new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
     }
 
     /**

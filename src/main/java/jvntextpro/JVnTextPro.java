@@ -78,8 +78,7 @@ public class JVnTextPro {
     /**
      * Instantiates a new j vn text pro.
      */
-    public JVnTextPro() {
-        //do nothing
+    public JVnTextPro() throws IOException {
         convertor = new CompositeUnicode2Unicode();
     }
 
@@ -110,11 +109,11 @@ public class JVnTextPro {
      * @param modelDir the model dir
      * @return true if the initialization is successful and false otherwise
      */
-    public void initSegmenter(Path modelDir) {
+    public void initSegmenter(Path modelDir) throws InitializationException {
         vnSegmenter = new CRFSegmenter(modelDir);
     }
 
-    public void initSegmenter() {
+    public void initSegmenter() throws InitializationException {
         vnSegmenter = new CRFSegmenter();
     }
 
@@ -169,23 +168,17 @@ public class JVnTextPro {
      * @param infile data file
      * @return processed text
      */
-    public String process(File infile) {
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(infile), "UTF-8"));
+    public String process(File infile) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(infile), "UTF-8"));
 
-            String line, data = "";
-            while ((line = reader.readLine()) != null) {
-                data += line + "\n";
-            }
-            reader.close();
-
-            String ret = process(data);
-            return ret;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return "";
+        String line;
+        StringBuilder data = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            data.append(line).append("\n");
         }
+        reader.close();
+
+        return process(data.toString());
     }
 
     /**

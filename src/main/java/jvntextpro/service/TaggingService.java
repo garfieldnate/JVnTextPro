@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.util.Vector;
 
 import jvntextpro.JVnTextPro;
+import vnu.jvntext.utils.InitializationException;
 
 public class TaggingService extends Thread {
 
@@ -101,29 +102,23 @@ public class TaggingService extends Thread {
     /**
      * Inits the.
      */
-    private void init() {
-        try {
-            vnTextPro = new JVnTextPro();
+    private void init() throws IOException, InitializationException {
+        vnTextPro = new JVnTextPro();
 
-            if (option.doSenToken) vnTextPro.initSenTokenization();
+        if (option.doSenToken) vnTextPro.initSenTokenization();
 
-            if (option.doSenSeg) vnTextPro.initSenSegmenter(Paths.get(option.modelDir, "jvnsegmenter"));
+        if (option.doSenSeg) vnTextPro.initSenSegmenter(Paths.get(option.modelDir, "jvnsegmenter"));
 
-            if (option.doWordSeg) vnTextPro.initSegmenter(Paths.get(option.modelDir, "jvnsegmenter"));
+        if (option.doWordSeg) vnTextPro.initSegmenter(Paths.get(option.modelDir, "jvnsegmenter"));
 
-            if (option.doPosTagging)
-                vnTextPro.initPosTagger(Paths.get(option.modelDir, "jvnpostag", "maxent"));
+        if (option.doPosTagging) vnTextPro.initPosTagger(Paths.get(option.modelDir, "jvnpostag", "maxent"));
 
 			/* start session threads*/
-            pool = new Vector<Session>();
-            for (int i = 0; i < maxNSession; ++i) {
-                Session w = new Session(vnTextPro);
-                w.start(); //start a pool of session threads at start-up time rather than on demand for efficiency
-                pool.add(w);
-            }
-        } catch (Exception e) {
-            System.out.println("Error while initilizing service:" + e.getMessage());
-            e.printStackTrace();
+        pool = new Vector<Session>();
+        for (int i = 0; i < maxNSession; ++i) {
+            Session w = new Session(vnTextPro);
+            w.start(); //start a pool of session threads at start-up time rather than on demand for efficiency
+            pool.add(w);
         }
     }
 
@@ -131,8 +126,9 @@ public class TaggingService extends Thread {
     // main methods
     //------------------------
     /* (non-Javadoc)
-	 * @see java.lang.Thread#run()
+     * @see java.lang.Thread#run()
 	 */
+    @Override
     public void run() {
         System.out.println("Starting tagging service!");
         try {
@@ -142,28 +138,25 @@ public class TaggingService extends Thread {
             System.exit(1);
         }
 
-        init();
-        System.out.println("Tagging service is started successfully");
-        while (true) {
-            Socket incoming = null;
-            try {
-                incoming = this.socket.accept();
-                Session w = null;
-                synchronized (pool) {
-                    if (pool.isEmpty()) {
-                        w = new Session(vnTextPro);
-                        w.setSocket(incoming); //additional sessions
-                        w.start();
-                    } else {
-                        w = pool.elementAt(0);
-                        pool.removeElementAt(0);
-                        w.setSocket(incoming);
-                    }
+        try {
+            init();
+            System.out.println("Tagging service is started successfully");
+            Socket incoming;
+            incoming = this.socket.accept();
+            Session w;
+            synchronized (pool) {
+                if (pool.isEmpty()) {
+                    w = new Session(vnTextPro);
+                    w.setSocket(incoming); //additional sessions
+                    w.start();
+                } else {
+                    w = pool.elementAt(0);
+                    pool.removeElementAt(0);
+                    w.setSocket(incoming);
                 }
-            } catch (IOException e) {
-                System.out.println(e);
-                e.printStackTrace();
             }
+        } catch (IOException | InitializationException e) {
+            e.printStackTrace();
         }
     }
 

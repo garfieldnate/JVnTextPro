@@ -30,8 +30,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Paths;
+
+import vnu.jvntext.utils.InitializationException;
 
 public class WordSegmenting {
 
@@ -40,7 +43,7 @@ public class WordSegmenting {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InitializationException {
         displayCopyright();
         if (!checkArgs(args)) {
             displayHelp();
@@ -51,7 +54,6 @@ public class WordSegmenting {
         CRFSegmenter segmenter = new CRFSegmenter(Paths.get(args[1]));
 
         //tagging
-        try {
             System.out.println(args[2]);
             if (args[2].equalsIgnoreCase("-inputfile")) {
                 System.out.println(args[3]);
@@ -91,11 +93,6 @@ public class WordSegmenting {
                     writer.close();
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Error while segmenting");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     /**

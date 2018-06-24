@@ -34,7 +34,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 public class Model {
-
     /**
      * The tagger opt.
      */
@@ -96,42 +95,35 @@ public class Model {
      *
      * @return true, if successful
      */
-    public boolean init() {
+    public void init() throws IOException {
         // open model file to load model here ... complete later
         BufferedReader fin = null;
         String modelFile = taggerOpt.modelDir + File.separator + taggerOpt.modelFile;
 
-        try {
-            fin = new BufferedReader(new InputStreamReader(new FileInputStream(modelFile), "UTF-8"));
+        fin = new BufferedReader(new InputStreamReader(new FileInputStream(modelFile), "UTF-8"));
 
-            // read context predicate map and label map
-            taggerMaps.readCpMaps(fin);
+        // read context predicate map and label map
+        taggerMaps.readCpMaps(fin);
 
-            System.gc();
+        System.gc();
 
-            taggerMaps.readLbMaps(fin);
+        taggerMaps.readLbMaps(fin);
 
-            System.gc();
+        System.gc();
 
-            // read dictionary
-            taggerDict.readDict(fin);
+        // read dictionary
+        taggerDict.readDict(fin);
 
-            System.gc();
+        System.gc();
 
-            // read features
-            taggerFGen.readFeatures(fin);
+        // read features
+        taggerFGen.readFeatures(fin);
 
-            System.gc();
+        System.gc();
 
-            // close model file
-            fin.close();
+        // close model file
+        fin.close();
 
-        } catch (IOException e) {
-            System.out.println("Couldn't open model file: " + modelFile);
-            System.out.println(e.toString());
-
-            return false;
-        }
 
         // update feature weights
         if (lambda == null) {
@@ -148,8 +140,6 @@ public class Model {
         if (taggerVtb != null) {
             taggerVtb.init(this);
         }
-
-        return true;
     }
 
     /**

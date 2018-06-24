@@ -27,17 +27,22 @@
 package jvnsegmenter;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Vector;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import jflexcrf.Labeling;
 import jvntextpro.data.DataReader;
 import jvntextpro.data.DataWriter;
 import jvntextpro.data.TaggingData;
+import vnu.jvntext.utils.InitializationException;
 
 public class CRFSegmenter {
 
@@ -66,14 +71,14 @@ public class CRFSegmenter {
      *
      * @param modelDir the model dir
      */
-    public CRFSegmenter(Path modelDir) {
+    public CRFSegmenter(Path modelDir) throws InitializationException {
         init(modelDir);
     }
 
     /**
      * Instantiates a new cRF segmenter.
      */
-    public CRFSegmenter() {
+    public CRFSegmenter() throws InitializationException {
         init();
     }
 
@@ -82,40 +87,44 @@ public class CRFSegmenter {
      *
      * @param modelDir the model dir
      */
-    public void init(Path modelDir) {
+    private void init(Path modelDir) throws InitializationException {
         System.out.println("Initializing JVnSegmenter from " + modelDir + "...");
         //Read feature template file
         Path templateFile = modelDir.resolve("featuretemplate.xml");
-        Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
+        try {
+            Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
 
-        for (int i = 0; i < nodes.size(); ++i) {
-            Element node = nodes.get(i);
-            String cpType = node.getAttribute("value");
-            BasicContextGenerator contextGen = null;
+            for (int i = 0; i < nodes.size(); ++i) {
+                Element node = nodes.get(i);
+                String cpType = node.getAttribute("value");
+                BasicContextGenerator contextGen = null;
 
-            if (cpType.equals("Conjunction")) {
-                contextGen = new ConjunctionContextGenerator(node);
-            } else if (cpType.equals("Lexicon")) {
-                contextGen = new LexiconContextGenerator(node);
-                LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
-                LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
-                LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
-            } else if (cpType.equals("Regex")) {
-                contextGen = new RegexContextGenerator(node);
-            } else if (cpType.equals("SyllableFeature")) {
-                contextGen = new SyllableContextGenerator(node);
-            } else if (cpType.equals("ViSyllableFeature")) {
-                contextGen = new VietnameseContextGenerator(node);
+                if (cpType.equals("Conjunction")) {
+                    contextGen = new ConjunctionContextGenerator(node);
+                } else if (cpType.equals("Lexicon")) {
+                    contextGen = new LexiconContextGenerator(node);
+                    LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
+                    LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
+                    LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
+                } else if (cpType.equals("Regex")) {
+                    contextGen = new RegexContextGenerator(node);
+                } else if (cpType.equals("SyllableFeature")) {
+                    contextGen = new SyllableContextGenerator(node);
+                } else if (cpType.equals("ViSyllableFeature")) {
+                    contextGen = new VietnameseContextGenerator(node);
+                }
+
+                if (contextGen != null) dataTagger.addContextGenerator(contextGen);
             }
 
-            if (contextGen != null) dataTagger.addContextGenerator(contextGen);
+            //create context generators
+            labeling = new Labeling(modelDir, dataTagger, reader, writer);
+        } catch(ParserConfigurationException|SAXException|IOException e) {
+            throw new InitializationException(e);
         }
-
-        //create context generators
-        labeling = new Labeling(modelDir, dataTagger, reader, writer);
     }
 
-    public void init() {
+    public void init() throws InitializationException {
         Path modelDir;
         try {
             modelDir = Paths.get(CRFSegmenter.class.getResource("/" + CRFSegmenter.class.getPackage().getName()).toURI());
@@ -143,7 +152,7 @@ public class CRFSegmenter {
      * @param file the file
      * @return the string
      */
-    public String segmenting(File file) {
+    public String segmenting(File file) throws IOException {
         return labeling.strLabeling(file);
     }
 

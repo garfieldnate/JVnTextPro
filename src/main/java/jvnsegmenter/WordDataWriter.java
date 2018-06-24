@@ -28,6 +28,7 @@ package jvnsegmenter;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
@@ -35,19 +36,14 @@ import jvntextpro.data.DataWriter;
 import jvntextpro.data.Sentence;
 
 public class WordDataWriter extends DataWriter {
-
     /* (non-Javadoc)
      * @see jvntextpro.data.DataWriter#writeFile(java.util.List, java.lang.String)
      */
     @Override
-    public void writeFile(List lblSeqs, String filename) {
+    public void writeFile(List lblSeqs, String filename) throws IOException {
         String ret = writeString(lblSeqs);
-        try {
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
+        try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
             out.write(ret);
-            out.close();
-        } catch (Exception e) {
-
         }
     }
 
@@ -56,13 +52,13 @@ public class WordDataWriter extends DataWriter {
      */
     @Override
     public String writeString(List lblSeqs) {
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         for (int i = 0; i < lblSeqs.size(); ++i) {
             Sentence sent = (Sentence) lblSeqs.get(i);
 
             boolean start = true;
             String word = "";
-            String sentStr = "";
+            StringBuilder sentStr = new StringBuilder();
             for (int j = 0; j < sent.size(); ++j) {
                 String curTag = sent.getTagAt(j);
                 if (curTag.equalsIgnoreCase("B-W") || curTag.equalsIgnoreCase("O")) {
@@ -72,17 +68,17 @@ public class WordDataWriter extends DataWriter {
                 }
 
                 if (start) {
-                    sentStr += " " + word;
+                    sentStr.append(" ").append(word);
                     word = sent.getWordAt(j);
                 } else {
                     word = word + "_" + sent.getWordAt(j);
                 }
             }
-            sentStr += " " + word;
-            ret = ret + "\n" + sentStr.trim();
+            sentStr.append(" ").append(word);
+            ret.append("\n").append(sentStr.toString().trim());
         }
 
-        return ret.trim();
+        return ret.toString().trim();
     }
 
 }

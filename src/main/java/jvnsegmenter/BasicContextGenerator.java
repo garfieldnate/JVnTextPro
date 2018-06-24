@@ -29,7 +29,9 @@ package jvnsegmenter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,6 +39,7 @@ import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import jvntextpro.data.ContextGenerator;
 
@@ -61,34 +64,27 @@ public abstract class BasicContextGenerator extends ContextGenerator {
      * @param node the node
      * @return true, if successful
      */
-    protected boolean readFeatureParameters(Element node) {
-        try {
-            NodeList childrent = node.getChildNodes();
-            cpnames = new Vector<String>();
-            paras = new Vector<Vector<Integer>>();
+    protected void readFeatureParameters(Element node) {
+        NodeList childrent = node.getChildNodes();
+        cpnames = new Vector<String>();
+        paras = new Vector<Vector<Integer>>();
 
-            for (int i = 0; i < childrent.getLength(); i++)
-                if (childrent.item(i) instanceof Element) {
-                    Element child = (Element) childrent.item(i);
-                    String value = child.getAttribute("value");
+        for (int i = 0; i < childrent.getLength(); i++) {
+            if (childrent.item(i) instanceof Element) {
+                Element child = (Element) childrent.item(i);
+                String value = child.getAttribute("value");
 
-                    //parse the value and get the parameters
-                    String[] parastr = value.split(":");
-                    Vector<Integer> para = new Vector<Integer>();
-                    for (int j = 3; j < parastr.length; ++j) {
-                        para.add(Integer.parseInt(parastr[j]));
-                    }
-
-                    cpnames.add(parastr[2]);
-                    paras.add(para);
+                //parse the value and get the parameters
+                String[] parastr = value.split(":");
+                Vector<Integer> para = new Vector<Integer>();
+                for (int j = 3; j < parastr.length; ++j) {
+                    para.add(Integer.parseInt(parastr[j]));
                 }
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return false;
+                cpnames.add(parastr[2]);
+                paras.add(para);
+            }
         }
-        return true;
     }
 
     /**
@@ -97,28 +93,23 @@ public abstract class BasicContextGenerator extends ContextGenerator {
      * @param templateFile the template file
      * @return the vector
      */
-    public static Vector<Element> readFeatureNodes(Path templateFile) {
+    public static Vector<Element> readFeatureNodes(Path templateFile) throws IOException, SAXException, ParserConfigurationException {
         Vector<Element> feaTypes = new Vector<Element>();
 
-        try {
-            // Read feature template file........
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
+        // Read feature template file........
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
 
-            InputStream feaTplStream = Files.newInputStream(templateFile);
-            Document doc = builder.parse(feaTplStream);
+        InputStream feaTplStream = Files.newInputStream(templateFile);
+        Document doc = builder.parse(feaTplStream);
 
-            Element root = doc.getDocumentElement();
-            NodeList childrent = root.getChildNodes();
-            for (int i = 0; i < childrent.getLength(); i++)
-                if (childrent.item(i) instanceof Element) {
-                    Element child = (Element) childrent.item(i);
-                    feaTypes.add(child);
-                }
-        } catch (Exception e) {
-            System.out.println("Reading featuretemplate fail " + e.getMessage());
-            e.printStackTrace();
-        }
+        Element root = doc.getDocumentElement();
+        NodeList children = root.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++)
+            if (children.item(i) instanceof Element) {
+                Element child = (Element) children.item(i);
+                feaTypes.add(child);
+            }
 
         return feaTypes;
     }

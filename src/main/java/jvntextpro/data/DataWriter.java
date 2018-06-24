@@ -27,6 +27,7 @@
 
 package jvntextpro.data;
 
+import java.io.IOException;
 import java.util.List;
 
 abstract public class DataWriter {
@@ -37,7 +38,7 @@ abstract public class DataWriter {
      * @param lblSeqs  the lbl seqs
      * @param filename the filename
      */
-    public abstract void writeFile(List lblSeqs, String filename);
+    public abstract void writeFile(List lblSeqs, String filename) throws IOException;
 
     /**
      * Write string.

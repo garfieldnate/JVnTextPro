@@ -27,6 +27,7 @@
 
 package jvntextpro.data;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ abstract public class DataReader {
      * @param datafile the datafile
      * @return the list
      */
-    public abstract List<Sentence> readFile(String datafile);
+    public abstract List<Sentence> readFile(String datafile) throws IOException;
 
     /**
      * Read string.

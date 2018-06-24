@@ -57,49 +57,43 @@ public class POSTagging {
         else if (args[1].equalsIgnoreCase("maxent")) tagger = new MaxentTagger(Paths.get(modelDir));
 
         //tagging
-        try {
-            if (args[4].equalsIgnoreCase("-inputfile")) {
-                File inputFile = new File(args[5]);
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    inputFile.getPath() + ".pos"), "UTF-8"));
+        if (args[4].equalsIgnoreCase("-inputfile")) {
+            File inputFile = new File(args[5]);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                inputFile.getPath() + ".pos"), "UTF-8"));
 
-                String result = tagger.tagging(inputFile);
+            String result = tagger.tagging(inputFile);
 
-                writer.write(result);
-                writer.close();
-            } else { //input dir
-                String inputDir = args[5];
-                if (inputDir.endsWith(File.separator)) {
-                    inputDir = inputDir.substring(0, inputDir.length() - 1);
-                }
-
-                File dir = new File(inputDir);
-                String[] children = dir.list(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(".wseg");
-                    }
-                });
-
-                for (int i = 0; i < children.length; i++) {
-                    System.out.println("Tagging " + children[i]);
-                    String filename = inputDir + File.separator + children[i];
-                    if ((new File(filename)).isDirectory()) {
-                        continue;
-                    }
-
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                        filename + ".pos"), "UTF-8"));
-
-                    writer.write(tagger.tagging(new File(filename)));
-
-                    writer.close();
-                }
+            writer.write(result);
+            writer.close();
+        } else { //input dir
+            String inputDir = args[5];
+            if (inputDir.endsWith(File.separator)) {
+                inputDir = inputDir.substring(0, inputDir.length() - 1);
             }
-        } catch (Exception e) {
-            System.out.println("Error while tagging");
-            System.out.println(e.getMessage());
-        }
 
+            File dir = new File(inputDir);
+            String[] children = dir.list(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".wseg");
+                }
+            });
+
+            for (String child : children) {
+                System.out.println("Tagging " + child);
+                String filename = inputDir + File.separator + child;
+                if ((new File(filename)).isDirectory()) {
+                    continue;
+                }
+
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                    filename + ".pos"), "UTF-8"));
+
+                writer.write(tagger.tagging(new File(filename)));
+
+                writer.close();
+            }
+        }
     }
 
     public static boolean checkArgs(String[] args) {

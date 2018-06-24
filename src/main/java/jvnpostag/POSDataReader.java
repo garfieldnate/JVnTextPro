@@ -29,6 +29,7 @@ package jvnpostag;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,91 +62,85 @@ public class POSDataReader extends DataReader {
     // Override methods
     //-------------------------------------
     @Override
-    public List<Sentence> readFile(String datafile) {
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(datafile), "UTF-8"));
+    public List<Sentence> readFile(String datafile) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(datafile), "UTF-8"));
 
-            String line = null;
-            List<Sentence> data = new ArrayList<Sentence>();
-            while ((line = reader.readLine()) != null) {
-                Sentence sentence = new Sentence();
-                boolean error = false;
-                //System.out.println(line);
+        String line = null;
+        List<Sentence> data = new ArrayList<Sentence>();
+        while ((line = reader.readLine()) != null) {
+            Sentence sentence = new Sentence();
+            boolean error = false;
+            //System.out.println(line);
 
-                if (line.startsWith("#")) continue;
+            if (line.startsWith("#")) continue;
 
-                StringTokenizer tk = new StringTokenizer(line, " ");
+            StringTokenizer tk = new StringTokenizer(line, " ");
 
-                while (tk.hasMoreTokens()) {
-                    String word = "", tag = null;
-                    String token = tk.nextToken();
+            while (tk.hasMoreTokens()) {
+                String word = "", tag = null;
+                String token = tk.nextToken();
 
-                    if (isTrainReading) {
-                        if (token == "/") {
-                            word = "/";
-                            tag = "Mrk";
-                        } else if (token == "///") {
-                            word = "/";
-                            tag = "Mrk";
-                        } else {
-
-                            String[] fields = token.split("/");
-                            if (fields.length == 1) {
-                                error = true;
-                                break;
-                            } else if (fields.length == 2) {
-                                word = fields[0];
-                                tag = fields[1];
-                            } else if (fields.length > 2) {//token = 20/9/08
-                                tag = fields[fields.length - 1];
-                                for (int i = 0; i < fields.length - 2; ++i)
-                                    word += fields[i] + "/";
-                                word += fields[fields.length - 2];
-                            }
-
-                            if (tag != null) {
-                                if (StringUtils.isPunc(tag)) sentence.addTWord(word, "Mrk");
-                                else {
-                                    boolean found = false;
-                                    for (int i = 0; i < tags.length; ++i) {
-                                        if (tag.equalsIgnoreCase(tags[i])) {
-                                            //sentence.addTWord(word, tags[i]);
-                                            tag = tags[i];
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (!found) {
-                                        error = true;
-                                        System.out.println("error");
-                                        System.out.println(tag);
-                                    }
-                                    sentence.addTWord(word, tag);
-                                }
-                            } else {
-                                //sentence.addTWord(word, tag);
-                                error = true; //uncomment this when reading data for training
-                                break;
-                            }
-                        }
+                if (isTrainReading) {
+                    if (token == "/") {
+                        word = "/";
+                        tag = "Mrk";
+                    } else if (token == "///") {
+                        word = "/";
+                        tag = "Mrk";
                     } else {
-                        word = token;
-                        tag = null;
-                        sentence.addTWord(word, tag);
-                    }
-                }
 
-                if (!error) data.add(sentence);
+                        String[] fields = token.split("/");
+                        if (fields.length == 1) {
+                            error = true;
+                            break;
+                        } else if (fields.length == 2) {
+                            word = fields[0];
+                            tag = fields[1];
+                        } else if (fields.length > 2) {//token = 20/9/08
+                            tag = fields[fields.length - 1];
+                            for (int i = 0; i < fields.length - 2; ++i)
+                                word += fields[i] + "/";
+                            word += fields[fields.length - 2];
+                        }
+
+                        if (tag != null) {
+                            if (StringUtils.isPunc(tag)) sentence.addTWord(word, "Mrk");
+                            else {
+                                boolean found = false;
+                                for (int i = 0; i < tags.length; ++i) {
+                                    if (tag.equalsIgnoreCase(tags[i])) {
+                                        //sentence.addTWord(word, tags[i]);
+                                        tag = tags[i];
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found) {
+                                    error = true;
+                                    System.out.println("error");
+                                    System.out.println(tag);
+                                }
+                                sentence.addTWord(word, tag);
+                            }
+                        } else {
+                            //sentence.addTWord(word, tag);
+                            error = true; //uncomment this when reading data for training
+                            break;
+                        }
+                    }
+                } else {
+                    word = token;
+                    tag = null;
+                    sentence.addTWord(word, tag);
+                }
             }
 
-            reader.close();
-            return data;
-        } catch (Exception e) {
-            System.out.println("Error while reading data!");
-            e.printStackTrace();
-            return null;
+            if (!error) data.add(sentence);
         }
+
+        reader.close();
+        return data;
     }
 
     @Override

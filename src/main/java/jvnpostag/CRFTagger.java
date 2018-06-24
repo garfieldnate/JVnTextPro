@@ -59,10 +59,10 @@ public class CRFTagger implements POSTagger {
     public void init(Path modelDir) throws InitializationException {
         try {
             dataTagger.addContextGenerator(new POSContextGenerator(modelDir.resolve("featuretemplate.xml")));
+            labeling = new Labeling(modelDir, dataTagger, reader, writer);
         } catch (SAXException|ParserConfigurationException|IOException e) {
             throw new InitializationException(e);
         }
-        labeling = new Labeling(modelDir, dataTagger, reader, writer);
     }
 
     public void init() throws InitializationException {
@@ -81,7 +81,7 @@ public class CRFTagger implements POSTagger {
         return labeling.strLabeling(instr);
     }
 
-    public String tagging(File file) {
+    public String tagging(File file) throws IOException {
         return labeling.strLabeling(file);
     }
 

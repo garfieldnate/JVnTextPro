@@ -27,6 +27,7 @@
 package jvntextpro.conversion;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
@@ -59,27 +60,21 @@ public class CompositeUnicode2Unicode {
     /**
      * Instantiates a new composite unicode2 unicode.
      */
-    public CompositeUnicode2Unicode() {
-        try {
-            cpsUni2Uni = new HashMap<String, String>();
+    public CompositeUnicode2Unicode() throws IOException {
+        cpsUni2Uni = new HashMap<String, String>();
+        URL url = CompositeUnicode2Unicode.class.getClassLoader().getResource(DEFAULT_MAP_RESOURCE);
 
-            URL url = CompositeUnicode2Unicode.class.getClassLoader().getResource(DEFAULT_MAP_RESOURCE);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] onemap = line.split("\t");
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] onemap = line.split("\t");
-
-                if (onemap.length != 2) continue;
-                cpsUni2Uni.put(onemap[0], onemap[1]);
-            }
-
-            reader.close();
-        } catch (Exception e) {
-            System.err.println("Loading composite to unicode map fail: " + e.getMessage());
-            cpsUni2Uni = null;
+            if (onemap.length != 2) continue;
+            cpsUni2Uni.put(onemap[0], onemap[1]);
         }
+
+        reader.close();
     }
 
     //---------------------------------------------------------------

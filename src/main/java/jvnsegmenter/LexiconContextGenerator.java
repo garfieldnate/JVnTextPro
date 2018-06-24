@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -191,26 +192,21 @@ public class LexiconContextGenerator extends BasicContextGenerator {
      *
      * @param filename the filename
      */
-    public static void loadVietnameseDict(String filename) {
-        try {
-            FileInputStream in = new FileInputStream(filename);
-            if (hsVietnameseDict == null) {
-                hsVietnameseDict = new HashSet();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.substring(0, 2).equals("##")) {
-                        String word = line.substring(2);
-                        word = word.toLowerCase();
-                        hsVietnameseDict.add(word);
-                    }
+    public static void loadVietnameseDict(String filename) throws IOException {
+        FileInputStream in = new FileInputStream(filename);
+        if (hsVietnameseDict == null) {
+            hsVietnameseDict = new HashSet();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.substring(0, 2).equals("##")) {
+                    String word = line.substring(2);
+                    word = word.toLowerCase();
+                    hsVietnameseDict.add(word);
                 }
             }
-            // Print lacviet_dict into lacviet.dict file
-        } catch (Exception e) {
-            System.err.print(e.getMessage());
-            e.printStackTrace();
         }
+        // Print lacviet_dict into lacviet.dict file
     }
 
     /**
@@ -218,45 +214,40 @@ public class LexiconContextGenerator extends BasicContextGenerator {
      *
      * @param filename the filename
      */
-    public static void loadViPersonalNames(String filename) {
-        try {
-            FileInputStream in = new FileInputStream(filename);
-            if (hsViFamilyNames == null) {
+    public static void loadViPersonalNames(String filename) throws IOException {
+        FileInputStream in = new FileInputStream(filename);
+        if (hsViFamilyNames == null) {
 
-                hsViFamilyNames = new HashSet();
-                hsViLastNames = new HashSet();
-                hsViMiddleNames = new HashSet();
+            hsViFamilyNames = new HashSet();
+            hsViLastNames = new HashSet();
+            hsViMiddleNames = new HashSet();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.equals("")) continue;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.equals("")) continue;
 
-                    //line = line.toLowerCase();
-                    int idxSpace = line.indexOf(' ');
-                    int lastIdxSpace = line.lastIndexOf(' ');
+                //line = line.toLowerCase();
+                int idxSpace = line.indexOf(' ');
+                int lastIdxSpace = line.lastIndexOf(' ');
 
-                    if (idxSpace != -1) {
-                        String strFamilyName = line.substring(0, idxSpace);
-                        hsViFamilyNames.add(strFamilyName);
-                    }
-
-                    if ((idxSpace != -1) && (lastIdxSpace > idxSpace + 1)) {
-                        String strMiddleName = line.substring(idxSpace + 1, lastIdxSpace - 1);
-                        hsViMiddleNames.add(strMiddleName);
-                    }
-
-                    if (lastIdxSpace != -1) {
-                        String strLastName = line.substring(lastIdxSpace + 1, line.length());
-                        hsViLastNames.add(strLastName);
-                    }
+                if (idxSpace != -1) {
+                    String strFamilyName = line.substring(0, idxSpace);
+                    hsViFamilyNames.add(strFamilyName);
                 }
-                in.close();
+
+                if ((idxSpace != -1) && (lastIdxSpace > idxSpace + 1)) {
+                    String strMiddleName = line.substring(idxSpace + 1, lastIdxSpace - 1);
+                    hsViMiddleNames.add(strMiddleName);
+                }
+
+                if (lastIdxSpace != -1) {
+                    String strLastName = line.substring(lastIdxSpace + 1, line.length());
+                    hsViLastNames.add(strLastName);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.print(e.getMessage());
+            in.close();
         }
     }
 
@@ -265,20 +256,16 @@ public class LexiconContextGenerator extends BasicContextGenerator {
      *
      * @param filename the filename
      */
-    public static void loadViLocationList(String filename) {
-        try {
-            FileInputStream in = new FileInputStream(filename);
-            if (hsViLocations == null) {
-                hsViLocations = new HashSet();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String word = line.trim();
-                    hsViLocations.add(word);
-                }
+    public static void loadViLocationList(String filename) throws IOException {
+        FileInputStream in = new FileInputStream(filename);
+        if (hsViLocations == null) {
+            hsViLocations = new HashSet();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String word = line.trim();
+                hsViLocations.add(word);
             }
-        } catch (Exception e) {
-            System.err.print(e.getMessage());
         }
     }
 }

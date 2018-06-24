@@ -27,6 +27,7 @@
 package jflexcrf;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class Labeling {
      * @param dataReader the data reader
      * @param dataWriter the data writer
      */
-    public Labeling(Path modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) {
+    public Labeling(Path modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) throws IOException {
         init(modelDir);
         this.dataTagger = dataTagger;
         this.dataWriter = dataWriter;
@@ -112,13 +113,11 @@ public class Labeling {
      * @param modelDir the model dir
      * @return true, if successful
      */
-    public boolean init(Path modelDir) {
+    public void init(Path modelDir) throws IOException {
         this.modelDir = modelDir;
 
         Option taggerOpt = new Option(this.modelDir);
-        if (!taggerOpt.readOptions()) {
-            return false;
-        }
+        taggerOpt.readOptions();
 
         taggerMaps = new Maps();
         taggerDict = new Dictionary();
@@ -126,12 +125,7 @@ public class Labeling {
         taggerVtb = new Viterbi();
 
         taggerModel = new Model(taggerOpt, taggerMaps, taggerDict, taggerFGen, taggerVtb);
-        if (!taggerModel.init()) {
-            System.out.println("Couldn't load the model");
-            System.out.println("Check the <model directory> and the <model file> again");
-            return false;
-        }
-        return true;
+        taggerModel.init();
     }
 
     /**
@@ -183,8 +177,7 @@ public class Labeling {
      * @param file the file
      * @return a list of sentences with tags annotated
      */
-    @SuppressWarnings("unchecked")
-    public List seqLabeling(File file) {
+    public List seqLabeling(File file) throws IOException {
         List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
         return labeling(obsvSeqs);
     }
@@ -195,11 +188,9 @@ public class Labeling {
      * @param data the data
      * @return string representing label sequences, the format is specified by writer
      */
-    @SuppressWarnings("unchecked")
     public String strLabeling(String data) {
         List lblSeqs = seqLabeling(data);
-        String ret = dataWriter.writeString(lblSeqs);
-        return ret;
+        return dataWriter.writeString(lblSeqs);
     }
 
     /**
@@ -208,11 +199,10 @@ public class Labeling {
      * @param file contains a list of observation sequence, this file has a format wich can be read by DataReader
      * @return string representing label sequences, the format is specified by writer
      */
-    public String strLabeling(File file) {
+    public String strLabeling(File file) throws IOException {
         List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
         List lblSeqs = labeling(obsvSeqs);
-        String ret = dataWriter.writeString(lblSeqs);
-        return ret;
+        return dataWriter.writeString(lblSeqs);
     }
 
     /**

@@ -29,6 +29,7 @@ package jvntextpro.data;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
@@ -57,8 +58,7 @@ public abstract class TrainDataGenerating {
      * @param inputPath  the input path (file or dictionary)
      * @param outputPath the output path
      */
-    public void generateTrainData(String inputPath, String outputPath) {
-        try {
+    public void generateTrainData(String inputPath, String outputPath) throws IOException {
             File file = new File(inputPath);
             ArrayList<Sentence> data = new ArrayList<Sentence>();
             if (file.isFile()) {
@@ -74,7 +74,7 @@ public abstract class TrainDataGenerating {
                 }
             }
 
-            String result = "";
+            StringBuilder result = new StringBuilder();
             System.out.println(data.size() + "sentences read");
             for (int i = 0; i < data.size(); ++i) {
                 if (i % 20 == 0) System.out.println("Finished " + i + " in " + data.size() + " sentences");
@@ -86,20 +86,15 @@ public abstract class TrainDataGenerating {
                     String context = tagger.getContextStr(sent, j);
                     line = context + " ";
                     line += sent.getTagAt(j);
-                    result += line + "\n";
+                    result.append(line).append("\n");
                 }
-                result += "\n";
+                result.append("\n");
             }
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
                 outputPath + ".tagged"), "UTF-8"));
 
-            writer.write(result);
+            writer.write(result.toString());
             writer.close();
-        } catch (Exception e) {
-            System.out.println("Error while generating training data");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
     }
 }

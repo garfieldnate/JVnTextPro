@@ -106,7 +106,7 @@ public class MaxentTagger implements POSTagger {
     }
 
 
-    public String tagging(File file) {
+    public String tagging(File file) throws IOException {
         List<Sentence> data = reader.readFile(file.getPath());
         for (int i = 0; i < data.size(); ++i) {
 

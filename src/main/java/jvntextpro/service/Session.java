@@ -90,18 +90,18 @@ public class Session extends Thread {
                 //PrintStream out = (PrintStream) incoming.getOutputStream();
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(incoming.getOutputStream(), "UTF-8"));
 
-                String content = "";
+                StringBuilder content = new StringBuilder();
 
                 while (true) {
                     int ch = in.read();
                     if (ch == 0) //end of string
                         break;
 
-                    content += (char) ch;
+                    content.append((char) ch);
                 }
 
                 //System.out.println(content);
-                String tagged = textpro.process(content);
+                String tagged = textpro.process(content.toString());
                 //Thread.sleep(4000);
 
                 out.write(tagged.trim());
@@ -110,6 +110,7 @@ public class Session extends Thread {
             } catch (InterruptedIOException e) {
                 System.out.println("The conection is interrupted");
             } catch (Exception e) {
+                // catching all exceptions because we don't want the server to crash
                 System.out.println(e);
                 e.printStackTrace();
             }

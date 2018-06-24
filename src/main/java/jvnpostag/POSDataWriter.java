@@ -29,6 +29,7 @@ package jvnpostag;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
@@ -37,16 +38,11 @@ import jvntextpro.data.Sentence;
 
 public class POSDataWriter extends DataWriter {
 
-    public void writeFile(List lblSeqs, String filename) {
-        try {
-            String ret = writeString(lblSeqs);
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
-            out.write(ret);
-            out.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
+    public void writeFile(List lblSeqs, String filename) throws IOException {
+        String ret = writeString(lblSeqs);
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
+        out.write(ret);
+        out.close();
     }
 
     public String writeString(List lblSeqs) {

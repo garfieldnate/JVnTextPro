@@ -94,74 +94,40 @@ public class Option {
 
     /**
      * Read options.
-     *
-     * @return true, if successful
      */
-    public boolean readOptions() {
+    public void readOptions() throws IOException {
         String filename = modelDir + File.separator + optionFile;
-        BufferedReader fin = null;
+        BufferedReader fin;
         String line;
 
-        try {
-            fin = new BufferedReader(new FileReader(filename));
+        fin = new BufferedReader(new FileReader(filename));
 
-            System.out.println("Reading options ...");
+        System.out.println("Reading options ...");
 
-            // read option lines
-            while ((line = fin.readLine()) != null) {
-                String trimLine = line.trim();
-                if (trimLine.startsWith("#")) {
-                    // comment line
-                    continue;
-                }
-
-                StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
-                int len = strTok.countTokens();
-                if (len != 2) {
-                    // invalid parameter line, ignore it
-                    continue;
-                }
-
-                String strOpt = strTok.nextToken();
-                String strVal = strTok.nextToken();
-
-                if (strOpt.compareToIgnoreCase("order") == 0) {
-                    int numTemp = Integer.parseInt(strVal);
-                    order = numTemp;
-                }
+        // read option lines
+        while ((line = fin.readLine()) != null) {
+            String trimLine = line.trim();
+            if (trimLine.startsWith("#")) {
+                // comment line
+                continue;
             }
 
-            System.out.println("Reading options completed!");
+            StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
+            int len = strTok.countTokens();
+            if (len != 2) {
+                // invalid parameter line, ignore it
+                continue;
+            }
 
-        } catch (IOException e) {
-            System.out.println("Couldn't open and read option file: " + optionFile);
-            System.out.println(e.toString());
-            return false;
+            String strOpt = strTok.nextToken();
+            String strVal = strTok.nextToken();
+
+            if (strOpt.compareToIgnoreCase("order") == 0) {
+                order = Integer.parseInt(strVal);
+            }
         }
 
-        return true;
+        System.out.println("Reading options completed!");
     }
 
-    /**
-     * Open model file.
-     *
-     * @return the buffered reader
-     */
-    public BufferedReader openModelFile() {
-        String filename = modelDir + File.separator + modelFile;
-        BufferedReader fin = null;
-
-        try {
-            fin = new BufferedReader(new FileReader(filename));
-
-        } catch (IOException e) {
-            System.out.println("Couldn't open model file: " + filename);
-            System.out.println(e.toString());
-            fin = null;
-        }
-
-        return fin;
-    }
-
-} // end of class Option
-
+}

@@ -42,9 +42,10 @@ import vnu.jvntext.utils.InitializationException;
 public class JVnTextProTest {
     private static final String OUTPUT_EXTENSION = ".pro";
     private static CompositeUnicode2Unicode conversion;
-    private static JVnTextPro vnTextPro = new JVnTextPro();
+    private static JVnTextPro vnTextPro;
 
     private static void init(Options option) throws IOException, InitializationException {
+        vnTextPro = new JVnTextPro();
         vnTextPro.initSenTokenization();
         conversion = new CompositeUnicode2Unicode();
 
@@ -81,13 +82,16 @@ public class JVnTextProTest {
      * Read and process an entire file, then print the results to another file with the extension ".pro".
      */
     private static void processFile(Path filePath) throws IOException {
+        System.out.println("\nProcessing " + filePath + "...");
         StringBuilder sb = new StringBuilder();
         for (String line : Files.readAllLines(filePath)) {
             line = conversion.convert(line);
             sb.append(vnTextPro.process(line).trim()).append("\n");
         }
 
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath + OUTPUT_EXTENSION))) {
+        Path outputPath = Paths.get(filePath + OUTPUT_EXTENSION);
+        System.out.println("Outputting results to " + outputPath);
+        try (BufferedWriter writer = Files.newBufferedWriter(outputPath)) {
             writer.write(sb.toString());
         }
     }

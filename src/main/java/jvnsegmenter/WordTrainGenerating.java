@@ -27,14 +27,19 @@
 package jvnsegmenter;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Vector;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import jvntextpro.data.TaggingData;
 import jvntextpro.data.TrainDataGenerating;
+import vnu.jvntext.utils.InitializationException;
 
 public class WordTrainGenerating extends TrainDataGenerating {
 
@@ -48,7 +53,7 @@ public class WordTrainGenerating extends TrainDataGenerating {
      *
      * @param modelDir the model dir
      */
-    public WordTrainGenerating(Path modelDir) {
+    public WordTrainGenerating(Path modelDir) throws InitializationException {
         this.modelDir = modelDir;
         init();
     }
@@ -57,35 +62,39 @@ public class WordTrainGenerating extends TrainDataGenerating {
      * @see jvntextpro.data.TrainDataGenerating#init()
      */
     @Override
-    public void init() {
+    public void init() throws InitializationException {
         reader = new IOB2DataReader();
         tagger = new TaggingData();
 
         //Read feature template file
         Path templateFile = modelDir.resolve("featuretemplate.xml");
-        Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
+        try {
+            Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
 
-        for (int i = 0; i < nodes.size(); ++i) {
-            Element node = nodes.get(i);
-            String cpType = node.getAttribute("value");
-            BasicContextGenerator contextGen = null;
+            for (int i = 0; i < nodes.size(); ++i) {
+                Element node = nodes.get(i);
+                String cpType = node.getAttribute("value");
+                BasicContextGenerator contextGen = null;
 
-            if (cpType.equals("Conjunction")) {
-                contextGen = new ConjunctionContextGenerator(node);
-            } else if (cpType.equals("Lexicon")) {
-                contextGen = new LexiconContextGenerator(node);
-                LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
-                LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
-                LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
-            } else if (cpType.equals("Regex")) {
-                contextGen = new RegexContextGenerator(node);
-            } else if (cpType.equals("SyllableFeature")) {
-                contextGen = new SyllableContextGenerator(node);
-            } else if (cpType.equals("ViSyllableFeature")) {
-                contextGen = new VietnameseContextGenerator(node);
+                if (cpType.equals("Conjunction")) {
+                    contextGen = new ConjunctionContextGenerator(node);
+                } else if (cpType.equals("Lexicon")) {
+                    contextGen = new LexiconContextGenerator(node);
+                    LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
+                    LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
+                    LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
+                } else if (cpType.equals("Regex")) {
+                    contextGen = new RegexContextGenerator(node);
+                } else if (cpType.equals("SyllableFeature")) {
+                    contextGen = new SyllableContextGenerator(node);
+                } else if (cpType.equals("ViSyllableFeature")) {
+                    contextGen = new VietnameseContextGenerator(node);
+                }
+
+                if (contextGen != null) tagger.addContextGenerator(contextGen);
             }
-
-            if (contextGen != null) tagger.addContextGenerator(contextGen);
+        }catch(IOException|SAXException|ParserConfigurationException e) {
+            throw new InitializationException(e);
         }
     }
 
@@ -94,7 +103,7 @@ public class WordTrainGenerating extends TrainDataGenerating {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InitializationException {
         //tagging
         if (args.length != 2) {
             System.out.println("WordTrainGenerating [Model Dir] [File/Folder]");

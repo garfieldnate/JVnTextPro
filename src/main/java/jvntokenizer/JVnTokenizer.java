@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
@@ -47,21 +48,45 @@ public class JVnTokenizer {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length != 2) {
             displayHelp();
             return;
         }
 
         //Read the input data
-        try {
-            String option = args[0];
-            if (option.equalsIgnoreCase("-inputfile")) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[1]), "UTF-8"));
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1] + ".tkn"),
-                                                                               "UTF-8"));
+        String option = args[0];
+        if (option.equalsIgnoreCase("-inputfile")) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[1]), "UTF-8"));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1] + ".tkn"),
+                                                                           "UTF-8"
+            ));
 
-                String line = "";
+            String line;
+            while ((line = in.readLine()) != null) {
+                out.write(PennTokenizer.tokenize(line));
+                out.write("\n");
+            }
+
+            in.close();
+            out.close();
+        } else if (option.equalsIgnoreCase("-inputdir")) {
+            System.out.println("Tokenize input");
+            //segment only files ends with .sent
+            File inputDir = new File(args[1]);
+            File[] children = inputDir.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".sent");
+                }
+            });
+
+            for (File child : children) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(child), "UTF-8"));
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(child + ".tkn"),
+                                                                               "UTF-8"
+                ));
+
+                String line;
                 while ((line = in.readLine()) != null) {
                     out.write(PennTokenizer.tokenize(line));
                     out.write("\n");
@@ -69,36 +94,7 @@ public class JVnTokenizer {
 
                 in.close();
                 out.close();
-            } else if (option.equalsIgnoreCase("-inputdir")) {
-                System.out.println("Tokenize input");
-                //segment only files ends with .sent
-                File inputDir = new File(args[1]);
-                File[] childrent = inputDir.listFiles(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(".sent");
-                    }
-                });
-
-                for (int i = 0; i < childrent.length; ++i) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(childrent[i]),
-                        "UTF-8"
-                    ));
-                    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                        childrent[i] + ".tkn"), "UTF-8"));
-
-                    String line = "";
-                    while ((line = in.readLine()) != null) {
-                        out.write(PennTokenizer.tokenize(line));
-                        out.write("\n");
-                    }
-
-                    in.close();
-                    out.close();
-                }
             }
-        } catch (Exception e) {
-            System.out.println("Error:" + e.getMessage());
         }
     }
 

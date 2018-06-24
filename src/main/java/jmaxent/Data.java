@@ -317,7 +317,7 @@ public class Data {
      *
      * @param dataFile the data file
      */
-    public void readTrnData(String dataFile) {
+    public void readTrnData(String dataFile) throws IOException {
         if (cpStr2Int != null) {
             cpStr2Int.clear();
         } else {
@@ -351,91 +351,85 @@ public class Data {
         // open data file
         BufferedReader fin = null;
 
-        try {
-            fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
-            //    BufferedWriter flog = new BufferedWriter(new OutputStreamWriter(
-            //	/	new FileOutputStream((new File(dataFile)).getParent() + File.separator + "log.txt"), "UTF-8"));
+        fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
+        //    BufferedWriter flog = new BufferedWriter(new OutputStreamWriter(
+        //	/	new FileOutputStream((new File(dataFile)).getParent() + File.separator + "log.txt"), "UTF-8"));
 
-            System.out.println("Reading training data ...");
+        System.out.println("Reading training data ...");
 
-            String line;
-            while ((line = fin.readLine()) != null) {
-                StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
-                int len = strTok.countTokens();
+        String line;
+        while ((line = fin.readLine()) != null) {
+            StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
+            int len = strTok.countTokens();
 
-                if (len <= 1) {
-                    // skip this invalid line
-                    continue;
-                }
-
-                List strCps = new ArrayList();
-                for (int i = 0; i < len - 1; i++) {
-                    strCps.add(strTok.nextToken());
-                }
-
-                String labelStr = strTok.nextToken();
-                //
-                //		String [] tags = {"N", "Np", "Nc", "Nu", "V", "A", "P", "L", "M",
-                //		"R", "E", "C", "I", "T", "U", "Y", "X", "LBKT", "RBKT"};
-                //
-                //
-                //		//System.out.println("--" + labelStr);
-                //		//if (!StringUtils.isSign(labelStr)){
-                //			boolean flag = false;
-                //			for (String tag : tags){
-                //				if (labelStr.equalsIgnoreCase(tag)){
-                //					flag = true;
-                //				}
-                //			}
-                //
-                //			if (!flag){
-                //			//	flog.write(line + "\n");
-                //				//System.out.println("--" + labelStr);
-                //			}
-                //		//}
-
-                List intCps = new ArrayList();
-
-                for (int i = 0; i < strCps.size(); i++) {
-                    String cpStr = (String) strCps.get(i);
-                    Integer cpInt = (Integer) cpStr2Int.get(cpStr);
-                    if (cpInt != null) {
-                        intCps.add(cpInt);
-                    } else {
-                        intCps.add(new Integer(cpStr2Int.size()));
-                        cpStr2Int.put(cpStr, new Integer(cpStr2Int.size()));
-                        cpInt2Str.put(new Integer(cpInt2Str.size()), cpStr);
-                    }
-                }
-
-                Integer labelInt = (Integer) lbStr2Int.get(labelStr);
-                if (labelInt == null) {
-                    labelInt = new Integer(lbStr2Int.size());
-
-                    //		    System.out.println("hey:" + labelStr);
-                    //		    flog.write(labelStr + "\t" + line + "\n");
-                    lbStr2Int.put(labelStr, labelInt);
-                    lbInt2Str.put(labelInt, labelStr);
-                }
-
-                int[] cps = new int[intCps.size()];
-                for (int i = 0; i < cps.length; i++) {
-                    cps[i] = ((Integer) intCps.get(i)).intValue();
-                }
-
-                Observation obsr = new Observation(labelInt.intValue(), cps);
-
-                // add this observation to the data
-                trnData.add(obsr);
+            if (len <= 1) {
+                // skip this invalid line
+                continue;
             }
 
-            System.out.println("Reading " + Integer.toString(trnData.size()) + " training data examples completed!");
-            // flog.close();
+            List strCps = new ArrayList();
+            for (int i = 0; i < len - 1; i++) {
+                strCps.add(strTok.nextToken());
+            }
 
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return;
+            String labelStr = strTok.nextToken();
+            //
+            //		String [] tags = {"N", "Np", "Nc", "Nu", "V", "A", "P", "L", "M",
+            //		"R", "E", "C", "I", "T", "U", "Y", "X", "LBKT", "RBKT"};
+            //
+            //
+            //		//System.out.println("--" + labelStr);
+            //		//if (!StringUtils.isSign(labelStr)){
+            //			boolean flag = false;
+            //			for (String tag : tags){
+            //				if (labelStr.equalsIgnoreCase(tag)){
+            //					flag = true;
+            //				}
+            //			}
+            //
+            //			if (!flag){
+            //			//	flog.write(line + "\n");
+            //				//System.out.println("--" + labelStr);
+            //			}
+            //		//}
+
+            List intCps = new ArrayList();
+
+            for (int i = 0; i < strCps.size(); i++) {
+                String cpStr = (String) strCps.get(i);
+                Integer cpInt = (Integer) cpStr2Int.get(cpStr);
+                if (cpInt != null) {
+                    intCps.add(cpInt);
+                } else {
+                    intCps.add(new Integer(cpStr2Int.size()));
+                    cpStr2Int.put(cpStr, new Integer(cpStr2Int.size()));
+                    cpInt2Str.put(new Integer(cpInt2Str.size()), cpStr);
+                }
+            }
+
+            Integer labelInt = (Integer) lbStr2Int.get(labelStr);
+            if (labelInt == null) {
+                labelInt = new Integer(lbStr2Int.size());
+
+                //		    System.out.println("hey:" + labelStr);
+                //		    flog.write(labelStr + "\t" + line + "\n");
+                lbStr2Int.put(labelStr, labelInt);
+                lbInt2Str.put(labelInt, labelStr);
+            }
+
+            int[] cps = new int[intCps.size()];
+            for (int i = 0; i < cps.length; i++) {
+                cps[i] = ((Integer) intCps.get(i)).intValue();
+            }
+
+            Observation obsr = new Observation(labelInt.intValue(), cps);
+
+            // add this observation to the data
+            trnData.add(obsr);
         }
+
+        System.out.println("Reading " + Integer.toString(trnData.size()) + " training data examples completed!");
+        // flog.close();
 
         option.numCps = cpStr2Int.size();
         option.numLabels = lbStr2Int.size();
@@ -447,7 +441,7 @@ public class Data {
      *
      * @param dataFile the data file
      */
-    public void readTstData(String dataFile) {
+    public void readTstData(String dataFile) throws IOException {
         if (tstData != null) {
             tstData.clear();
         } else {
@@ -457,62 +451,56 @@ public class Data {
         // open data file
         BufferedReader fin = null;
 
-        try {
-            fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
-            System.out.println("Reading testing data ...");
+        fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
+        System.out.println("Reading testing data ...");
 
-            String line;
-            while ((line = fin.readLine()) != null) {
-                StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
-                int len = strTok.countTokens();
+        String line;
+        while ((line = fin.readLine()) != null) {
+            StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
+            int len = strTok.countTokens();
 
-                if (len <= 1) {
-                    // skip this invalid line
-                    continue;
-                }
-
-                List strCps = new ArrayList();
-                for (int i = 0; i < len - 1; i++) {
-                    strCps.add(strTok.nextToken());
-                }
-
-                String labelStr = strTok.nextToken();
-
-                List intCps = new ArrayList();
-
-                for (int i = 0; i < strCps.size(); i++) {
-                    String cpStr = (String) strCps.get(i);
-                    Integer cpInt = (Integer) cpStr2Int.get(cpStr);
-                    if (cpInt != null) {
-                        intCps.add(cpInt);
-                    } else {
-                        // do nothing
-                    }
-                }
-
-                Integer labelInt = (Integer) lbStr2Int.get(labelStr);
-                if (labelInt == null) {
-                    System.out.println("Reading testing observation, label not found or invalid");
-                    return;
-                }
-
-                int[] cps = new int[intCps.size()];
-                for (int i = 0; i < cps.length; i++) {
-                    cps[i] = ((Integer) intCps.get(i)).intValue();
-                }
-
-                Observation obsr = new Observation(labelInt.intValue(), cps);
-
-                // add this observation to the data
-                tstData.add(obsr);
+            if (len <= 1) {
+                // skip this invalid line
+                continue;
             }
 
-            System.out.println("Reading " + Integer.toString(tstData.size()) + " testing data examples completed!");
+            List strCps = new ArrayList();
+            for (int i = 0; i < len - 1; i++) {
+                strCps.add(strTok.nextToken());
+            }
 
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return;
+            String labelStr = strTok.nextToken();
+
+            List intCps = new ArrayList();
+
+            for (int i = 0; i < strCps.size(); i++) {
+                String cpStr = (String) strCps.get(i);
+                Integer cpInt = (Integer) cpStr2Int.get(cpStr);
+                if (cpInt != null) {
+                    intCps.add(cpInt);
+                } else {
+                    // do nothing
+                }
+            }
+
+            Integer labelInt = (Integer) lbStr2Int.get(labelStr);
+            if (labelInt == null) {
+                System.out.println("Reading testing observation, label not found or invalid");
+                return;
+            }
+
+            int[] cps = new int[intCps.size()];
+            for (int i = 0; i < cps.length; i++) {
+                cps[i] = ((Integer) intCps.get(i)).intValue();
+            }
+
+            Observation obsr = new Observation(labelInt.intValue(), cps);
+
+            // add this observation to the data
+            tstData.add(obsr);
         }
+
+        System.out.println("Reading " + Integer.toString(tstData.size()) + " testing data examples completed!");
 
         option.numTestExps = tstData.size();
     }

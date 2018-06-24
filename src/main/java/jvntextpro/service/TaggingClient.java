@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
@@ -84,16 +85,10 @@ public class TaggingClient {
      *
      * @return true, if successful
      */
-    public boolean connect() {
-        try {
-            sock = new Socket(host, port);
-            in = new BufferedReader(new InputStreamReader(sock.getInputStream(), "UTF-8"));
-            out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(), "UTF-8"));
-            return true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
+    public void connect() throws IOException {
+        sock = new Socket(host, port);
+        in = new BufferedReader(new InputStreamReader(sock.getInputStream(), "UTF-8"));
+        out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(), "UTF-8"));
     }
 
     /**
@@ -102,26 +97,20 @@ public class TaggingClient {
      * @param data the data
      * @return the string
      */
-    public String process(String data) {
-        try {
-            out.write(data);
-            out.write((char) 0);
-            out.flush();
+    public String process(String data) throws IOException {
+        out.write(data);
+        out.write((char) 0);
+        out.flush();
 
-            //Get data from server
-            String tagged = "";
-            while (true) {
-                int ch = in.read();
+        //Get data from server
+        StringBuilder tagged = new StringBuilder();
+        while (true) {
+            int ch = in.read();
 
-                if (ch == 0) break;
-                tagged += (char) ch;
-            }
-            return tagged;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return "";
+            if (ch == 0) break;
+            tagged.append((char) ch);
         }
-
+        return tagged.toString();
     }
 
     /**
@@ -130,8 +119,8 @@ public class TaggingClient {
     public void close() {
         try {
             this.sock.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -144,39 +133,33 @@ public class TaggingClient {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length != 2) {
             System.out.println("TaggingClient [inputfile] [outputfile]");
             return;
         }
 
-        try {
-            // Create a tagging client, open connection
-            TaggingClient client = new TaggingClient("localhost", 2929);
+        // Create a tagging client, open connection
+        TaggingClient client = new TaggingClient("localhost", 2929);
 
-            // read data from file
-            // process data, save into another file
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1]), "UTF-8"));
+        // read data from file
+        // process data, save into another file
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1]), "UTF-8"));
 
-            client.connect();
-            String line;
-            String input = "";
-            while ((line = reader.readLine()) != null) {
-                input += line + "\n";
-            }
-
-            String tagged = client.process(input);
-            writer.write(tagged + "\n");
-
-            client.close();
-            reader.close();
-            writer.close();
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+        client.connect();
+        String line;
+        StringBuilder input = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            input.append(line).append("\n");
         }
+
+        String tagged = client.process(input.toString());
+        writer.write(tagged + "\n");
+
+        client.close();
+        reader.close();
+        writer.close();
     }
 
 }

@@ -80,7 +80,10 @@ public class JVnSenSegmenter {
     public void init() throws IOException {
         Path modelDir;
         try {
-             modelDir = Paths.get(JVnSenSegmenter.class.getResource("/" + JVnSenSegmenter.class.getPackage().getName()).toURI());
+            System.out.println(JVnSenSegmenter.class.getResource("/" + JVnSenSegmenter.class.getPackage().getName())
+                                                    .toURI());
+            modelDir = Paths.get(JVnSenSegmenter.class.getResource("/" + JVnSenSegmenter.class.getPackage().getName())
+                                                      .toURI());
         } catch (URISyntaxException e) {
             // this should never happen
             e.printStackTrace();
@@ -155,38 +158,32 @@ public class JVnSenSegmenter {
      *
      * @param args the arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         if (args.length != 4) {
             displayHelp();
             System.exit(1);
         }
 
-        try {
-            JVnSenSegmenter senSegmenter = new JVnSenSegmenter();
-            senSegmenter.init(Paths.get(args[1]));
+        JVnSenSegmenter senSegmenter = new JVnSenSegmenter();
+        senSegmenter.init(Paths.get(args[1]));
 
-            String option = args[2];
-            if (option.equalsIgnoreCase("-inputfile")) {
-                senSegmentFile(args[3], args[3] + ".sent", senSegmenter);
-            } else if (option.equalsIgnoreCase("-inputdir")) {
-                //segment only files ends with .txt
-                File inputDir = new File(args[3]);
-                File[] childrent = inputDir.listFiles(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(".txt");
-                    }
-                });
-
-                for (int i = 0; i < childrent.length; ++i) {
-                    System.out.println("Segmenting sentences in " + childrent[i]);
-                    senSegmentFile(childrent[i].getPath(), childrent[i].getPath() + ".sent", senSegmenter);
+        String option = args[2];
+        if (option.equalsIgnoreCase("-inputfile")) {
+            senSegmentFile(args[3], args[3] + ".sent", senSegmenter);
+        } else if (option.equalsIgnoreCase("-inputdir")) {
+            //segment only files ends with .txt
+            File inputDir = new File(args[3]);
+            File[] childrent = inputDir.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".txt");
                 }
-            } else displayHelp();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+            });
 
+            for (File child : childrent) {
+                System.out.println("Segmenting sentences in " + child);
+                senSegmentFile(child.getPath(), child.getPath() + ".sent", senSegmenter);
+            }
+        } else displayHelp();
     }
 
     /**
@@ -196,37 +193,35 @@ public class JVnSenSegmenter {
      * @param outfile      the outfile
      * @param senSegmenter the sen segmenter
      */
-    private static void senSegmentFile(String infile, String outfile, JVnSenSegmenter senSegmenter) {
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(infile), "UTF-8"));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile), "UTF-8"));
+    private static void senSegmentFile(String infile, String outfile, JVnSenSegmenter senSegmenter) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(infile), "UTF-8"));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile), "UTF-8"));
 
-            String para = "", line = "", text = "";
-            while ((line = in.readLine()) != null) {
-                if (!line.equals("")) {
-                    if (line.charAt(0) == '#') {
-                        //skip comment line
-                        text += line + "\n";
-                        continue;
-                    }
-
-                    para = senSegmenter.senSegment(line).trim();
-                    text += para.trim() + "\n\n";
-                } else {
-                    //blank line
-                    text += "\n";
+        String para;
+        String line;
+        StringBuilder text = new StringBuilder();
+        while ((line = in.readLine()) != null) {
+            if (!line.equals("")) {
+                if (line.charAt(0) == '#') {
+                    //skip comment line
+                    text.append(line).append("\n");
+                    continue;
                 }
+
+                para = senSegmenter.senSegment(line).trim();
+                text.append(para.trim()).append("\n\n");
+            } else {
+                //blank line
+                text.append("\n");
             }
-            text = text.trim();
-
-            out.write(text);
-            out.newLine();
-
-            in.close();
-            out.close();
-        } catch (Exception e) {
-            System.out.println("Error in sensegment file " + infile);
         }
+        text = new StringBuilder(text.toString().trim());
+
+        out.write(text.toString());
+        out.newLine();
+
+        in.close();
+        out.close();
     }
 
     /**

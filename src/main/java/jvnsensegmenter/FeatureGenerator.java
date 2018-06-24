@@ -54,7 +54,7 @@ public class FeatureGenerator {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length != 3) {
             printUsage();
             System.exit(1);
@@ -62,84 +62,78 @@ public class FeatureGenerator {
 
         boolean label = (args[0].toLowerCase().trim().equals("-lbl"));
 
-        try {
-            String inputWhat = args[1].toLowerCase().trim();
+        String inputWhat = args[1].toLowerCase().trim();
 
-            if (inputWhat.equals("-inputfile")) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[2]), "UTF-8"));
+        if (inputWhat.equals("-inputfile")) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[2]), "UTF-8"));
 
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    args[2] + ".tagged"), "UTF-8"));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(args[2] + ".tagged"),
+                "UTF-8"
+            ));
 
-                String text = "", line = "";
+            StringBuilder text = new StringBuilder();
+            String line = "";
+            while ((line = in.readLine()) != null) {
+                text.append("\n").append(line);
+            }
+            text = new StringBuilder(text.toString().trim());
+
+            //text normalization
+            text = new StringBuilder(text.toString().replaceAll("([\t\n\r ])+", "$1"));
+            text = new StringBuilder(text.toString().replaceAll("[\\[\\]]", ""));
+            text = new StringBuilder(text.toString().replaceAll("<[^<>]*>", ""));
+
+            List MarkList = new ArrayList();
+
+            ArrayList recordList = (ArrayList) doFeatureGen(new HashMap(), text.toString(), MarkList, label);
+
+            for (Object record : recordList) {
+                out.write(record.toString());
+                out.write("\n");
+            }
+
+            in.close();
+            out.close();
+        } else if (inputWhat.equals("-inputdir")) {
+
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(args[2] + ".tagged"),
+                "UTF-8"
+            ));
+
+            File inputDir = new File(args[2]);
+            File[] children = inputDir.listFiles();
+
+            for (File child : children) {
+                //go through all the file in the input file and do feagen
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(child), "UTF-8"));
+
+                StringBuilder text = new StringBuilder();
+                String line;
                 while ((line = in.readLine()) != null) {
-                    text += "\n" + line;
+                    text.append("\n").append(line);
                 }
-                text = text.trim();
+                text = new StringBuilder(text.toString().trim());
 
                 //text normalization
-                text = text.replaceAll("([\t\n\r ])+", "$1");
-                text = text.replaceAll("[\\[\\]]", "");
-                text = text.replaceAll("<[^<>]*>", "");
+                text = new StringBuilder(text.toString().replaceAll("([\t\n\r ])+", "$1"));
+                text = new StringBuilder(text.toString().replaceAll("[\\[\\]{}]", ""));
+                text = new StringBuilder(text.toString().replaceAll("<[^<>]*>", ""));
 
                 List MarkList = new ArrayList();
+                ArrayList recordList = (ArrayList) doFeatureGen(new HashMap(), text.toString(), MarkList, label);
 
-                ArrayList recordList = (ArrayList) doFeatureGen(new HashMap(), text, MarkList, label);
 
-                for (int i = 0; i < recordList.size(); ++i) {
-
-                    out.write(recordList.get(i).toString());
-
+                for (Object aRecordList : recordList) {
+                    out.write(aRecordList.toString());
                     out.write("\n");
-
                 }
 
                 in.close();
-                out.close();
-            } else if (inputWhat.equals("-inputdir")) {
-
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    args[2] + ".tagged"), "UTF-8"));
-
-                File inputDir = new File(args[2]);
-                File[] childrent = inputDir.listFiles();
-
-                for (int i = 0; i < childrent.length; ++i) {
-                    //go through all the file in the input file and do feagen
-                    BufferedReader in = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(childrent[i]),
-                        "UTF-8"
-                    ));
-
-                    String text = "", line = "";
-                    while ((line = in.readLine()) != null) {
-                        text += "\n" + line;
-                    }
-                    text = text.trim();
-
-                    //text normalization
-                    text = text.replaceAll("([\t\n\r ])+", "$1");
-                    text = text.replaceAll("[\\[\\]{}]", "");
-                    text = text.replaceAll("<[^<>]*>", "");
-
-                    List MarkList = new ArrayList();
-                    ArrayList recordList = (ArrayList) doFeatureGen(new HashMap(), text, MarkList, label);
-
-
-                    for (int j = 0; j < recordList.size(); ++j) {
-                        out.write(recordList.get(j).toString());
-                        out.write("\n");
-                    }
-
-                    in.close();
-                }
-                out.close();
-            } else printUsage();
-        } catch (Exception e) {
-            System.out.println("In feature generator main : " + e.getMessage());
-            return;
-        }
-
+            }
+            out.close();
+        } else printUsage();
     }
 
     /**
