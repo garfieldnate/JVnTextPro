@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,6 +42,7 @@ import jvntextpro.data.DataReader;
 import jvntextpro.data.DataWriter;
 import jvntextpro.data.TaggingData;
 import vnu.jvntext.utils.InitializationException;
+import vnu.jvntext.utils.PathUtils;
 
 public class CRFSegmenter {
 
@@ -71,14 +71,14 @@ public class CRFSegmenter {
      *
      * @param modelDir the model dir
      */
-    public CRFSegmenter(Path modelDir) throws InitializationException {
+    public CRFSegmenter(Path modelDir) throws InitializationException, IOException {
         init(modelDir);
     }
 
     /**
      * Instantiates a new cRF segmenter.
      */
-    public CRFSegmenter() throws InitializationException {
+    public CRFSegmenter() throws InitializationException, IOException {
         init();
     }
 
@@ -87,7 +87,7 @@ public class CRFSegmenter {
      *
      * @param modelDir the model dir
      */
-    private void init(Path modelDir) throws InitializationException {
+    private void init(Path modelDir) throws InitializationException, IOException {
         System.out.println("Initializing JVnSegmenter from " + modelDir + "...");
         //Read feature template file
         Path templateFile = modelDir.resolve("featuretemplate.xml");
@@ -103,9 +103,9 @@ public class CRFSegmenter {
                     contextGen = new ConjunctionContextGenerator(node);
                 } else if (cpType.equals("Lexicon")) {
                     contextGen = new LexiconContextGenerator(node);
-                    LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
-                    LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
-                    LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
+                    LexiconContextGenerator.loadVietnameseDict(modelDir.resolve("VNDic_UTF-8.txt"));
+                    LexiconContextGenerator.loadViLocationList(modelDir.resolve("vnlocations.txt"));
+                    LexiconContextGenerator.loadViPersonalNames(modelDir.resolve("vnpernames.txt"));
                 } else if (cpType.equals("Regex")) {
                     contextGen = new RegexContextGenerator(node);
                 } else if (cpType.equals("SyllableFeature")) {
@@ -119,16 +119,17 @@ public class CRFSegmenter {
 
             //create context generators
             labeling = new Labeling(modelDir, dataTagger, reader, writer);
-        } catch(ParserConfigurationException|SAXException|IOException e) {
+        } catch (ParserConfigurationException | SAXException e) {
             throw new InitializationException(e);
         }
     }
 
-    public void init() throws InitializationException {
+    public void init() throws InitializationException, IOException {
         Path modelDir;
         try {
-            modelDir = Paths.get(CRFSegmenter.class.getResource("/" + CRFSegmenter.class.getPackage().getName()).toURI());
-        } catch (URISyntaxException e) {
+            modelDir = PathUtils.getPath(CRFSegmenter.class.getResource("/" + CRFSegmenter.class.getPackage().getName())
+                                                           .toURI());
+        } catch (URISyntaxException | IOException e) {
             // this should never happen
             e.printStackTrace();
             throw new RuntimeException(e);

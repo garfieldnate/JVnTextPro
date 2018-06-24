@@ -59,42 +59,44 @@ public abstract class TrainDataGenerating {
      * @param outputPath the output path
      */
     public void generateTrainData(String inputPath, String outputPath) throws IOException {
-            File file = new File(inputPath);
-            ArrayList<Sentence> data = new ArrayList<Sentence>();
-            if (file.isFile()) {
-                System.out.println("Reading " + file.getName());
-                data = (ArrayList<Sentence>) reader.readFile(inputPath);
-            } else if (file.isDirectory()) {
-                String[] filenames = file.list();
-                for (String filename : filenames) {
-                    System.out.println("Reading " + filename);
-                    ArrayList<Sentence> temp = (ArrayList<Sentence>) reader.readFile(
-                        file.getPath() + File.separator + filename);
-                    data.addAll(temp);
-                }
+        File file = new File(inputPath);
+        ArrayList<Sentence> data = new ArrayList<Sentence>();
+        if (file.isFile()) {
+            System.out.println("Reading " + file.getName());
+            data = (ArrayList<Sentence>) reader.readFile(inputPath);
+        } else if (file.isDirectory()) {
+            String[] filenames = file.list();
+            for (String filename : filenames) {
+                System.out.println("Reading " + filename);
+                ArrayList<Sentence> temp = (ArrayList<Sentence>) reader.readFile(
+                    file.getPath() + File.separator + filename);
+                data.addAll(temp);
             }
+        }
 
-            StringBuilder result = new StringBuilder();
-            System.out.println(data.size() + "sentences read");
-            for (int i = 0; i < data.size(); ++i) {
-                if (i % 20 == 0) System.out.println("Finished " + i + " in " + data.size() + " sentences");
-                Sentence sent = data.get(i);
+        StringBuilder result = new StringBuilder();
+        System.out.println(data.size() + "sentences read");
+        for (int i = 0; i < data.size(); ++i) {
+            if (i % 20 == 0) System.out.println("Finished " + i + " in " + data.size() + " sentences");
+            Sentence sent = data.get(i);
 
-                for (int j = 0; j < sent.size(); ++j) {
-                    //result += sent.getWordAt(j) + " ";
-                    String line = "";
-                    String context = tagger.getContextStr(sent, j);
-                    line = context + " ";
-                    line += sent.getTagAt(j);
-                    result.append(line).append("\n");
-                }
-                result.append("\n");
+            for (int j = 0; j < sent.size(); ++j) {
+                //result += sent.getWordAt(j) + " ";
+                String line = "";
+                String context = tagger.getContextStr(sent, j);
+                line = context + " ";
+                line += sent.getTagAt(j);
+                result.append(line).append("\n");
             }
+            result.append("\n");
+        }
 
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                outputPath + ".tagged"), "UTF-8"));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+            new FileOutputStream(outputPath + ".tagged"),
+            "UTF-8"
+        ));
 
-            writer.write(result.toString());
-            writer.close();
+        writer.write(result.toString());
+        writer.close();
     }
 }

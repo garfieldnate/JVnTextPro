@@ -82,12 +82,12 @@ public final class PennTokenizer {
 
         str = str.replaceAll("\\,([^0-9])", "\\, $1");
         str = str.replaceAll("([^\\s]),([\\s])", "$1 , $2");                //abc,<blank> -> abc ,
-        str = str.replaceAll(
-            "([^\\s:/0-9])/([^\\s:/0-9])",
-            "$1 / $2"
+        str = str.replaceAll("([^\\s:/0-9])/([^\\s:/0-9])",
+                             "$1 / $2"
         );    //exception : url http://..., date-time: 12/3/98
         str = str.replaceAll("([^\\s0-9]+)-",
-                             " $1 -");                        //abc-xyz -> abc - xyz; exception 12-3 (date-time)
+                             " $1 -"
+        );                        //abc-xyz -> abc - xyz; exception 12-3 (date-time)
         str = str.replaceAll("-([^\\s0-9]+)", "- $1");
         str = str.replaceAll("([^\\s]):([\\s])", "$1 : $2");                // abc:<blank> -> abc :
         str = str.replaceAll("([^\\s]):([^0-9]+)", "$1 : $2");                //abc:xyz --> abc : xyz; exception: 12:03

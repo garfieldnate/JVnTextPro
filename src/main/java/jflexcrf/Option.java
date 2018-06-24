@@ -26,10 +26,8 @@
 
 package jflexcrf;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.StringTokenizer;
@@ -96,16 +94,10 @@ public class Option {
      * Read options.
      */
     public void readOptions() throws IOException {
-        String filename = modelDir + File.separator + optionFile;
-        BufferedReader fin;
-        String line;
-
-        fin = new BufferedReader(new FileReader(filename));
-
-        System.out.println("Reading options ...");
-
+        Path optionsPath = modelDir.resolve(optionFile);
+        System.out.println("Reading options from " + optionsPath + "...");
         // read option lines
-        while ((line = fin.readLine()) != null) {
+        for (String line : Files.readAllLines(optionsPath)) {
             String trimLine = line.trim();
             if (trimLine.startsWith("#")) {
                 // comment line

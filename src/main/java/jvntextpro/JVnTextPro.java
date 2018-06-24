@@ -109,11 +109,11 @@ public class JVnTextPro {
      * @param modelDir the model dir
      * @return true if the initialization is successful and false otherwise
      */
-    public void initSegmenter(Path modelDir) throws InitializationException {
+    public void initSegmenter(Path modelDir) throws InitializationException, IOException {
         vnSegmenter = new CRFSegmenter(modelDir);
     }
 
-    public void initSegmenter() throws InitializationException {
+    public void initSegmenter() throws InitializationException, IOException {
         vnSegmenter = new CRFSegmenter();
     }
 

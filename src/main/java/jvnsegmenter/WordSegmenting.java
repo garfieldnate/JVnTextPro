@@ -54,45 +54,45 @@ public class WordSegmenting {
         CRFSegmenter segmenter = new CRFSegmenter(Paths.get(args[1]));
 
         //tagging
-            System.out.println(args[2]);
-            if (args[2].equalsIgnoreCase("-inputfile")) {
-                System.out.println(args[3]);
-                File inputFile = new File(args[3]);
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    inputFile.getPath() + ".wseg"), "UTF-8"));
+        System.out.println(args[2]);
+        if (args[2].equalsIgnoreCase("-inputfile")) {
+            System.out.println(args[3]);
+            File inputFile = new File(args[3]);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                inputFile.getPath() + ".wseg"), "UTF-8"));
 
-                String result = segmenter.segmenting(inputFile);
+            String result = segmenter.segmenting(inputFile);
 
-                writer.write(result);
-                writer.close();
-            } else { //input dir
-                String inputDir = args[3];
-                if (inputDir.endsWith(File.separator)) {
-                    inputDir = inputDir.substring(0, inputDir.length() - 1);
-                }
-
-                File dir = new File(inputDir);
-                String[] children = dir.list(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(".tkn");
-                    }
-                });
-
-                for (int i = 0; i < children.length; i++) {
-                    System.out.println("Segmenting " + children[i]);
-                    String filename = inputDir + File.separator + children[i];
-                    if ((new File(filename)).isDirectory()) {
-                        continue;
-                    }
-
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                        filename + ".wseg"), "UTF-8"));
-
-                    writer.write(segmenter.segmenting(new File(filename)));
-
-                    writer.close();
-                }
+            writer.write(result);
+            writer.close();
+        } else { //input dir
+            String inputDir = args[3];
+            if (inputDir.endsWith(File.separator)) {
+                inputDir = inputDir.substring(0, inputDir.length() - 1);
             }
+
+            File dir = new File(inputDir);
+            String[] children = dir.list(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".tkn");
+                }
+            });
+
+            for (int i = 0; i < children.length; i++) {
+                System.out.println("Segmenting " + children[i]);
+                String filename = inputDir + File.separator + children[i];
+                if ((new File(filename)).isDirectory()) {
+                    continue;
+                }
+
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                    filename + ".wseg"), "UTF-8"));
+
+                writer.write(segmenter.segmenting(new File(filename)));
+
+                writer.close();
+            }
+        }
     }
 
     /**

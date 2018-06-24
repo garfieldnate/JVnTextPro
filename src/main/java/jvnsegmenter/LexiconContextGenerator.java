@@ -29,9 +29,11 @@ package jvnsegmenter;
 import org.w3c.dom.Element;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -192,8 +194,8 @@ public class LexiconContextGenerator extends BasicContextGenerator {
      *
      * @param filename the filename
      */
-    public static void loadVietnameseDict(String filename) throws IOException {
-        FileInputStream in = new FileInputStream(filename);
+    public static void loadVietnameseDict(Path filename) throws IOException {
+        InputStream in = Files.newInputStream(filename);
         if (hsVietnameseDict == null) {
             hsVietnameseDict = new HashSet();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
@@ -214,8 +216,8 @@ public class LexiconContextGenerator extends BasicContextGenerator {
      *
      * @param filename the filename
      */
-    public static void loadViPersonalNames(String filename) throws IOException {
-        FileInputStream in = new FileInputStream(filename);
+    public static void loadViPersonalNames(Path filename) throws IOException {
+        InputStream in = Files.newInputStream(filename);
         if (hsViFamilyNames == null) {
 
             hsViFamilyNames = new HashSet();
@@ -256,8 +258,8 @@ public class LexiconContextGenerator extends BasicContextGenerator {
      *
      * @param filename the filename
      */
-    public static void loadViLocationList(String filename) throws IOException {
-        FileInputStream in = new FileInputStream(filename);
+    public static void loadViLocationList(Path filename) throws IOException {
+        InputStream in = Files.newInputStream(filename);
         if (hsViLocations == null) {
             hsViLocations = new HashSet();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));

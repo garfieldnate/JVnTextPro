@@ -64,7 +64,7 @@ public class POSTrainGenerating extends TrainDataGenerating {
         this.tagger = new TaggingData();
         try {
             tagger.addContextGenerator(new POSContextGenerator(templateFile));
-        } catch(ParserConfigurationException|SAXException|IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new InitializationException(e);
         }
     }

@@ -60,7 +60,7 @@ public class CRFTagger implements POSTagger {
         try {
             dataTagger.addContextGenerator(new POSContextGenerator(modelDir.resolve("featuretemplate.xml")));
             labeling = new Labeling(modelDir, dataTagger, reader, writer);
-        } catch (SAXException|ParserConfigurationException|IOException e) {
+        } catch (SAXException | ParserConfigurationException | IOException e) {
             throw new InitializationException(e);
         }
     }
@@ -68,7 +68,8 @@ public class CRFTagger implements POSTagger {
     public void init() throws InitializationException {
         Path modelDir;
         try {
-            modelDir = Paths.get(CRFTagger.class.getResource("/" + CRFTagger.class.getPackage().getName() + "/crf").toURI());
+            modelDir = Paths.get(CRFTagger.class.getResource("/" + CRFTagger.class.getPackage().getName() + "/crf")
+                                                .toURI());
         } catch (URISyntaxException e) {
             // this should never happen
             e.printStackTrace();

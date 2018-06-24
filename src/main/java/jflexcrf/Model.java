@@ -27,10 +27,8 @@
 package jflexcrf;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.List;
 
 public class Model {
@@ -97,11 +95,7 @@ public class Model {
      */
     public void init() throws IOException {
         // open model file to load model here ... complete later
-        BufferedReader fin = null;
-        String modelFile = taggerOpt.modelDir + File.separator + taggerOpt.modelFile;
-
-        fin = new BufferedReader(new InputStreamReader(new FileInputStream(modelFile), "UTF-8"));
-
+        BufferedReader fin = Files.newBufferedReader(taggerOpt.modelDir.resolve(taggerOpt.modelFile));
         // read context predicate map and label map
         taggerMaps.readCpMaps(fin);
 

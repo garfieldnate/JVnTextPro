@@ -56,6 +56,7 @@ public class MaxentTagger implements POSTagger {
     public MaxentTagger(Path modelDir) throws IOException, InitializationException {
         init(modelDir);
     }
+
     public MaxentTagger() throws InitializationException {
         init();
     }
@@ -66,7 +67,7 @@ public class MaxentTagger implements POSTagger {
         try {
             dataTagger.addContextGenerator(new POSContextGenerator(modeldir.resolve("featuretemplate.xml")));
             classifier = new Classification(modeldir);
-        } catch(SAXException|ParserConfigurationException|IOException e) {
+        } catch (SAXException | ParserConfigurationException | IOException e) {
             throw new InitializationException(e);
         }
     }
@@ -74,7 +75,8 @@ public class MaxentTagger implements POSTagger {
     public void init() throws InitializationException {
         Path modelDir;
         try {
-            modelDir = Paths.get(MaxentTagger.class.getResource("/" + MaxentTagger.class.getPackage().getName() + "/maxent").toURI());
+            modelDir = Paths.get(MaxentTagger.class.getResource(
+                "/" + MaxentTagger.class.getPackage().getName() + "/maxent").toURI());
         } catch (URISyntaxException e) {
             // this should never happen
             e.printStackTrace();

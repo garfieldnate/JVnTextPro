@@ -67,9 +67,8 @@ public class FeatureGenerator {
         if (inputWhat.equals("-inputfile")) {
             BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[2]), "UTF-8"));
 
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(args[2] + ".tagged"),
-                "UTF-8"
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[2] + ".tagged"),
+                                                                           "UTF-8"
             ));
 
             StringBuilder text = new StringBuilder();
@@ -97,9 +96,8 @@ public class FeatureGenerator {
             out.close();
         } else if (inputWhat.equals("-inputdir")) {
 
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(args[2] + ".tagged"),
-                "UTF-8"
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[2] + ".tagged"),
+                                                                           "UTF-8"
             ));
 
             File inputDir = new File(args[2]);

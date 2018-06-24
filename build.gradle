@@ -16,6 +16,7 @@ dependencies {
     compile group: 'args4j', name: 'args4j', version:'2.33'
     compile group: 'org.htmlparser', name: 'htmlparser', version:'2.1'
     compile group: 'com.dbtsai.lbfgs', name: 'lbfgs', version:'0.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
 }
 
 sourceSets {
@@ -24,4 +25,20 @@ sourceSets {
             srcDir 'models'
         }
     }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'jvntextpro.JVnTextProTest'
+    }
+    baseName = baseName + "-executable"
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+//set compiler specific configs
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    // whew, there's a lot of work to do!
+//    options.compilerArgs << "-Xlint:all"
 }

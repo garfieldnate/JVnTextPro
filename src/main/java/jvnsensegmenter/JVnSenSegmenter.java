@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import jmaxent.Classification;
+import vnu.jvntext.utils.PathUtils;
 
 public class JVnSenSegmenter {
 
@@ -80,10 +81,8 @@ public class JVnSenSegmenter {
     public void init() throws IOException {
         Path modelDir;
         try {
-            System.out.println(JVnSenSegmenter.class.getResource("/" + JVnSenSegmenter.class.getPackage().getName())
-                                                    .toURI());
-            modelDir = Paths.get(JVnSenSegmenter.class.getResource("/" + JVnSenSegmenter.class.getPackage().getName())
-                                                      .toURI());
+            modelDir = PathUtils.getPath(JVnSenSegmenter.class.getResource(
+                "/" + JVnSenSegmenter.class.getPackage().getName()).toURI());
         } catch (URISyntaxException e) {
             // this should never happen
             e.printStackTrace();

@@ -51,7 +51,7 @@ public class JVnTextProTest {
 
         if (option.doSenSeg) {
             if (option.modelDir != null) {
-                vnTextPro.initSenSegmenter(option.modelDir.resolve( "jvnsensegmenter"));
+                vnTextPro.initSenSegmenter(option.modelDir.resolve("jvnsensegmenter"));
             } else {
                 vnTextPro.initSenSegmenter();
             }
@@ -63,7 +63,7 @@ public class JVnTextProTest {
 
         if (option.doWordSeg) {
             if (option.modelDir != null) {
-                vnTextPro.initSegmenter(option.modelDir.resolve( "jvnsegmenter"));
+                vnTextPro.initSegmenter(option.modelDir.resolve("jvnsegmenter"));
             } else {
                 vnTextPro.initSegmenter();
             }
@@ -71,7 +71,7 @@ public class JVnTextProTest {
 
         if (option.doPosTagging) {
             if (option.modelDir != null) {
-                vnTextPro.initPosTagger(option.modelDir.resolve("jvnpostag").resolve( "maxent"));
+                vnTextPro.initPosTagger(option.modelDir.resolve("jvnpostag").resolve("maxent"));
             } else {
                 vnTextPro.initPosTagger();
             }
@@ -111,7 +111,7 @@ public class JVnTextProTest {
 
         if (Files.isDirectory(options.inputPath)) {
             // TODO: would be better to just accept the blob, but can we break backwards compatibility?
-            for(Path child: Files.newDirectoryStream(options.inputPath, "*" + options.fileType)) {
+            for (Path child : Files.newDirectoryStream(options.inputPath, "*" + options.fileType)) {
                 processFile(child);
             }
         } else {

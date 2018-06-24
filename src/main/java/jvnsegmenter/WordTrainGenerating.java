@@ -29,7 +29,6 @@ package jvnsegmenter;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -80,9 +79,9 @@ public class WordTrainGenerating extends TrainDataGenerating {
                     contextGen = new ConjunctionContextGenerator(node);
                 } else if (cpType.equals("Lexicon")) {
                     contextGen = new LexiconContextGenerator(node);
-                    LexiconContextGenerator.loadVietnameseDict(modelDir + File.separator + "VNDic_UTF-8.txt");
-                    LexiconContextGenerator.loadViLocationList(modelDir + File.separator + "vnlocations.txt");
-                    LexiconContextGenerator.loadViPersonalNames(modelDir + File.separator + "vnpernames.txt");
+                    LexiconContextGenerator.loadVietnameseDict(modelDir.resolve("VNDic_UTF-8.txt"));
+                    LexiconContextGenerator.loadViLocationList(modelDir.resolve("vnlocations.txt"));
+                    LexiconContextGenerator.loadViPersonalNames(modelDir.resolve("vnpernames.txt"));
                 } else if (cpType.equals("Regex")) {
                     contextGen = new RegexContextGenerator(node);
                 } else if (cpType.equals("SyllableFeature")) {
@@ -93,7 +92,7 @@ public class WordTrainGenerating extends TrainDataGenerating {
 
                 if (contextGen != null) tagger.addContextGenerator(contextGen);
             }
-        }catch(IOException|SAXException|ParserConfigurationException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             throw new InitializationException(e);
         }
     }

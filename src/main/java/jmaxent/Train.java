@@ -203,17 +203,18 @@ public class Train {
 
             // calling L-BFGS
             try {
-                lbfgs.lbfgs(numFeatures,
-                            model.option.mForHessian,
-                            lambda,
-                            f,
-                            gradLogLi,
-                            false,
-                            diag,
-                            iprint,
-                            model.option.epsForConvergence,
-                            xtol,
-                            iflag
+                lbfgs.lbfgs(
+                    numFeatures,
+                    model.option.mForHessian,
+                    lambda,
+                    f,
+                    gradLogLi,
+                    false,
+                    diag,
+                    iprint,
+                    model.option.epsForConvergence,
+                    xtol,
+                    iflag
                 );
             } catch (LBFGS.ExceptionWithIflag e) {
                 System.out.println("L-BFGS failed!");
