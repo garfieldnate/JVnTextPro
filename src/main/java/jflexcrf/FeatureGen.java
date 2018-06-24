@@ -30,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -40,22 +39,22 @@ public class FeatureGen {
     /**
      * The features.
      */
-    List features = null;    // list of features
+    List<Feature> features;    // list of features
 
     /**
      * The fmap.
      */
-    Map fmap = null;        // feature map
+    private Map<String, Integer> fmap;        // feature map
 
     /**
      * The maps.
      */
-    Maps maps = null;        // context predicate and label maps
+    private Maps maps;        // context predicate and label maps
 
     /**
      * The dict.
      */
-    Dictionary dict = null;    // dictionary
+    private Dictionary dict;    // dictionary
 
     /**
      * Instantiates a new feature gen.
@@ -103,25 +102,25 @@ public class FeatureGen {
         if (features != null) {
             features.clear();
         } else {
-            features = new ArrayList();
+            features = new ArrayList<>();
         }
 
         if (fmap != null) {
             fmap.clear();
         } else {
-            fmap = new HashMap();
+            fmap = new HashMap<>();
         }
 
         if (eFeatures != null) {
             eFeatures.clear();
         } else {
-            eFeatures = new ArrayList();
+            eFeatures = new ArrayList<>();
         }
 
         if (sFeatures != null) {
             sFeatures.clear();
         } else {
-            sFeatures = new ArrayList();
+            sFeatures = new ArrayList<>();
         }
 
         String line;
@@ -157,11 +156,11 @@ public class FeatureGen {
             // create a new feature by parsing the line
             Feature f = new Feature(line, maps.cpStr2Int, maps.lbStr2Int);
 
-            Integer fidx = (Integer) fmap.get(f.strId);
+            Integer fidx = fmap.get(f.strId);
             if (fidx == null) {
                 // insert the feature into the feature map
                 //        System.out.println("\tinsert into the feature map");
-                fmap.put(f.strId, new Integer(f.idx));
+                fmap.put(f.strId, f.idx);
                 features.add(f);
 
                 if (f.ftype == Feature.EDGE_FEATURE1) {
@@ -177,7 +176,7 @@ public class FeatureGen {
         System.out.println("Reading " + Integer.toString(features.size()) + " features completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
     }
 
     // start to scan features at a particular position in a data sequence
@@ -188,7 +187,7 @@ public class FeatureGen {
      * @param seq the seq
      * @param pos the pos
      */
-    public void startScanFeaturesAt(List seq, int pos) {
+    public void startScanFeaturesAt(List<Observation> seq, int pos) {
         startScanSFeaturesAt(seq, pos);
         startScanEFeatures();
     }
@@ -214,8 +213,6 @@ public class FeatureGen {
             f = nextSFeature();
         } else if (hasNextEFeature()) {
             f = nextEFeature();
-        } else {
-            // do nothing
         }
 
         return f;
@@ -225,12 +222,12 @@ public class FeatureGen {
     /**
      * The s features.
      */
-    List sFeatures = null;
+    private List<Feature> sFeatures = null;
 
     /**
      * The s feature idx.
      */
-    int sFeatureIdx = 0;
+    private int sFeatureIdx = 0;
 
     /**
      * Start scan s features at.
@@ -238,29 +235,27 @@ public class FeatureGen {
      * @param seq the seq
      * @param pos the pos
      */
-    void startScanSFeaturesAt(List seq, int pos) {
+    void startScanSFeaturesAt(List<Observation> seq, int pos) {
         sFeatures.clear();
         sFeatureIdx = 0;
 
-        Observation obsr = (Observation) seq.get(pos);
+        Observation obsr = seq.get(pos);
 
         // scan over all context predicates
         for (int i = 0; i < obsr.cps.length; i++) {
-            Element elem = (Element) dict.dict.get(new Integer(obsr.cps[i]));
+            Element elem = dict.dict.get(obsr.cps[i]);
             if (elem == null) {
                 continue;
             }
 
             if (!(elem.isScanned)) {
                 // scan all labels for state feature
-                Iterator it = elem.lbCntFidxes.keySet().iterator();
-                while (it.hasNext()) {
-                    Integer label = (Integer) it.next();
-                    CountFeatureIdx cntFidx = (CountFeatureIdx) elem.lbCntFidxes.get(label);
+                for (Integer label : elem.lbCntFidxes.keySet()) {
+                    CountFeatureIdx cntFidx = elem.lbCntFidxes.get(label);
 
                     if (cntFidx.fidx >= 0) {
                         Feature sF = new Feature();
-                        sF.sFeature1Init(label.intValue(), obsr.cps[i]);
+                        sF.sFeature1Init(label, obsr.cps[i]);
                         sF.idx = cntFidx.fidx;
 
                         elem.cpFeatures.add(sF);
@@ -270,9 +265,7 @@ public class FeatureGen {
                 elem.isScanned = true;
             }
 
-            for (int j = 0; j < elem.cpFeatures.size(); j++) {
-                sFeatures.add(elem.cpFeatures.get(j));
-            }
+            sFeatures.addAll(elem.cpFeatures);
         }
     }
 
@@ -291,7 +284,7 @@ public class FeatureGen {
      * @return the feature
      */
     Feature nextSFeature() {
-        Feature sF = (Feature) sFeatures.get(sFeatureIdx);
+        Feature sF = sFeatures.get(sFeatureIdx);
         sFeatureIdx++;
         return sF;
     }
@@ -300,12 +293,12 @@ public class FeatureGen {
     /**
      * The e features.
      */
-    List eFeatures = null;
+    private List<Feature> eFeatures = null;
 
     /**
      * The e feature idx.
      */
-    int eFeatureIdx = 0;
+    private int eFeatureIdx = 0;
 
     /**
      * Start scan e features.
@@ -329,10 +322,9 @@ public class FeatureGen {
      * @return the feature
      */
     Feature nextEFeature() {
-        Feature eF = (Feature) eFeatures.get(eFeatureIdx);
+        Feature eF = eFeatures.get(eFeatureIdx);
         eFeatureIdx++;
         return eF;
     }
 
-} // end of class FeatureGen
-
+}

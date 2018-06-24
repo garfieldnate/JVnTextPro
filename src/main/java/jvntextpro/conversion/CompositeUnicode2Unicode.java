@@ -29,9 +29,7 @@ package jvntextpro.conversion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 // TODO: Auto-generated Javadoc
@@ -46,7 +44,7 @@ public class CompositeUnicode2Unicode {
     /**
      * The cps uni2 uni.
      */
-    Map<String, String> cpsUni2Uni;
+    final Map<String, String> cpsUni2Uni;
 
     /**
      * The Constant DEFAULT_MAP_RESOURCE.
@@ -61,11 +59,10 @@ public class CompositeUnicode2Unicode {
      * Instantiates a new composite unicode2 unicode.
      */
     public CompositeUnicode2Unicode() throws IOException {
-        cpsUni2Uni = new HashMap<String, String>();
-        URL url = CompositeUnicode2Unicode.class.getClassLoader().getResource(DEFAULT_MAP_RESOURCE);
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-
+        cpsUni2Uni = new HashMap<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(CompositeUnicode2Unicode.class.getClassLoader()
+                                                                                                       .getResourceAsStream(
+                                                                                                           DEFAULT_MAP_RESOURCE)));
         String line;
         while ((line = reader.readLine()) != null) {
             String[] onemap = line.split("\t");
@@ -92,9 +89,7 @@ public class CompositeUnicode2Unicode {
 
         if (cpsUni2Uni == null) return ret;
 
-        Iterator<String> it = cpsUni2Uni.keySet().iterator();
-        while (it.hasNext()) {
-            String cpsChar = it.next();
+        for (String cpsChar : cpsUni2Uni.keySet()) {
             ret = ret.replaceAll(cpsChar, cpsUni2Uni.get(cpsChar));
         }
 

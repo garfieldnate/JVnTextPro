@@ -49,37 +49,32 @@ public class Data {
     /**
      * The lb str2 int.
      */
-    public Map lbStr2Int = null;
+    public Map<String, Integer> lbStr2Int;
 
     /**
      * The lb int2 str.
      */
-    public Map lbInt2Str = null;
+    public Map<Integer, String> lbInt2Str;
 
     /**
      * The cp str2 int.
      */
-    public Map cpStr2Int = null;
+    public Map<String, Integer> cpStr2Int;
 
     /**
      * The cp int2 str.
      */
-    public Map cpInt2Str = null;
+    public Map<Integer, String> cpInt2Str;
 
     /**
      * The trn data.
      */
-    public List trnData = null;
+    public List<Observation> trnData;
 
     /**
      * The tst data.
      */
-    public List tstData = null;
-
-    /**
-     * The ulb data.
-     */
-    public List ulbData = null;
+    public List<Observation> tstData;
 
     /**
      * Instantiates a new data.
@@ -100,13 +95,13 @@ public class Data {
         if (cpStr2Int != null) {
             cpStr2Int.clear();
         } else {
-            cpStr2Int = new HashMap();
+            cpStr2Int = new HashMap<>();
         }
 
         if (cpInt2Str != null) {
             cpInt2Str.clear();
         } else {
-            cpInt2Str = new HashMap();
+            cpInt2Str = new HashMap<>();
         }
 
         String line;
@@ -138,17 +133,17 @@ public class Data {
             }
 
             String cpStr = strTok.nextToken();
-            String cpInt = strTok.nextToken();
+            Integer cpInt = Integer.parseInt(strTok.nextToken());
 
-            cpStr2Int.put(cpStr, new Integer(cpInt));
-            cpInt2Str.put(new Integer(cpInt), cpStr);
+            cpStr2Int.put(cpStr, cpInt);
+            cpInt2Str.put(cpInt, cpStr);
         }
 
         System.out.println(
             "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
 
         option.numCps = cpStr2Int.size();
     }
@@ -171,10 +166,9 @@ public class Data {
      *
      * @param dict the dict
      * @param fout the fout
-     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void writeCpMaps(Dictionary dict, PrintWriter fout) throws IOException {
-        Iterator it = null;
+    public void writeCpMaps(Dictionary dict, PrintWriter fout) {
+        Iterator<String> it;
 
         if (cpStr2Int == null) {
             return;
@@ -182,10 +176,10 @@ public class Data {
 
         int count = 0;
         for (it = cpStr2Int.keySet().iterator(); it.hasNext(); ) {
-            String cpStr = (String) it.next();
-            Integer cpInt = (Integer) cpStr2Int.get(cpStr);
+            String cpStr = it.next();
+            Integer cpInt = cpStr2Int.get(cpStr);
 
-            Element elem = (Element) dict.dict.get(cpInt);
+            Element elem = dict.dict.get(cpInt);
             if (elem != null) {
                 if (elem.chosen == 1) {
                     count++;
@@ -197,10 +191,10 @@ public class Data {
         fout.println(Integer.toString(count));
 
         for (it = cpStr2Int.keySet().iterator(); it.hasNext(); ) {
-            String cpStr = (String) it.next();
-            Integer cpInt = (Integer) cpStr2Int.get(cpStr);
+            String cpStr = it.next();
+            Integer cpInt = cpStr2Int.get(cpStr);
 
-            Element elem = (Element) dict.dict.get(cpInt);
+            Element elem = dict.dict.get(cpInt);
             if (elem != null) {
                 if (elem.chosen == 1) {
                     fout.println(cpStr + " " + cpInt.toString());
@@ -222,13 +216,13 @@ public class Data {
         if (lbStr2Int != null) {
             lbStr2Int.clear();
         } else {
-            lbStr2Int = new HashMap();
+            lbStr2Int = new HashMap<>();
         }
 
         if (lbInt2Str != null) {
             lbInt2Str.clear();
         } else {
-            lbInt2Str = new HashMap();
+            lbInt2Str = new HashMap<>();
         }
 
         String line;
@@ -260,16 +254,16 @@ public class Data {
             }
 
             String lbStr = strTok.nextToken();
-            String lbInt = strTok.nextToken();
+            Integer lbInt = Integer.parseInt(strTok.nextToken());
 
-            lbStr2Int.put(lbStr, new Integer(lbInt));
-            lbInt2Str.put(new Integer(lbInt), lbStr);
+            lbStr2Int.put(lbStr, lbInt);
+            lbInt2Str.put(lbInt, lbStr);
         }
 
         System.out.println("Reading label maps (" + Integer.toString(lbStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
 
         option.numLabels = lbStr2Int.size();
     }
@@ -291,9 +285,8 @@ public class Data {
      * Write lb maps.
      *
      * @param fout the fout
-     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void writeLbMaps(PrintWriter fout) throws IOException {
+    public void writeLbMaps(PrintWriter fout) {
         if (lbStr2Int == null) {
             return;
         }
@@ -301,9 +294,8 @@ public class Data {
         // write the map size
         fout.println(Integer.toString(lbStr2Int.size()));
 
-        for (Iterator it = lbStr2Int.keySet().iterator(); it.hasNext(); ) {
-            String lbStr = (String) it.next();
-            Integer lbInt = (Integer) lbStr2Int.get(lbStr);
+        for (String lbStr : lbStr2Int.keySet()) {
+            Integer lbInt = lbStr2Int.get(lbStr);
 
             fout.println(lbStr + " " + lbInt.toString());
         }
@@ -321,35 +313,35 @@ public class Data {
         if (cpStr2Int != null) {
             cpStr2Int.clear();
         } else {
-            cpStr2Int = new HashMap();
+            cpStr2Int = new HashMap<>();
         }
 
         if (cpInt2Str != null) {
             cpInt2Str.clear();
         } else {
-            cpInt2Str = new HashMap();
+            cpInt2Str = new HashMap<>();
         }
 
         if (lbStr2Int != null) {
             lbStr2Int.clear();
         } else {
-            lbStr2Int = new HashMap();
+            lbStr2Int = new HashMap<>();
         }
 
         if (lbInt2Str != null) {
             lbInt2Str.clear();
         } else {
-            lbInt2Str = new HashMap();
+            lbInt2Str = new HashMap<>();
         }
 
         if (trnData != null) {
             trnData.clear();
         } else {
-            trnData = new ArrayList();
+            trnData = new ArrayList<>();
         }
 
         // open data file
-        BufferedReader fin = null;
+        BufferedReader fin;
 
         fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
         //    BufferedWriter flog = new BufferedWriter(new OutputStreamWriter(
@@ -367,7 +359,7 @@ public class Data {
                 continue;
             }
 
-            List strCps = new ArrayList();
+            List<String> strCps = new ArrayList<>();
             for (int i = 0; i < len - 1; i++) {
                 strCps.add(strTok.nextToken());
             }
@@ -393,23 +385,22 @@ public class Data {
             //			}
             //		//}
 
-            List intCps = new ArrayList();
+            List<Integer> intCps = new ArrayList<>();
 
-            for (int i = 0; i < strCps.size(); i++) {
-                String cpStr = (String) strCps.get(i);
-                Integer cpInt = (Integer) cpStr2Int.get(cpStr);
+            for (String cpStr : strCps) {
+                Integer cpInt = cpStr2Int.get(cpStr);
                 if (cpInt != null) {
                     intCps.add(cpInt);
                 } else {
-                    intCps.add(new Integer(cpStr2Int.size()));
-                    cpStr2Int.put(cpStr, new Integer(cpStr2Int.size()));
-                    cpInt2Str.put(new Integer(cpInt2Str.size()), cpStr);
+                    intCps.add(cpStr2Int.size());
+                    cpStr2Int.put(cpStr, cpStr2Int.size());
+                    cpInt2Str.put(cpInt2Str.size(), cpStr);
                 }
             }
 
-            Integer labelInt = (Integer) lbStr2Int.get(labelStr);
+            Integer labelInt = lbStr2Int.get(labelStr);
             if (labelInt == null) {
-                labelInt = new Integer(lbStr2Int.size());
+                labelInt = lbStr2Int.size();
 
                 //		    System.out.println("hey:" + labelStr);
                 //		    flog.write(labelStr + "\t" + line + "\n");
@@ -419,10 +410,10 @@ public class Data {
 
             int[] cps = new int[intCps.size()];
             for (int i = 0; i < cps.length; i++) {
-                cps[i] = ((Integer) intCps.get(i)).intValue();
+                cps[i] = intCps.get(i);
             }
 
-            Observation obsr = new Observation(labelInt.intValue(), cps);
+            Observation obsr = new Observation(labelInt, cps);
 
             // add this observation to the data
             trnData.add(obsr);
@@ -445,11 +436,11 @@ public class Data {
         if (tstData != null) {
             tstData.clear();
         } else {
-            tstData = new ArrayList();
+            tstData = new ArrayList<>();
         }
 
         // open data file
-        BufferedReader fin = null;
+        BufferedReader fin;
 
         fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
         System.out.println("Reading testing data ...");
@@ -464,26 +455,23 @@ public class Data {
                 continue;
             }
 
-            List strCps = new ArrayList();
+            List<String> strCps = new ArrayList<>();
             for (int i = 0; i < len - 1; i++) {
                 strCps.add(strTok.nextToken());
             }
 
             String labelStr = strTok.nextToken();
 
-            List intCps = new ArrayList();
+            List<Integer> intCps = new ArrayList<>();
 
-            for (int i = 0; i < strCps.size(); i++) {
-                String cpStr = (String) strCps.get(i);
-                Integer cpInt = (Integer) cpStr2Int.get(cpStr);
+            for (String strCp : strCps) {
+                Integer cpInt = cpStr2Int.get(strCp);
                 if (cpInt != null) {
                     intCps.add(cpInt);
-                } else {
-                    // do nothing
                 }
             }
 
-            Integer labelInt = (Integer) lbStr2Int.get(labelStr);
+            Integer labelInt = lbStr2Int.get(labelStr);
             if (labelInt == null) {
                 System.out.println("Reading testing observation, label not found or invalid");
                 return;
@@ -491,10 +479,10 @@ public class Data {
 
             int[] cps = new int[intCps.size()];
             for (int i = 0; i < cps.length; i++) {
-                cps[i] = ((Integer) intCps.get(i)).intValue();
+                cps[i] = intCps.get(i);
             }
 
-            Observation obsr = new Observation(labelInt.intValue(), cps);
+            Observation obsr = new Observation(labelInt, cps);
 
             // add this observation to the data
             tstData.add(obsr);
@@ -516,5 +504,4 @@ public class Data {
     }
 */
 
-} // end of class Data
-
+}

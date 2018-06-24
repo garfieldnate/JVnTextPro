@@ -37,9 +37,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import jvntextpro.util.StringUtils;
@@ -64,51 +66,15 @@ public class FeatureGenerator {
 
         String inputWhat = args[1].toLowerCase().trim();
 
-        if (inputWhat.equals("-inputfile")) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[2]), "UTF-8"));
+        switch (inputWhat) {
+            case "-inputfile": {
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(args[2]), "UTF-8"));
 
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[2] + ".tagged"),
-                                                                           "UTF-8"
-            ));
-
-            StringBuilder text = new StringBuilder();
-            String line = "";
-            while ((line = in.readLine()) != null) {
-                text.append("\n").append(line);
-            }
-            text = new StringBuilder(text.toString().trim());
-
-            //text normalization
-            text = new StringBuilder(text.toString().replaceAll("([\t\n\r ])+", "$1"));
-            text = new StringBuilder(text.toString().replaceAll("[\\[\\]]", ""));
-            text = new StringBuilder(text.toString().replaceAll("<[^<>]*>", ""));
-
-            List MarkList = new ArrayList();
-
-            ArrayList recordList = (ArrayList) doFeatureGen(new HashMap(), text.toString(), MarkList, label);
-
-            for (Object record : recordList) {
-                out.write(record.toString());
-                out.write("\n");
-            }
-
-            in.close();
-            out.close();
-        } else if (inputWhat.equals("-inputdir")) {
-
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[2] + ".tagged"),
-                                                                           "UTF-8"
-            ));
-
-            File inputDir = new File(args[2]);
-            File[] children = inputDir.listFiles();
-
-            for (File child : children) {
-                //go through all the file in the input file and do feagen
-                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(child), "UTF-8"));
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                    args[2] + ".tagged"), "UTF-8"));
 
                 StringBuilder text = new StringBuilder();
-                String line;
+                String line = "";
                 while ((line = in.readLine()) != null) {
                     text.append("\n").append(line);
                 }
@@ -116,22 +82,62 @@ public class FeatureGenerator {
 
                 //text normalization
                 text = new StringBuilder(text.toString().replaceAll("([\t\n\r ])+", "$1"));
-                text = new StringBuilder(text.toString().replaceAll("[\\[\\]{}]", ""));
+                text = new StringBuilder(text.toString().replaceAll("[\\[\\]]", ""));
                 text = new StringBuilder(text.toString().replaceAll("<[^<>]*>", ""));
 
-                List MarkList = new ArrayList();
-                ArrayList recordList = (ArrayList) doFeatureGen(new HashMap(), text.toString(), MarkList, label);
+                List<String> recordList = doFeatureGen(new HashSet<>(), text.toString(), new ArrayList<>(), label);
 
-
-                for (Object aRecordList : recordList) {
-                    out.write(aRecordList.toString());
+                for (String record : recordList) {
+                    out.write(record);
                     out.write("\n");
                 }
 
                 in.close();
+                out.close();
+                break;
             }
-            out.close();
-        } else printUsage();
+            case "-inputdir": {
+
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+                    args[2] + ".tagged"), "UTF-8"));
+
+                File inputDir = new File(args[2]);
+                File[] children = inputDir.listFiles();
+
+                for (File child : children) {
+                    //go through all the file in the input file and do feagen
+                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(child), "UTF-8"));
+
+                    StringBuilder text = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        text.append("\n").append(line);
+                    }
+                    text = new StringBuilder(text.toString().trim());
+
+                    //text normalization
+                    text = new StringBuilder(text.toString().replaceAll("([\t\n\r ])+", "$1"));
+                    text = new StringBuilder(text.toString().replaceAll("[\\[\\]{}]", ""));
+                    text = new StringBuilder(text.toString().replaceAll("<[^<>]*>", ""));
+
+                    List<Integer> markList = new ArrayList<>();
+                    List<String> recordList = doFeatureGen(new HashSet<>(), text.toString(), markList, label);
+
+
+                    for (String record : recordList) {
+                        out.write(record);
+                        out.write("\n");
+                    }
+
+                    in.close();
+                }
+                out.close();
+                break;
+            }
+            default:
+                printUsage();
+                break;
+        }
     }
 
     /**
@@ -148,7 +154,7 @@ public class FeatureGenerator {
      * @param map      the map
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public static void readAbbrList(String dataFile, Map map) throws IOException {
+    public static void readAbbrList(String dataFile, Map<String, String> map) throws IOException {
         BufferedReader fin = new BufferedReader(new FileReader(dataFile));
 
         String line;
@@ -168,25 +174,24 @@ public class FeatureGenerator {
     /**
      * Generate context predicates for a specified text, return string representing the context predicates.
      *
-     * @param map      the map
+     * @param set      the set
      * @param text     the text
      * @param markList the mark list
      * @param label    the label
      * @return the list
      */
-    public static List doFeatureGen(Map map, String text, List markList, boolean label) {
+    public static List<String> doFeatureGen(Set<String> set, String text, List<Integer> markList, boolean label) {
         markList.clear();
 
         //Find out positions of .!? and store them in the markList
         int nextPos = 0;
-        while ((nextPos = StringUtils.findFirstOf(text, ".!?", nextPos + 1)) != -1) markList.add(new Integer(nextPos));
+        while ((nextPos = StringUtils.findFirstOf(text, ".!?", nextPos + 1)) != -1) markList.add(nextPos);
 
         //Generate context predicates at those positions
-        List results = new ArrayList();
-        for (int i = 0; i < markList.size(); ++i) {
-
-            int curPos = ((Integer) markList.get(i)).intValue();
-            String record = genCPs(map, text, curPos);
+        List<String> results = new ArrayList<>();
+        for (Integer mark : markList) {
+            int curPos = mark;
+            String record = genCPs(set, text, curPos);
 
             //Assign label to feature string if it is specified
             if (label) {
@@ -206,15 +211,15 @@ public class FeatureGenerator {
     /**
      * get context predicates at a specified position in the sequence.
      *
-     * @param map      the map
+     * @param set      the set
      * @param text     the text
      * @param position the position
      * @return the string
      */
-    private static String genCPs(Map map, String text, int position) {
+    private static String genCPs(Set<String> set, String text, int position) {
         //get the current token(containing this mark) and its suffix & prefix
-        String token = "", suffix = "", prefix = "";
-        int idx1 = -1, idx2 = -1, idx;
+        String token, suffix = "", prefix = "";
+        int idx1, idx2, idx;
 
         idx1 = StringUtils.findLastOf(text, " \t\n\r", position);
         if (idx1 == -1) idx1 = 0;
@@ -261,7 +266,7 @@ public class FeatureGenerator {
             // 03:tok-first-cap
             cps += " 03";
         }
-        if (map.containsKey(token.toLowerCase())) {
+        if (set.contains(token.toLowerCase())) {
             // 04:tok-in-abbrlist
             cps += " 04";
         }
@@ -303,7 +308,7 @@ public class FeatureGenerator {
             cps += " 16";
         }
 
-        if (preToken != "") {
+        if (!Objects.equals(preToken, "")) {
             // 17:pre-tok
             cps += " 17=" + preToken;
             // 18:pre-tok-lower
@@ -312,7 +317,7 @@ public class FeatureGenerator {
                 // 19:pre-tok-first-cap
                 cps += " 19";
             }
-            if (map.containsKey(preToken.toLowerCase())) {
+            if (set.contains(preToken.toLowerCase())) {
                 // 20:pre-tok-in-abbrlist
                 cps += " 20";
             }
@@ -342,7 +347,7 @@ public class FeatureGenerator {
             cps += " 27=null";
         }
 
-        if (nexToken != "") {
+        if (!Objects.equals(nexToken, "")) {
             // 28:nex-tok
             cps += " 28=" + nexToken;
             // 29:nex-tok-lower
@@ -351,7 +356,7 @@ public class FeatureGenerator {
                 // 30:nex-tok-first-cap
                 cps += " 30";
             }
-            if (map.containsKey(nexToken.toLowerCase())) {
+            if (set.contains(nexToken.toLowerCase())) {
                 // 31:nex-tok-in-abbrlist
                 cps += " 31";
             }
@@ -406,7 +411,7 @@ public class FeatureGenerator {
         if (token.contains("/")) cps += " 42";
 
         //43:nex-tok-first_char
-        if (nexToken != "") cps += " 43=" + nexToken.charAt(0);
+        if (!Objects.equals(nexToken, "")) cps += " 43=" + nexToken.charAt(0);
         return cps.trim();
     }
 

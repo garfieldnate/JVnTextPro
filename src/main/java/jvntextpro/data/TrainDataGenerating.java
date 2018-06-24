@@ -60,7 +60,7 @@ public abstract class TrainDataGenerating {
      */
     public void generateTrainData(String inputPath, String outputPath) throws IOException {
         File file = new File(inputPath);
-        ArrayList<Sentence> data = new ArrayList<Sentence>();
+        ArrayList<Sentence> data = new ArrayList<>();
         if (file.isFile()) {
             System.out.println("Reading " + file.getName());
             data = (ArrayList<Sentence>) reader.readFile(inputPath);
@@ -82,7 +82,7 @@ public abstract class TrainDataGenerating {
 
             for (int j = 0; j < sent.size(); ++j) {
                 //result += sent.getWordAt(j) + " ";
-                String line = "";
+                String line;
                 String context = tagger.getContextStr(sent, j);
                 line = context + " ";
                 line += sent.getTagAt(j);
@@ -91,9 +91,8 @@ public abstract class TrainDataGenerating {
             result.append("\n");
         }
 
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-            new FileOutputStream(outputPath + ".tagged"),
-            "UTF-8"
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath + ".tagged"),
+                                                                          "UTF-8"
         ));
 
         writer.write(result.toString());

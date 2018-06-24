@@ -46,7 +46,7 @@ public class WordDataReader extends DataReader {
     /**
      * The tags.
      */
-    protected String[] tags = {"B-W", "I-W", "O"};
+    protected final String[] tags = {"B-W", "I-W", "O"};
 
     //------------------------------------
     // Constructor
@@ -77,7 +77,7 @@ public class WordDataReader extends DataReader {
 	 */
     @Override
     public List<Sentence> readFile(String datafile) throws IOException {
-        List<Sentence> data = new ArrayList<Sentence>();
+        List<Sentence> data = new ArrayList<>();
 
         Files.lines(Paths.get(datafile)).forEach(line -> {
             Sentence sentence = new Sentence();
@@ -89,14 +89,14 @@ public class WordDataReader extends DataReader {
                 String word = "", tag = null;
                 if (!isTrainReading) {
                     word = tk.nextToken();
-                    sentence.addTWord(word, tag);
+                    sentence.addTWord(word, null);
                 } else {
                     String token = tk.nextToken();
-                    for (int i = 0; i < tags.length; ++i) {
-                        String labelPart = "/" + tags[i];
+                    for (String tag1 : tags) {
+                        String labelPart = "/" + tag1;
                         if (token.endsWith(labelPart)) {
                             word = token.substring(0, token.length() - labelPart.length());
-                            tag = tags[i];
+                            tag = tag1;
                             break;
                         }
                     }
@@ -113,7 +113,7 @@ public class WordDataReader extends DataReader {
      */
     public List<Sentence> readString(String dataStr) {
         String[] lines = dataStr.split("\n");
-        List<Sentence> data = new ArrayList<Sentence>();
+        List<Sentence> data = new ArrayList<>();
         for (String line : lines) {
             Sentence sentence = new Sentence();
 
@@ -121,11 +121,10 @@ public class WordDataReader extends DataReader {
 
             StringTokenizer tk = new StringTokenizer(line, " ");
             while (tk.hasMoreTokens()) {
-                String word = "", tag = null;
+                String word, tag;
                 if (!isTrainReading) {
-                    String token = tk.nextToken();
-                    word = token;
-                    sentence.addTWord(word, tag);
+                    word = tk.nextToken();
+                    sentence.addTWord(word, null);
                 } else {
                     String token = tk.nextToken();
                     StringTokenizer sltk = new StringTokenizer(token, "/");

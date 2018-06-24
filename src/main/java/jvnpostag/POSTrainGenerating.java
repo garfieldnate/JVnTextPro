@@ -43,7 +43,7 @@ public class POSTrainGenerating extends TrainDataGenerating {
     /**
      * The template file.
      */
-    Path templateFile;
+    final Path templateFile;
 
     /**
      * Instantiates a new pOS train generating.

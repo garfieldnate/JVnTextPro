@@ -58,10 +58,10 @@ public class Observation {
      * @param lbInt2Str the lb int2 str
      * @return the string
      */
-    public String toString(Map lbInt2Str) {
+    public String toString(Map<Integer, String> lbInt2Str) {
         String res = originalData;
 
-        String labelStr = (String) lbInt2Str.get(new Integer(modelLabel));
+        String labelStr = lbInt2Str.get(modelLabel);
         if (labelStr != null) {
             res += Option.outputSeparator + labelStr.toUpperCase();
         }
@@ -69,5 +69,4 @@ public class Observation {
         return res;
     }
 
-} // end of class Observation
-
+}

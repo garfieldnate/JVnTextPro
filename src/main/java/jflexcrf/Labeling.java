@@ -111,7 +111,6 @@ public class Labeling {
      * Inits the.
      *
      * @param modelDir the model dir
-     * @return true, if successful
      */
     public void init(Path modelDir) throws IOException {
         this.modelDir = modelDir;
@@ -166,7 +165,7 @@ public class Labeling {
      * @return a list of sentences with tags annotated
      */
     @SuppressWarnings("unchecked")
-    public List seqLabeling(String data) {
+    public List<Sentence> seqLabeling(String data) {
         List<Sentence> obsvSeqs = dataReader.readString(data);
         return labeling(obsvSeqs);
     }
@@ -177,7 +176,7 @@ public class Labeling {
      * @param file the file
      * @return a list of sentences with tags annotated
      */
-    public List seqLabeling(File file) throws IOException {
+    public List<Sentence> seqLabeling(File file) throws IOException {
         List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
         return labeling(obsvSeqs);
     }
@@ -189,7 +188,7 @@ public class Labeling {
      * @return string representing label sequences, the format is specified by writer
      */
     public String strLabeling(String data) {
-        List lblSeqs = seqLabeling(data);
+        List<Sentence> lblSeqs = seqLabeling(data);
         return dataWriter.writeString(lblSeqs);
     }
 
@@ -201,7 +200,7 @@ public class Labeling {
      */
     public String strLabeling(File file) throws IOException {
         List<Sentence> obsvSeqs = dataReader.readFile(file.getPath());
-        List lblSeqs = labeling(obsvSeqs);
+        List<Sentence> lblSeqs = labeling(obsvSeqs);
         return dataWriter.writeString(lblSeqs);
     }
 
@@ -212,23 +211,22 @@ public class Labeling {
      * @return the list
      */
     @SuppressWarnings("unchecked")
-    private List labeling(List<Sentence> obsvSeqs) {
-        List labelSeqs = new ArrayList();
+    private List<Sentence> labeling(List<Sentence> obsvSeqs) {
+        List<List<Observation>> labelSeqs = new ArrayList<>();
 
-        for (int i = 0; i < obsvSeqs.size(); ++i) {//ith sentence
-            List sequence = new ArrayList();
-            Sentence sentence = obsvSeqs.get(i);
+        for (Sentence obsvSeq : obsvSeqs) {//ith sentence
+            List<Observation> sequence = new ArrayList<>();
 
-            for (int j = 0; j < sentence.size(); ++j) {//jth observation
+            for (int j = 0; j < obsvSeq.size(); ++j) {//jth observation
                 Observation obsv = new Observation();
-                obsv.originalData = sentence.getWordAt(j);
+                obsv.originalData = obsvSeq.getWordAt(j);
 
-                String[] strCps = dataTagger.getContext(sentence, j);
+                String[] strCps = dataTagger.getContext(obsvSeq, j);
 
-                ArrayList<Integer> tempCpsInt = new ArrayList<Integer>();
+                ArrayList<Integer> tempCpsInt = new ArrayList<>();
 
-                for (int k = 0; k < strCps.length; k++) {
-                    Integer cpInt = (Integer) taggerMaps.cpStr2Int.get(strCps[k]);
+                for (String strCp : strCps) {
+                    Integer cpInt = taggerMaps.cpStr2Int.get(strCp);
                     if (cpInt == null) {
                         continue;
                     }
@@ -237,7 +235,7 @@ public class Labeling {
 
                 obsv.cps = new int[tempCpsInt.size()];
                 for (int k = 0; k < tempCpsInt.size(); ++k) {
-                    obsv.cps[k] = tempCpsInt.get(k).intValue();
+                    obsv.cps[k] = tempCpsInt.get(k);
                 }
                 sequence.add(obsv);
             }
@@ -250,11 +248,11 @@ public class Labeling {
         //assign labels to list of sentences
         for (int i = 0; i < obsvSeqs.size(); ++i) {
             Sentence sent = obsvSeqs.get(i);
-            List seq = (List) labelSeqs.get(i);
+            List<Observation> seq = labelSeqs.get(i);
 
             for (int j = 0; j < sent.size(); ++j) {
-                Observation obsrv = (Observation) seq.get(j);
-                String label = (String) taggerMaps.lbInt2Str.get(obsrv.modelLabel);
+                Observation obsrv = seq.get(j);
+                String label = taggerMaps.lbInt2Str.get(obsrv.modelLabel);
 
                 sent.getTWordAt(j).setTag(label);
             }

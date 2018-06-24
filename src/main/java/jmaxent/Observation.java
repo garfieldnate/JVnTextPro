@@ -35,7 +35,7 @@ public class Observation {
     /**
      * The original data.
      */
-    public String originalData = "";
+    public final String originalData = "";
 
     /**
      * The cps.
@@ -80,9 +80,7 @@ public class Observation {
     public Observation(int[] cps) {
         this.cps = new int[cps.length];
 
-        for (int i = 0; i < cps.length; i++) {
-            this.cps[i] = cps[i];
-        }
+        System.arraycopy(cps, 0, this.cps, 0, cps.length);
     }
 
     /**
@@ -90,13 +88,13 @@ public class Observation {
      *
      * @param intCps the int cps
      */
-    public Observation(List intCps) {
+    public Observation(List<Integer> intCps) {
         this.cps = new int[intCps.size()];
 
         for (int i = 0; i < intCps.size(); i++) {
-            Integer intCp = (Integer) intCps.get(i);
+            Integer intCp = intCps.get(i);
 
-            this.cps[i] = intCp.intValue();
+            this.cps[i] = intCp;
         }
     }
 
@@ -110,9 +108,7 @@ public class Observation {
         this.humanLabel = humanLabel;
         this.cps = new int[cps.length];
 
-        for (int i = 0; i < cps.length; i++) {
-            this.cps[i] = cps[i];
-        }
+        System.arraycopy(cps, 0, this.cps, 0, cps.length);
     }
 
     /**
@@ -121,10 +117,10 @@ public class Observation {
      * @param lbInt2Str the lb int2 str
      * @return the string
      */
-    public String toString(Map lbInt2Str) {
+    public String toString(Map<Integer, String> lbInt2Str) {
         String res = originalData;
 
-        String modelLabelStr = (String) lbInt2Str.get(new Integer(modelLabel));
+        String modelLabelStr = lbInt2Str.get(modelLabel);
         if (modelLabelStr != null) {
             res += Option.labelSeparator + modelLabelStr;
         }
@@ -132,5 +128,4 @@ public class Observation {
         return res;
     }
 
-} // end of class Observation
-
+}

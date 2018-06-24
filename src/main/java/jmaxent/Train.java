@@ -52,7 +52,7 @@ public class Train {
     /**
      * The lambda.
      */
-    double[] lambda = null;
+    private double[] lambda = null;
 
     /**
      * The temp lambda.
@@ -76,11 +76,6 @@ public class Train {
     double[] temp = null;
 
     /**
-     * The ws.
-     */
-    double[] ws = null;
-
-    /**
      * The iprint.
      */
     int[] iprint = null;
@@ -90,7 +85,7 @@ public class Train {
      */
     int[] iflag = null;
 
-    private LBFGS lbfgs = new LBFGS();
+    private final LBFGS lbfgs = new LBFGS();
 
     /**
      * Instantiates a new train.
@@ -119,7 +114,6 @@ public class Train {
         temp = new double[numLabels];
 
         int wsSize = numFeatures * (2 * model.option.mForHessian + 1) + 2 * model.option.mForHessian;
-        ws = new double[wsSize];
 
         iprint = new int[2];
         iflag = new int[1];
@@ -134,8 +128,8 @@ public class Train {
      */
     public static double norm(double[] vect) {
         double res = 0.0;
-        for (int i = 0; i < vect.length; i++) {
-            res += vect[i] * vect[i];
+        for (double aVect : vect) {
+            res += aVect * aVect;
         }
         return Math.sqrt(res);
     }
@@ -152,7 +146,7 @@ public class Train {
         // initialization
         init();
 
-        double f = 0.0;
+        double f;
         //double old_f;
         double xtol = 1.0e-16;
         int numIter = 0;
@@ -315,7 +309,7 @@ public class Train {
 
         // go through all training data examples/observations
         for (ii = 0; ii < model.data.trnData.size(); ii++) {
-            Observation obsr = (Observation) model.data.trnData.get(ii);
+            Observation obsr = model.data.trnData.get(ii);
 
             for (i = 0; i < numLabels; i++) {
                 temp[i] = 0.0;
@@ -352,7 +346,7 @@ public class Train {
 
             obsrLogLi -= Math.log(Zx);
             logLi += obsrLogLi;
-        } // end of the main loop
+        }
 
         System.out.println();
         System.out.println("Iteration: " + Integer.toString(numIter));
@@ -373,5 +367,4 @@ public class Train {
         return logLi;
     }
 
-} // end of class Train
-
+}

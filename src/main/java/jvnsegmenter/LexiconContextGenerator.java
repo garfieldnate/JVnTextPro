@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import jvntextpro.data.Sentence;
@@ -48,27 +49,27 @@ public class LexiconContextGenerator extends BasicContextGenerator {
     /**
      * The hs vietnamese dict.
      */
-    private static HashSet hsVietnameseDict;
+    private static Set<String> hsVietnameseDict;
 
     /**
      * The hs vi family names.
      */
-    private static HashSet hsViFamilyNames;
+    private static Set<String> hsViFamilyNames;
 
     /**
      * The hs vi middle names.
      */
-    private static HashSet hsViMiddleNames;
+    private static Set<String> hsViMiddleNames;
 
     /**
      * The hs vi last names.
      */
-    private static HashSet hsViLastNames;
+    private static Set<String> hsViLastNames;
 
     /**
      * The hs vi locations.
      */
-    private static HashSet hsViLocations;
+    private static Set<String> hsViLocations;
 
     //------------------------------
     //Methods
@@ -89,44 +90,50 @@ public class LexiconContextGenerator extends BasicContextGenerator {
     @Override
     public String[] getContext(Sentence sent, int pos) {
         // get the context information from sequence
-        List<String> cps = new ArrayList<String>();
+        List<String> cps = new ArrayList<>();
 
         for (int it = 0; it < cpnames.size(); ++it) {
             String cp = cpnames.get(it);
             Vector<Integer> paras = this.paras.get(it);
             String cpvalue = "";
 
-            String suffix = "";
-            String word = "";
+            StringBuilder suffix = new StringBuilder();
+            StringBuilder word = new StringBuilder();
             boolean outOfArrayIndex = false;
-            for (int i = 0; i < paras.size(); ++i) {
-                if (pos + paras.get(i) < 0 || pos + paras.get(i) >= sent.size()) {
+            for (Integer para : paras) {
+                if (pos + para < 0 || pos + para >= sent.size()) {
                     cpvalue = "";
                     outOfArrayIndex = true;
                     break;
                 }
 
-                suffix += paras.get(i) + ":";
-                word += sent.getWordAt(pos + paras.get(i)) + " ";
+                suffix.append(para).append(":");
+                word.append(sent.getWordAt(pos + para)).append(" ");
             }
-            word = word.trim();
-            if (suffix.endsWith(":")) suffix = suffix.substring(0, suffix.length() - 1);
+            word = new StringBuilder(word.toString().trim());
+            if (suffix.toString().endsWith(":")) suffix = new StringBuilder(suffix.substring(0, suffix.length() - 1));
 
             if (outOfArrayIndex) continue;
 
-            if (cp.equals("vietnamese_dict")) {
-                word = word.toLowerCase();
-                if (inVietnameseDict(word)) {
-                    cpvalue = "d:" + suffix;
-                }
-            } else if (cp.equals("family_name")) {
-                if (inViFamilyNameList(word)) cpvalue = "fam:" + suffix;
-            } else if (cp.equals("middle_name")) {
-                if (inViMiddleNameList(word)) cpvalue = "mdl:" + suffix;
-            } else if (cp.equals("last_name")) {
-                if (inViLastNameList(word)) cpvalue = "lst:" + suffix;
-            } else if (cp.equals("location")) {
-                if (inViLocations(word)) cpvalue = "loc:" + suffix;
+            switch (cp) {
+                case "vietnamese_dict":
+                    word = new StringBuilder(word.toString().toLowerCase());
+                    if (inVietnameseDict(word.toString())) {
+                        cpvalue = "d:" + suffix;
+                    }
+                    break;
+                case "family_name":
+                    if (inViFamilyNameList(word.toString())) cpvalue = "fam:" + suffix;
+                    break;
+                case "middle_name":
+                    if (inViMiddleNameList(word.toString())) cpvalue = "mdl:" + suffix;
+                    break;
+                case "last_name":
+                    if (inViLastNameList(word.toString())) cpvalue = "lst:" + suffix;
+                    break;
+                case "location":
+                    if (inViLocations(word.toString())) cpvalue = "loc:" + suffix;
+                    break;
             }
 
             if (!cpvalue.equals("")) cps.add(cpvalue);
@@ -197,7 +204,7 @@ public class LexiconContextGenerator extends BasicContextGenerator {
     public static void loadVietnameseDict(Path filename) throws IOException {
         InputStream in = Files.newInputStream(filename);
         if (hsVietnameseDict == null) {
-            hsVietnameseDict = new HashSet();
+            hsVietnameseDict = new HashSet<>();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -220,9 +227,9 @@ public class LexiconContextGenerator extends BasicContextGenerator {
         InputStream in = Files.newInputStream(filename);
         if (hsViFamilyNames == null) {
 
-            hsViFamilyNames = new HashSet();
-            hsViLastNames = new HashSet();
-            hsViMiddleNames = new HashSet();
+            hsViFamilyNames = new HashSet<>();
+            hsViLastNames = new HashSet<>();
+            hsViMiddleNames = new HashSet<>();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line;
@@ -261,7 +268,7 @@ public class LexiconContextGenerator extends BasicContextGenerator {
     public static void loadViLocationList(Path filename) throws IOException {
         InputStream in = Files.newInputStream(filename);
         if (hsViLocations == null) {
-            hsViLocations = new HashSet();
+            hsViLocations = new HashSet<>();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line;
             while ((line = reader.readLine()) != null) {

@@ -43,12 +43,12 @@ public class TaggingClient {
     /**
      * The host.
      */
-    String host;
+    final String host;
 
     /**
      * The port.
      */
-    int port;
+    final int port;
 
     /**
      * The in.
@@ -82,8 +82,6 @@ public class TaggingClient {
 
     /**
      * Connect.
-     *
-     * @return true, if successful
      */
     public void connect() throws IOException {
         sock = new Socket(host, port);

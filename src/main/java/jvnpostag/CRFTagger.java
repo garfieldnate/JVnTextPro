@@ -47,7 +47,7 @@ public class CRFTagger implements POSTagger {
     DataReader reader = new POSDataReader();
     DataWriter writer = new POSDataWriter();
 
-    TaggingData dataTagger = new TaggingData();
+    final TaggingData dataTagger = new TaggingData();
 
     Labeling labeling = null;
 

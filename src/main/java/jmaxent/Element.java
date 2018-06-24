@@ -47,12 +47,12 @@ public class Element {
     /**
      * The lb cnt fidxes.
      */
-    Map lbCntFidxes = null;    // map of labels to CountFeatureIdxes
+    Map<Integer, CountFIdx> lbCntFidxes = null;    // map of labels to CountFeatureIdxes
 
     /**
      * The cp features.
      */
-    List cpFeatures = null;    // features associated with this context predicates
+    List<Feature> cpFeatures = null;    // features associated with this context predicates
 
     /**
      * The is scanned.
@@ -63,9 +63,8 @@ public class Element {
      * Instantiates a new element.
      */
     public Element() {
-        lbCntFidxes = new HashMap();
-        cpFeatures = new ArrayList();
+        lbCntFidxes = new HashMap<>();
+        cpFeatures = new ArrayList<>();
     }
 
-} // end of class Element
-
+}

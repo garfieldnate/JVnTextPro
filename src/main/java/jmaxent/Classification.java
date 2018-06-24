@@ -53,14 +53,9 @@ public class Classification {
     public Dictionary dict = null;
 
     /**
-     * The feagen.
-     */
-    public FeatureGen feagen = null;
-
-    /**
      * The inference.
      */
-    public Inference inference = null;
+    private Inference inference = null;
 
     /**
      * The model.
@@ -70,17 +65,12 @@ public class Classification {
     /**
      * The initialized.
      */
-    public boolean initialized = false;
-
-    /**
-     * The fin model.
-     */
-    private BufferedReader finModel = null;
+    private boolean initialized = false;
 
     /**
      * The int cps.
      */
-    List intCps = null;
+    private List<Integer> intCps;
 
     /**
      * Instantiates a new classification.
@@ -108,7 +98,10 @@ public class Classification {
      */
     public void init() throws IOException {
         // open model file
-        finModel = option.openModelFile();
+        /*
+      The fin model.
+     */
+        BufferedReader finModel = option.openModelFile();
 
         data = new Data(option);
         // read context predicate map
@@ -120,7 +113,10 @@ public class Classification {
         // read dictionary
         dict.readDict(finModel);
 
-        feagen = new FeatureGen(option, data, dict);
+        /*
+      The feagen.
+     */
+        FeatureGen feagen = new FeatureGen(option, data, dict);
         // read features
         feagen.readFeatures(finModel);
 
@@ -133,7 +129,7 @@ public class Classification {
 
         // close model file
         finModel.close();
-        intCps = new ArrayList();
+        intCps = new ArrayList<>();
 
         initialized = true;
     }
@@ -157,7 +153,7 @@ public class Classification {
 
         for (i = 0; i < count; i++) {
             String cpStr = strTok.nextToken();
-            Integer cpInt = (Integer) data.cpStr2Int.get(cpStr);
+            Integer cpInt = data.cpStr2Int.get(cpStr);
             if (cpInt != null) {
                 intCps.add(cpInt);
             }
@@ -168,7 +164,7 @@ public class Classification {
         // classify
         inference.classify(obsr);
 
-        String lbStr = (String) data.lbInt2Str.get(new Integer(obsr.modelLabel));
+        String lbStr = data.lbInt2Str.get(obsr.modelLabel);
         if (lbStr != null) {
             modelLabel = lbStr;
         }
@@ -191,10 +187,10 @@ public class Classification {
         int curWordCp = -1;
         int dictLabel = -2;
         int dictCp = -1;
-        Vector<Integer> dictCps = new Vector<Integer>();
+        Vector<Integer> dictCps = new Vector<>();
 
         for (String cpStr : cpArr) {
-            Integer cpInt = (Integer) data.cpStr2Int.get(cpStr);
+            Integer cpInt = data.cpStr2Int.get(cpStr);
 
             if (cpInt != null) {
                 intCps.add(cpInt);
@@ -213,8 +209,7 @@ public class Classification {
                         //initial state
                         String label = cpStr.substring("dict:0:".length());
 
-                        if (data.lbStr2Int.containsKey(label)) dictLabel = (Integer) data.lbStr2Int.get(label);
-                        else dictLabel = -1;
+                        dictLabel = data.lbStr2Int.getOrDefault(label, -1);
                     } else {//!=-1 && !=-2
                         dictLabel = -1;
                     }
@@ -227,9 +222,9 @@ public class Classification {
             for (int i = 0; i < 3; ++i)
                 intCps.add(dictCp);
         } else {
-            for (int i = 0; i < dictCps.size(); ++i) {
-                intCps.add(dictCps.get(i));
-                intCps.add(dictCps.get(i));
+            for (Integer dictCp1 : dictCps) {
+                intCps.add(dictCp1);
+                intCps.add(dictCp1);
             }
         }
 
@@ -244,7 +239,7 @@ public class Classification {
             obsr.modelLabel = obsr.dictLabel;
         } else inference.classify(obsr);
 
-        String lbStr = (String) data.lbInt2Str.get(new Integer(obsr.modelLabel));
+        String lbStr = data.lbInt2Str.get(obsr.modelLabel);
         if (lbStr != null) {
             modelLabel = lbStr;
         }
@@ -258,15 +253,14 @@ public class Classification {
      * @param data contains a list of cps
      * @return the list
      */
-    public List classify(List data) {
-        List list = new ArrayList();
+    public List<String> classify(List<String> data) {
+        List<String> list = new ArrayList<>();
 
-        for (int i = 0; i < data.size(); i++) {
-            list.add(classify((String) data.get(i)));
+        for (String datum : data) {
+            list.add(classify(datum));
         }
 
         return list;
     }
 
-} // end of class Classification
-
+}

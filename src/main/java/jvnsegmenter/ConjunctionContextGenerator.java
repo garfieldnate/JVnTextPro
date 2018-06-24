@@ -50,7 +50,7 @@ public class ConjunctionContextGenerator extends BasicContextGenerator {
      */
     @Override
     public String[] getContext(Sentence sent, int pos) {
-        List<String> cps = new ArrayList<String>();
+        List<String> cps = new ArrayList<>();
 
         for (int it = 0; it < cpnames.size(); ++it) {
             String cp = cpnames.get(it);
@@ -58,19 +58,19 @@ public class ConjunctionContextGenerator extends BasicContextGenerator {
             String cpvalue = "";
 
             if (cp.equals("syll_conj_gen")) {
-                String prefix = "s:";
-                String suffix = "";
-                for (int i = 0; i < paras.size(); ++i) {
-                    if (pos + paras.get(i) < 0 || pos + paras.get(i) >= sent.size()) {
+                StringBuilder prefix = new StringBuilder("s:");
+                StringBuilder suffix = new StringBuilder();
+                for (Integer para : paras) {
+                    if (pos + para < 0 || pos + para >= sent.size()) {
                         cpvalue = "";
                         continue;
                     }
 
-                    prefix += paras.get(i) + ":";
-                    suffix += sent.getWordAt(pos + paras.get(i)) + ":";
+                    prefix.append(para).append(":");
+                    suffix.append(sent.getWordAt(pos + para)).append(":");
                 }
 
-                if (suffix.endsWith(":")) cpvalue = prefix + suffix.substring(0, suffix.length() - 1);
+                if (suffix.toString().endsWith(":")) cpvalue = prefix + suffix.substring(0, suffix.length() - 1);
             }
             if (!cpvalue.equals("")) cps.add(cpvalue);
         }

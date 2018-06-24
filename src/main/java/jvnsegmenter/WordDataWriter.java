@@ -40,7 +40,7 @@ public class WordDataWriter extends DataWriter {
      * @see jvntextpro.data.DataWriter#writeFile(java.util.List, java.lang.String)
      */
     @Override
-    public void writeFile(List lblSeqs, String filename) throws IOException {
+    public void writeFile(List<Sentence> lblSeqs, String filename) throws IOException {
         String ret = writeString(lblSeqs);
         try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
             out.write(ret);
@@ -51,16 +51,14 @@ public class WordDataWriter extends DataWriter {
      * @see jvntextpro.data.DataWriter#writeString(java.util.List)
      */
     @Override
-    public String writeString(List lblSeqs) {
+    public String writeString(List<Sentence> lblSeqs) {
         StringBuilder ret = new StringBuilder();
-        for (int i = 0; i < lblSeqs.size(); ++i) {
-            Sentence sent = (Sentence) lblSeqs.get(i);
-
+        for (Sentence lblSeq : lblSeqs) {
             boolean start = true;
-            String word = "";
+            StringBuilder word = new StringBuilder();
             StringBuilder sentStr = new StringBuilder();
-            for (int j = 0; j < sent.size(); ++j) {
-                String curTag = sent.getTagAt(j);
+            for (int j = 0; j < lblSeq.size(); ++j) {
+                String curTag = lblSeq.getTagAt(j);
                 if (curTag.equalsIgnoreCase("B-W") || curTag.equalsIgnoreCase("O")) {
                     start = true;
                 } else if (start && curTag.equalsIgnoreCase("I-W")) {
@@ -69,9 +67,9 @@ public class WordDataWriter extends DataWriter {
 
                 if (start) {
                     sentStr.append(" ").append(word);
-                    word = sent.getWordAt(j);
+                    word = new StringBuilder(lblSeq.getWordAt(j));
                 } else {
-                    word = word + "_" + sent.getWordAt(j);
+                    word.append("_").append(lblSeq.getWordAt(j));
                 }
             }
             sentStr.append(" ").append(word);

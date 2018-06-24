@@ -65,9 +65,7 @@ public class DoubleVector {
     public DoubleVector(int len, double[] vect) {
         this.len = len;
         this.vect = new double[len];
-        for (int i = 0; i < len; i++) {
-            this.vect[i] = vect[i];
-        }
+        System.arraycopy(vect, 0, this.vect, 0, len);
     }
 
     /**
@@ -78,9 +76,7 @@ public class DoubleVector {
     public DoubleVector(DoubleVector dv) {
         len = dv.len;
         vect = new double[len];
-        for (int i = 0; i < len; i++) {
-            vect[i] = dv.vect[i];
-        }
+        System.arraycopy(dv.vect, 0, vect, 0, len);
     }
 
     /**
@@ -109,9 +105,7 @@ public class DoubleVector {
      * @param dv the dv
      */
     public void assign(DoubleVector dv) {
-        for (int i = 0; i < len; i++) {
-            vect[i] = dv.vect[i];
-        }
+        System.arraycopy(dv.vect, 0, vect, 0, len);
     }
 
     /**
@@ -149,5 +143,4 @@ public class DoubleVector {
         }
     }
 
-} // end of class DoubleVector
-
+}

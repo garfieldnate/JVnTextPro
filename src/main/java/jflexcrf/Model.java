@@ -90,8 +90,6 @@ public class Model {
 
     /**
      * Inits the.
-     *
-     * @return true, if successful
      */
     public void init() throws IOException {
         // open model file to load model here ... complete later
@@ -124,7 +122,7 @@ public class Model {
             int numFeatures = taggerFGen.numFeatures();
             lambda = new double[numFeatures];
             for (int i = 0; i < numFeatures; i++) {
-                Feature f = (Feature) taggerFGen.features.get(i);
+                Feature f = taggerFGen.features.get(i);
                 //System.out.println(f.idx);
                 lambda[f.idx] = f.wgt;
             }
@@ -141,7 +139,7 @@ public class Model {
      *
      * @param seq the seq
      */
-    public void inference(List seq) {
+    public void inference(List<Observation> seq) {
         taggerVtb.viterbiInference(seq);
     }
 
@@ -150,7 +148,7 @@ public class Model {
      *
      * @param data the data
      */
-    public void inferenceAll(List data) {
+    public void inferenceAll(List<List<Observation>> data) {
         System.out.println("Starting inference ...");
 
         long start, stop, elapsed;
@@ -158,7 +156,7 @@ public class Model {
 
         for (int i = 0; i < data.size(); i++) {
             System.out.println("sequence " + Integer.toString(i + 1));
-            List seq = (List) data.get(i);
+            List<Observation> seq = data.get(i);
             inference(seq);
         }
 
@@ -169,5 +167,4 @@ public class Model {
         System.out.println("Inference time: " + Double.toString((double) elapsed / 1000) + " seconds");
     }
 
-} // end of class Model
-
+}

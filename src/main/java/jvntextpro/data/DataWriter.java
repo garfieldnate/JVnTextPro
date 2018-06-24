@@ -38,7 +38,7 @@ abstract public class DataWriter {
      * @param lblSeqs  the lbl seqs
      * @param filename the filename
      */
-    public abstract void writeFile(List lblSeqs, String filename) throws IOException;
+    public abstract void writeFile(List<Sentence> lblSeqs, String filename) throws IOException;
 
     /**
      * Write string.
@@ -46,5 +46,5 @@ abstract public class DataWriter {
      * @param lblSeqs the lbl seqs
      * @return the string
      */
-    public abstract String writeString(List lblSeqs);
+    public abstract String writeString(List<Sentence> lblSeqs);
 }

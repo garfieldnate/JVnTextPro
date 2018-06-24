@@ -98,13 +98,10 @@ public class Inference {
      *
      * @param data the data
      */
-    public void doInference(List data) {
-        for (int i = 0; i < data.size(); i++) {
-            Observation obsr = (Observation) data.get(i);
-
-            classify(obsr);
+    public void doInference(List<Observation> data) {
+        for (Observation aData : data) {
+            classify(aData);
         }
     }
 
-} // end of class Inference
-
+}

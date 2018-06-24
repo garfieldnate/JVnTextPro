@@ -91,7 +91,6 @@ public class JVnTextPro {
      * otherwise.
      *
      * @param modelDir the model dir
-     * @return true, if successful
      */
     public void initSenSegmenter(Path modelDir) throws IOException {
         vnSenSegmenter = new JVnSenSegmenter();
@@ -107,7 +106,6 @@ public class JVnTextPro {
      * Initialize the word segmetation for Vietnamese.
      *
      * @param modelDir the model dir
-     * @return true if the initialization is successful and false otherwise
      */
     public void initSegmenter(Path modelDir) throws InitializationException, IOException {
         vnSegmenter = new CRFSegmenter(modelDir);
@@ -121,9 +119,8 @@ public class JVnTextPro {
      * Initialize the pos tagger for Vietnamese.
      *
      * @param modelDir the model dir
-     * @return true if the initialization is successful and false otherwise
      */
-    public void initPosTagger(Path modelDir) throws IOException, InitializationException {
+    public void initPosTagger(Path modelDir) throws InitializationException {
         vnPosTagger = new MaxentTagger(modelDir);
     }
 
@@ -252,11 +249,11 @@ public class JVnTextPro {
     public String postProcessing(String text) {
 
         String[] lines = text.split("\n");
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
 
         for (String line : lines) {
             String[] words = line.split("[ \t]");
-            String templine = "";
+            StringBuilder templine = new StringBuilder();
 
             for (String currentWord : words) {
                 //break word into syllable and check if one of it is not valid vi syllable
@@ -273,19 +270,19 @@ public class JVnTextPro {
                 }
 
                 if (isContainNotValidSyll) {
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
 
                     for (String syll : syllables) {
-                        temp += syll + " ";
+                        temp.append(syll).append(" ");
                     }
 
-                    templine += temp.trim() + " ";
-                } else templine += currentWord + " ";
+                    templine.append(temp.toString().trim()).append(" ");
+                } else templine.append(currentWord).append(" ");
             }
 
-            ret += templine.trim() + "\n";
+            ret.append(templine.toString().trim()).append("\n");
         }
 
-        return ret.trim();
+        return ret.toString().trim();
     }
 }

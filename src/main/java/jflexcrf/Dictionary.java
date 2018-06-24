@@ -37,13 +37,13 @@ public class Dictionary {
     /**
      * The dict.
      */
-    public Map dict = null;            // map between context predicate and element
+    public Map<Integer, Element> dict = null;            // map between context predicate and element
 
     /**
      * Instantiates a new dictionary.
      */
     Dictionary() {
-        dict = new HashMap();
+        dict = new HashMap<>();
     }
 
     // read dictionary from model file
@@ -106,20 +106,20 @@ public class Dictionary {
                 CountFeatureIdx cntFeaIdx = new CountFeatureIdx(count, fidx);
 
                 if (order == Option.FIRST_ORDER) {
-                    elem.lbCntFidxes.put(new Integer(label), cntFeaIdx);
+                    elem.lbCntFidxes.put(label, cntFeaIdx);
                 } else if (order == Option.SECOND_ORDER) {
                     // do nothing, second-order Markov is not supported
                 }
             }
 
             // insert the element to the dictionary
-            dict.put(new Integer(cp), elem);
+            dict.put(cp, elem);
         }
 
         System.out.println("Reading dictionary (" + Integer.toString(dict.size()) + " entries) completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
     }
 
     /**
@@ -135,5 +135,4 @@ public class Dictionary {
         }
     }
 
-} // end of class Dictionary
-
+}

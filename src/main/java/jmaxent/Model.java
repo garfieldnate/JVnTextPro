@@ -139,7 +139,7 @@ public class Model {
      */
     public void updateFeatures() {
         for (int i = 0; i < feaGen.features.size(); i++) {
-            Feature f = (Feature) feaGen.features.get(i);
+            Feature f = feaGen.features.get(i);
             f.wgt = lambda[f.idx];
         }
     }
@@ -154,7 +154,7 @@ public class Model {
 
             // reading feature weights from the feature list
             for (int i = 0; i < feaGen.features.size(); i++) {
-                Feature f = (Feature) feaGen.features.get(i);
+                Feature f = feaGen.features.get(i);
 
                 lambda[f.idx] = f.wgt;
             }
@@ -166,13 +166,13 @@ public class Model {
      *
      * @param data the data
      */
-    public void doInference(List data) {
+    public void doInference(List<Observation> data) {
         if (lambda == null) {
             lambda = new double[feaGen.numFeatures()];
 
             // reading feature weights from the feature list
             for (int i = 0; i < feaGen.features.size(); i++) {
-                Feature f = (Feature) feaGen.features.get(i);
+                Feature f = feaGen.features.get(i);
                 lambda[f.idx] = f.wgt;
             }
         }
@@ -180,5 +180,4 @@ public class Model {
         inference.doInference(data);
     }
 
-} // end of class Model
-
+}

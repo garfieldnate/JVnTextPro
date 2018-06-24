@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -42,12 +41,12 @@ public class FeatureGen {
     /**
      * The features.
      */
-    List features = null;    // list of features
+    List<Feature> features = null;    // list of features
 
     /**
      * The fmap.
      */
-    Map fmap = null;        // feature map
+    private Map<String, Integer> fmap = null;        // feature map
 
     /**
      * The option.
@@ -62,18 +61,18 @@ public class FeatureGen {
     /**
      * The dict.
      */
-    Dictionary dict = null;    // dictionary object
+    private Dictionary dict = null;    // dictionary object
 
     // for scan feature only
     /**
      * The current features.
      */
-    List currentFeatures = null;
+    private List<Feature> currentFeatures = null;
 
     /**
      * The current feature idx.
      */
-    int currentFeatureIdx = 0;
+    private int currentFeatureIdx = 0;
 
     /**
      * Instantiates a new feature gen.
@@ -109,19 +108,19 @@ public class FeatureGen {
         if (features != null) {
             features.clear();
         } else {
-            features = new ArrayList();
+            features = new ArrayList<>();
         }
 
         if (fmap != null) {
             fmap.clear();
         } else {
-            fmap = new HashMap();
+            fmap = new HashMap<>();
         }
 
         if (currentFeatures != null) {
             currentFeatures.clear();
         } else {
-            currentFeatures = new ArrayList();
+            currentFeatures = new ArrayList<>();
         }
 
         if (data.trnData == null || dict.dict == null) {
@@ -131,20 +130,20 @@ public class FeatureGen {
 
         // scan over data list
         for (int i = 0; i < data.trnData.size(); i++) {
-            Observation obsr = (Observation) data.trnData.get(i);
+            Observation obsr = data.trnData.get(i);
 
             for (int j = 0; j < obsr.cps.length; j++) {
-                Element elem = null;
-                CountFIdx cntFIdx = null;
+                Element elem;
+                CountFIdx cntFIdx;
 
-                elem = (Element) dict.dict.get(new Integer(obsr.cps[j]));
+                elem = dict.dict.get(obsr.cps[j]);
                 if (elem != null) {
                     if (elem.count <= option.cpRareThreshold) {
                         // skip this context predicate, it is too rare
                         continue;
                     }
 
-                    cntFIdx = (CountFIdx) elem.lbCntFidxes.get(new Integer(obsr.humanLabel));
+                    cntFIdx = elem.lbCntFidxes.get(obsr.humanLabel);
                     if (cntFIdx != null) {
                         if (cntFIdx.count <= option.fRareThreshold) {
                             // skip this feature, it is too rare
@@ -201,19 +200,19 @@ public class FeatureGen {
         if (features != null) {
             features.clear();
         } else {
-            features = new ArrayList();
+            features = new ArrayList<>();
         }
 
         if (fmap != null) {
             fmap.clear();
         } else {
-            fmap = new HashMap();
+            fmap = new HashMap<>();
         }
 
         if (currentFeatures != null) {
             currentFeatures.clear();
         } else {
-            currentFeatures = new ArrayList();
+            currentFeatures = new ArrayList<>();
         }
 
         String line;
@@ -249,13 +248,13 @@ public class FeatureGen {
             // create a new feature by parsing the line
             Feature f = new Feature(line, data.cpStr2Int, data.lbStr2Int);
 
-            Integer fidx = (Integer) fmap.get(f.strId);
+            Integer fidx = fmap.get(f.strId);
             if (fidx == null) {
                 // insert the feature into the feature map
-                fmap.put(f.strId, new Integer(f.idx));
+                fmap.put(f.strId, f.idx);
                 features.add(f);
             } else {
-                fmap.put(f.strId, new Integer(f.idx));
+                fmap.put(f.strId, f.idx);
                 features.add(f);
             }
         }
@@ -263,7 +262,7 @@ public class FeatureGen {
         System.out.println("Reading " + Integer.toString(features.size()) + " features completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
 
         option.numFeatures = features.size();
     }
@@ -272,18 +271,16 @@ public class FeatureGen {
      * Write features.
      *
      * @param fout the fout
-     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void writeFeatures(PrintWriter fout) throws IOException {
+    public void writeFeatures(PrintWriter fout) {
         // write the number of features
         fout.println(Integer.toString(features.size()));
 
-        for (int i = 0; i < features.size(); i++) {
-            Feature f = (Feature) features.get(i);
-            fout.println(f.toString(data.cpInt2Str, data.lbInt2Str));
+        for (Feature feature : features) {
+            fout.println(feature.toString(data.cpInt2Str, data.lbInt2Str));
         }
 
-        // wirte the line ###...
+        // write the line ###...
         fout.println(Option.modelSeparator);
     }
 
@@ -305,21 +302,19 @@ public class FeatureGen {
 
         // scan over all context predicates
         for (int i = 0; i < obsr.cps.length; i++) {
-            Element elem = (Element) dict.dict.get(new Integer(obsr.cps[i]));
+            Element elem = dict.dict.get(obsr.cps[i]);
             if (elem == null) {//this context predicate doesn't appear in the dictionary of training data
                 continue;
             }
 
             if (!(elem.isScanned)) {
                 // scan all labels for features
-                Iterator it = elem.lbCntFidxes.keySet().iterator();
-                while (it.hasNext()) {
-                    Integer labelInt = (Integer) it.next();
-                    CountFIdx cntFIdx = (CountFIdx) elem.lbCntFidxes.get(labelInt);
+                for (Integer labelInt : elem.lbCntFidxes.keySet()) {
+                    CountFIdx cntFIdx = elem.lbCntFidxes.get(labelInt);
 
                     if (cntFIdx.fidx >= 0) {
                         Feature f = new Feature();
-                        f.FeatureInit(labelInt.intValue(), obsr.cps[i]);
+                        f.FeatureInit(labelInt, obsr.cps[i]);
                         f.idx = cntFIdx.fidx;
 
                         elem.cpFeatures.add(f);
@@ -329,9 +324,7 @@ public class FeatureGen {
                 elem.isScanned = true;
             }
 
-            for (int j = 0; j < elem.cpFeatures.size(); j++) {
-                currentFeatures.add(elem.cpFeatures.get(j));
-            }
+            currentFeatures.addAll(elem.cpFeatures);
         }
     }
 
@@ -350,10 +343,9 @@ public class FeatureGen {
      * @return the feature
      */
     public Feature nextFeature() {
-        Feature f = (Feature) currentFeatures.get(currentFeatureIdx);
+        Feature f = currentFeatures.get(currentFeatureIdx);
         currentFeatureIdx++;
         return f;
     }
 
-} // end of class FeatureGen
-
+}

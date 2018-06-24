@@ -40,5 +40,5 @@ task fatJar(type: Jar) {
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     // whew, there's a lot of work to do!
-//    options.compilerArgs << "-Xlint:all"
+    options.compilerArgs << "-Xlint:all"
 }

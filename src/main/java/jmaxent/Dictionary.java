@@ -40,7 +40,7 @@ public class Dictionary {
     /**
      * The dict.
      */
-    public Map dict = null;
+    public Map<Integer, Element> dict = null;
 
     /**
      * The option.
@@ -56,7 +56,7 @@ public class Dictionary {
      * Instantiates a new dictionary.
      */
     public Dictionary() {
-        dict = new HashMap();
+        dict = new HashMap<>();
     }
 
     /**
@@ -68,7 +68,7 @@ public class Dictionary {
     public Dictionary(Option option, Data data) {
         this.option = option;
         this.data = data;
-        dict = new HashMap();
+        dict = new HashMap<>();
     }
 
     // read dictionary from model file
@@ -130,17 +130,17 @@ public class Dictionary {
                 int fidx = Integer.parseInt(lbTok.nextToken());
                 CountFIdx cntFIdx = new CountFIdx(count, fidx);
 
-                elem.lbCntFidxes.put(new Integer(label), cntFIdx);
+                elem.lbCntFidxes.put(label, cntFIdx);
             }
 
             // insert the element to the dictionary
-            dict.put(new Integer(cp), elem);
+            dict.put(cp, elem);
         }
 
         System.out.println("Reading dictionary (" + Integer.toString(dict.size()) + " entries) completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
     }
 
     // write dictionary to model file
@@ -149,15 +149,14 @@ public class Dictionary {
      * Write dict.
      *
      * @param fout the fout
-     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void writeDict(PrintWriter fout) throws IOException {
-        Iterator it = null;
+    public void writeDict(PrintWriter fout) {
+        Iterator<Integer> it;
         int count = 0;
 
         for (it = dict.keySet().iterator(); it.hasNext(); ) {
-            Integer cpInt = (Integer) it.next();
-            Element elem = (Element) dict.get(cpInt);
+            Integer cpInt = it.next();
+            Element elem = dict.get(cpInt);
 
             if (elem.chosen == 1) {
                 count++;
@@ -169,8 +168,8 @@ public class Dictionary {
 
         for (it = dict.keySet().iterator(); it.hasNext(); ) {
 
-            Integer cpInt = (Integer) it.next();
-            Element elem = (Element) dict.get(cpInt);
+            Integer cpInt = it.next();
+            Element elem = dict.get(cpInt);
 
             if (elem.chosen == 0) {
                 continue;
@@ -179,9 +178,8 @@ public class Dictionary {
             // write the context predicate and its count
             fout.print(cpInt.toString() + ":" + Integer.toString(elem.count));
 
-            for (Iterator lbIt = elem.lbCntFidxes.keySet().iterator(); lbIt.hasNext(); ) {
-                Integer labelInt = (Integer) lbIt.next();
-                CountFIdx cntFIdx = (CountFIdx) elem.lbCntFidxes.get(labelInt);
+            for (Integer labelInt : elem.lbCntFidxes.keySet()) {
+                CountFIdx cntFIdx = elem.lbCntFidxes.get(labelInt);
 
                 if (cntFIdx.fidx < 0) {
                     continue;
@@ -208,7 +206,7 @@ public class Dictionary {
      * @param count the count
      */
     public void addDict(int cp, int label, int count) {
-        Element elem = (Element) dict.get(new Integer(cp));
+        Element elem = dict.get(cp);
 
         if (elem == null) {
             // if the context predicate is not found
@@ -216,20 +214,20 @@ public class Dictionary {
             elem.count = count;
 
             CountFIdx cntFIdx = new CountFIdx(count, -1);
-            elem.lbCntFidxes.put(new Integer(label), cntFIdx);
+            elem.lbCntFidxes.put(label, cntFIdx);
 
             // insert the new element to the dict
-            dict.put(new Integer(cp), elem);
+            dict.put(cp, elem);
 
         } else {
             // update the total count
             elem.count += count;
 
-            CountFIdx cntFIdx = (CountFIdx) elem.lbCntFidxes.get(new Integer(label));
+            CountFIdx cntFIdx = elem.lbCntFidxes.get(label);
             if (cntFIdx == null) {
                 // the label not found
                 cntFIdx = new CountFIdx(count, -1);
-                elem.lbCntFidxes.put(new Integer(label), cntFIdx);
+                elem.lbCntFidxes.put(label, cntFIdx);
 
             } else {
                 // if label found, update the count only
@@ -251,7 +249,7 @@ public class Dictionary {
 
         // scan all data observations of the training data
         for (int i = 0; i < data.trnData.size(); i++) {
-            Observation obsr = (Observation) data.trnData.get(i);
+            Observation obsr = data.trnData.get(i);
 
             for (int j = 0; j < obsr.cps.length; j++) {
                 addDict(obsr.cps[j], obsr.humanLabel, 1);
@@ -272,5 +270,4 @@ public class Dictionary {
         }
     }
 
-} // end of class Dictionary
-
+}

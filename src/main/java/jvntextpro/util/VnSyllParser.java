@@ -27,7 +27,7 @@
 package jvntextpro.util;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 // TODO: Auto-generated Javadoc
@@ -71,7 +71,7 @@ class TONE {
         value = v;
     }
 
-    private int value;
+    private final int value;
 }
 
 /*
@@ -111,32 +111,32 @@ public class VnSyllParser {
     /**
      * The vn vowels.
      */
-    private static String vnVowels = "a\u00E1\u00E0\u1EA3\u00E3\u1EA1" + "\u0103\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7"
-                                     + "\u00E2\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD" + "e\u00E9\u00E8\u1EBB\u1EBD\u1EB9"
-                                     + "\u00EA\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7" + "i\u00ED\u00EC\u1EC9\u0129\u1ECB"
-                                     + "o\u00F3\u00F2\u1ECF\u00F5\u1ECD" + "\u00F4\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9"
-                                     + "\u01A1\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3" + "u\u00FA\u00F9\u1EE7\u0169\u1EE5"
-                                     + "\u01B0\u1EE9\u1EEB\u1EED\u1EEF\u1EF1" + "y\u00FD\u1EF3\u1EF7\u1EF9\u1EF5";
+    private static final String vnVowels = "a\u00E1\u00E0\u1EA3\u00E3\u1EA1" + "\u0103\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7"
+                                           + "\u00E2\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD" + "e\u00E9\u00E8\u1EBB\u1EBD\u1EB9"
+                                           + "\u00EA\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7" + "i\u00ED\u00EC\u1EC9\u0129\u1ECB"
+                                           + "o\u00F3\u00F2\u1ECF\u00F5\u1ECD" + "\u00F4\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9"
+                                           + "\u01A1\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3" + "u\u00FA\u00F9\u1EE7\u0169\u1EE5"
+                                           + "\u01B0\u1EE9\u1EEB\u1EED\u1EEF\u1EF1" + "y\u00FD\u1EF3\u1EF7\u1EF9\u1EF5";
 
     /**
      * The al first consonants.
      */
-    private static ArrayList alFirstConsonants;
+    private static List<String> alFirstConsonants;
 
     /**
      * The al last consonants.
      */
-    private static ArrayList alLastConsonants;
+    private static List<String> alLastConsonants;
 
     /**
      * The al main vowels.
      */
-    private static ArrayList alMainVowels;
+    private static List<String> alMainVowels;
 
     /**
      * The al secondary vowels.
      */
-    private static ArrayList alSecondaryVowels;
+    private static List<String> alSecondaryVowels;
 
     /**
      * The str syllable.
@@ -300,12 +300,10 @@ public class VnSyllParser {
         // find first of (vnfirstconsonant)
         // if not found, first consonant = ZERO
         // else the found consonant
-        Iterator iter = alFirstConsonants.iterator();
-        while (iter.hasNext()) {
-            String strFirstCon = (String) iter.next();
-            if (strSyllable.startsWith(strFirstCon, iCurPos)) {
-                strFirstConsonant = strFirstCon;
-                iCurPos += strFirstCon.length();
+        for (String alFirstConsonant : alFirstConsonants) {
+            if (strSyllable.startsWith(alFirstConsonant, iCurPos)) {
+                strFirstConsonant = alFirstConsonant;
+                iCurPos += alFirstConsonant.length();
                 return;
             }
         }
@@ -329,7 +327,7 @@ public class VnSyllParser {
         else nextChar = strSyllable.charAt(iCurPos + 1);
 
         // get the tone and the original vowel (without tone)
-        TONE tone = TONE.NO_TONE;
+        TONE tone;
         int idx1 = vnVowels.indexOf(curChar);
         int idx2 = vnVowels.indexOf(nextChar);
 
@@ -342,7 +340,9 @@ public class VnSyllParser {
             return;
         }
         nextChar = vnVowels.charAt((idx2 / 6) * 6);
-        if (tone.getValue() == TONE.NO_TONE.getValue()) tone = TONE.getTone(idx2 % 6);
+        if (tone.getValue() == TONE.NO_TONE.getValue()) {
+            tone = TONE.getTone(idx2 % 6);
+        }
 
         // Check the secondary vowel
         if (curChar == 'o') {
@@ -350,13 +350,11 @@ public class VnSyllParser {
                 strSecondaryVowel += curChar;
                 iCurPos++;
             } else strSecondaryVowel = ZERO; // oo
-            return;
         } else if (curChar == 'u') {
             if (nextChar != 'i' && nextChar != '$') {
                 strSecondaryVowel += curChar;
                 iCurPos++;
             } else strSecondaryVowel = ZERO;
-            return;
         }
     }
 
@@ -370,26 +368,23 @@ public class VnSyllParser {
             return;
         }
 
-        String strVowel = "";
+        StringBuilder strVowel = new StringBuilder();
         for (int i = iCurPos; i < strSyllable.length(); ++i) {
             int idx = vnVowels.indexOf(strSyllable.charAt(i));
             if (idx == -1) break;
 
-            strVowel += vnVowels.charAt((idx / 6) * 6);
+            strVowel.append(vnVowels.charAt((idx / 6) * 6));
             if (tone.getValue() == TONE.NO_TONE.getValue()) tone = TONE.getTone(idx % 6);
         }
 
-        Iterator iter = alMainVowels.iterator();
-        while (iter.hasNext()) {
-            String tempVowel = (String) iter.next();
-            if (strVowel.startsWith(tempVowel)) {
-                strMainVowel = tempVowel;
-                iCurPos += tempVowel.length();
+        for (String alMainVowel : alMainVowels) {
+            if (strVowel.toString().startsWith(alMainVowel)) {
+                strMainVowel = alMainVowel;
+                iCurPos += alMainVowel.length();
                 return;
             }
         }
         validViSyll = false;
-        return;
     }
 
     /**
@@ -405,20 +400,16 @@ public class VnSyllParser {
             return;
         }
 
-        Iterator iter = alLastConsonants.iterator();
-        while (iter.hasNext()) {
-            String tempLastCon = (String) iter.next();
-            if (strCon.equals(tempLastCon)) {
-                strLastConsonant = tempLastCon;
+        for (String alLastConsonant : alLastConsonants) {
+            if (strCon.equals(alLastConsonant)) {
+                strLastConsonant = alLastConsonant;
                 iCurPos += strLastConsonant.length();
                 return;
             }
         }
         strLastConsonant = ZERO;
-        if (iCurPos >= strSyllable.length()) validViSyll = true;
-        else validViSyll = false;
+        validViSyll = iCurPos >= strSyllable.length();
 
-        return;
     }
 
     /**
@@ -426,10 +417,10 @@ public class VnSyllParser {
      */
     private static void init() {
         if (alFirstConsonants == null) {
-            alFirstConsonants = new ArrayList();
-            alLastConsonants = new ArrayList();
-            alMainVowels = new ArrayList();
-            alSecondaryVowels = new ArrayList();
+            alFirstConsonants = new ArrayList<>();
+            alLastConsonants = new ArrayList<>();
+            alMainVowels = new ArrayList<>();
+            alSecondaryVowels = new ArrayList<>();
 
             initArrayList(alFirstConsonants, vnFirstConsonants);
             initArrayList(alLastConsonants, vnLastConsonants);
@@ -444,7 +435,7 @@ public class VnSyllParser {
      * @param al  the al
      * @param str the str
      */
-    private static void initArrayList(ArrayList al, String str) {
+    private static void initArrayList(List<String> al, String str) {
         StringTokenizer strTknr = new StringTokenizer(str, "|");
         while (strTknr.hasMoreTokens()) {
             al.add(strTknr.nextToken());

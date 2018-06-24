@@ -32,7 +32,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -40,7 +39,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -52,7 +51,7 @@ public class JVnSenSegmenter {
     /**
      * The positive label.
      */
-    public static String positiveLabel = "y";
+    public static final String positiveLabel = "y";
 
     /**
      * The classifier.
@@ -68,7 +67,6 @@ public class JVnSenSegmenter {
      * Creates a new instance of JVnSenSegmenter.
      *
      * @param modelDir the model dir
-     * @return true, if successful
      */
 
     public void init(Path modelDir) throws IOException {
@@ -103,37 +101,37 @@ public class JVnSenSegmenter {
         //System.out.println(text);
 
         //generate context predicates
-        List markList = new ArrayList();
-        List data = FeatureGenerator.doFeatureGen(new HashMap(), text, markList, false);
+        List<Integer> markList = new ArrayList<>();
+        List<String> data = FeatureGenerator.doFeatureGen(new HashSet<>(), text, markList, false);
 
         if (markList.isEmpty()) return text + "\n";
 
         //classify
-        List labels = classifier.classify(data);
+        List<String> labels = classifier.classify(data);
 
-        String result = text.substring(0, ((Integer) markList.get(0)).intValue());
+        StringBuilder result = new StringBuilder(text.substring(0, markList.get(0)));
 
         for (int i = 0; i < markList.size(); ++i) {
-            int curPos = ((Integer) markList.get(i)).intValue();
+            int curPos = markList.get(i);
 
-            if (((String) labels.get(i)).equals(positiveLabel)) {
-                result += " " + text.charAt(curPos) + "\n";
-            } else result += text.charAt(curPos);
+            if (labels.get(i).equals(positiveLabel)) {
+                result.append(" ").append(text.charAt(curPos)).append("\n");
+            } else result.append(text.charAt(curPos));
 
             if (i < markList.size() - 1) {
-                int nexPos = ((Integer) markList.get(i + 1)).intValue();
-                result += text.substring(curPos + 1, nexPos);
+                int nexPos = markList.get(i + 1);
+                result.append(text.substring(curPos + 1, nexPos));
             }
         }
 
-        int finalMarkPos = ((Integer) markList.get(markList.size() - 1)).intValue();
-        result += text.substring(finalMarkPos + 1, text.length());
+        int finalMarkPos = markList.get(markList.size() - 1);
+        result.append(text.substring(finalMarkPos + 1, text.length()));
 
         //System.out.println(result);
-        result = result.replaceAll("\n ", "\n");
-        result = result.replaceAll("\n\n", "\n");
-        result = result.replaceAll("\\.\\. \\.", "...");
-        return result;
+        result = new StringBuilder(result.toString().replaceAll("\n ", "\n"));
+        result = new StringBuilder(result.toString().replaceAll("\n\n", "\n"));
+        result = new StringBuilder(result.toString().replaceAll("\\.\\. \\.", "..."));
+        return result.toString();
     }
 
     /**
@@ -142,7 +140,7 @@ public class JVnSenSegmenter {
      * @param text    the text
      * @param senList the sen list
      */
-    public void senSegment(String text, List senList) {
+    public void senSegment(String text, List<String> senList) {
         senList.clear();
         String resultStr = senSegment(text);
 
@@ -172,13 +170,9 @@ public class JVnSenSegmenter {
         } else if (option.equalsIgnoreCase("-inputdir")) {
             //segment only files ends with .txt
             File inputDir = new File(args[3]);
-            File[] childrent = inputDir.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".txt");
-                }
-            });
+            File[] children = inputDir.listFiles((dir, name) -> name.endsWith(".txt"));
 
-            for (File child : childrent) {
+            for (File child : children) {
                 System.out.println("Segmenting sentences in " + child);
                 senSegmentFile(child.getPath(), child.getPath() + ".sent", senSegmenter);
             }

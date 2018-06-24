@@ -112,7 +112,7 @@ public class Feature {
      * @param yp   the yp
      * @param fmap the fmap
      */
-    public void eFeature1Init(int y, int yp, Map fmap) {
+    public void eFeature1Init(int y, int yp, Map<String, Integer> fmap) {
         eFeature1Init(y, yp);
         strId2IdxAdd(fmap);
     }
@@ -142,7 +142,7 @@ public class Feature {
      * @param yp   the yp
      * @param fmap the fmap
      */
-    public void sFeature1Init(int y, int yp, Map fmap) {
+    public void sFeature1Init(int y, int yp, Map<String, Integer> fmap) {
         sFeature1Init(y, cp);
         strId2IdxAdd(fmap);
     }
@@ -162,10 +162,10 @@ public class Feature {
      * @param cpStr2Int the cp str2 int
      * @param lbStr2Int the lb str2 int
      */
-    public Feature(String line, Map cpStr2Int, Map lbStr2Int) {
+    public Feature(String line, Map<String, Integer> cpStr2Int, Map<String, Integer> lbStr2Int) {
 
         StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
-        int len = strTok.countTokens();
+        strTok.countTokens();
 
         String strIdStr = strTok.nextToken();
         int idx = Integer.parseInt(strTok.nextToken());
@@ -178,20 +178,20 @@ public class Feature {
 
         if (prefix.compareToIgnoreCase("e1") == 0) {
             // edge feature type 1
-            Integer yInt = (Integer) lbStr2Int.get(strIdTok.nextToken());
-            Integer ypInt = (Integer) lbStr2Int.get(strIdTok.nextToken());
+            Integer yInt = lbStr2Int.get(strIdTok.nextToken());
+            Integer ypInt = lbStr2Int.get(strIdTok.nextToken());
 
             if (yInt != null && ypInt != null) {
-                eFeature1Init(yInt.intValue(), ypInt.intValue());
+                eFeature1Init(yInt, ypInt);
             }
 
         } else if (prefix.compareToIgnoreCase("s1") == 0) {
             // state feature type 1
-            Integer yInt = (Integer) lbStr2Int.get(strIdTok.nextToken());
-            Integer cpInt = (Integer) cpStr2Int.get(strIdTok.nextToken());
+            Integer yInt = lbStr2Int.get(strIdTok.nextToken());
+            Integer cpInt = cpStr2Int.get(strIdTok.nextToken());
 
             if (yInt != null && cpInt != null) {
-                sFeature1Init(yInt.intValue(), cpInt.intValue());
+                sFeature1Init(yInt, cpInt);
             }
 
         }
@@ -211,7 +211,7 @@ public class Feature {
      * @param lbStr2Int the lb str2 int
      * @param fmap      the fmap
      */
-    public Feature(String line, Map cpStr2Int, Map lbStr2Int, Map fmap) {
+    public Feature(String line, Map<String, Integer> cpStr2Int, Map<String, Integer> lbStr2Int, Map<String, Integer> fmap) {
 
         StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
         int len = strTok.countTokens();
@@ -227,20 +227,20 @@ public class Feature {
 
         if (prefix.compareToIgnoreCase("e1") == 0) {
             // edge feature type 1
-            Integer yInt = (Integer) lbStr2Int.get(strIdTok.nextToken());
-            Integer ypInt = (Integer) lbStr2Int.get(strIdTok.nextToken());
+            Integer yInt = lbStr2Int.get(strIdTok.nextToken());
+            Integer ypInt = lbStr2Int.get(strIdTok.nextToken());
 
             if (yInt != null && ypInt != null) {
-                eFeature1Init(yInt.intValue(), ypInt.intValue());
+                eFeature1Init(yInt, ypInt);
             }
 
         } else if (prefix.compareToIgnoreCase("s1") == 0) {
             // state feature type 1
-            Integer yInt = (Integer) lbStr2Int.get(strIdTok.nextToken());
-            Integer cpInt = (Integer) cpStr2Int.get(strIdTok.nextToken());
+            Integer yInt = lbStr2Int.get(strIdTok.nextToken());
+            Integer cpInt = cpStr2Int.get(strIdTok.nextToken());
 
             if (yInt != null && cpInt != null) {
-                sFeature1Init(yInt.intValue(), cpInt.intValue());
+                sFeature1Init(yInt, cpInt);
             }
 
         }
@@ -260,10 +260,10 @@ public class Feature {
      * @param fmap the fmap
      * @return the int
      */
-    public int strId2Idx(Map fmap) {
-        Integer idxInt = (Integer) fmap.get(strId);
+    public int strId2Idx(Map<String, Integer> fmap) {
+        Integer idxInt = fmap.get(strId);
         if (idxInt != null) {
-            this.idx = idxInt.intValue();
+            this.idx = idxInt;
         }
 
         return this.idx;
@@ -278,12 +278,12 @@ public class Feature {
      * @param fmap the fmap
      * @return the int
      */
-    public int strId2IdxAdd(Map fmap) {
+    public int strId2IdxAdd(Map<String, Integer> fmap) {
         strId2Idx(fmap);
 
         if (idx < 0) {
             idx = fmap.size();
-            fmap.put(strId, new Integer(idx));
+            fmap.put(strId, idx);
         }
 
         return idx;
@@ -308,7 +308,7 @@ public class Feature {
      * @param fmap the fmap
      * @return the int
      */
-    public int index(Map fmap) {
+    public int index(Map<String, Integer> fmap) {
         return strId2Idx(fmap);
     }
 
@@ -321,19 +321,19 @@ public class Feature {
      * @param lbInt2Str the lb int2 str
      * @return the string
      */
-    public String toString(Map cpInt2Str, Map lbInt2Str) {
+    public String toString(Map<Integer, String> cpInt2Str, Map<Integer, String> lbInt2Str) {
         String str = "";
 
         if (ftype == EDGE_FEATURE1) {
             // edge feature type 1
             str = "e1_";
 
-            String yStr = (String) lbInt2Str.get(new Integer(y));
+            String yStr = lbInt2Str.get(y);
             if (yStr != null) {
                 str += yStr + "_";
             }
 
-            String ypStr = (String) lbInt2Str.get(new Integer(yp));
+            String ypStr = lbInt2Str.get(yp);
             if (ypStr != null) {
                 str += ypStr;
             }
@@ -342,12 +342,12 @@ public class Feature {
             // state feature type 1
             str = "s1_";
 
-            String yStr = (String) lbInt2Str.get(new Integer(y));
+            String yStr = lbInt2Str.get(y);
             if (yStr != null) {
                 str += yStr + "_";
             }
 
-            String cpStr = (String) cpInt2Str.get(new Integer(cp));
+            String cpStr = cpInt2Str.get(cp);
             if (cpStr != null) {
                 str += cpStr;
             }
@@ -358,5 +358,4 @@ public class Feature {
         return str;
     }
 
-} // end of class Feature
-
+}

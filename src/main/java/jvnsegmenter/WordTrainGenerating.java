@@ -45,7 +45,7 @@ public class WordTrainGenerating extends TrainDataGenerating {
     /**
      * The model dir.
      */
-    Path modelDir;
+    final Path modelDir;
 
     /**
      * Instantiates a new word train generating.
@@ -70,24 +70,29 @@ public class WordTrainGenerating extends TrainDataGenerating {
         try {
             Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
 
-            for (int i = 0; i < nodes.size(); ++i) {
-                Element node = nodes.get(i);
+            for (Element node : nodes) {
                 String cpType = node.getAttribute("value");
                 BasicContextGenerator contextGen = null;
 
-                if (cpType.equals("Conjunction")) {
-                    contextGen = new ConjunctionContextGenerator(node);
-                } else if (cpType.equals("Lexicon")) {
-                    contextGen = new LexiconContextGenerator(node);
-                    LexiconContextGenerator.loadVietnameseDict(modelDir.resolve("VNDic_UTF-8.txt"));
-                    LexiconContextGenerator.loadViLocationList(modelDir.resolve("vnlocations.txt"));
-                    LexiconContextGenerator.loadViPersonalNames(modelDir.resolve("vnpernames.txt"));
-                } else if (cpType.equals("Regex")) {
-                    contextGen = new RegexContextGenerator(node);
-                } else if (cpType.equals("SyllableFeature")) {
-                    contextGen = new SyllableContextGenerator(node);
-                } else if (cpType.equals("ViSyllableFeature")) {
-                    contextGen = new VietnameseContextGenerator(node);
+                switch (cpType) {
+                    case "Conjunction":
+                        contextGen = new ConjunctionContextGenerator(node);
+                        break;
+                    case "Lexicon":
+                        contextGen = new LexiconContextGenerator(node);
+                        LexiconContextGenerator.loadVietnameseDict(modelDir.resolve("VNDic_UTF-8.txt"));
+                        LexiconContextGenerator.loadViLocationList(modelDir.resolve("vnlocations.txt"));
+                        LexiconContextGenerator.loadViPersonalNames(modelDir.resolve("vnpernames.txt"));
+                        break;
+                    case "Regex":
+                        contextGen = new RegexContextGenerator(node);
+                        break;
+                    case "SyllableFeature":
+                        contextGen = new SyllableContextGenerator(node);
+                        break;
+                    case "ViSyllableFeature":
+                        contextGen = new VietnameseContextGenerator(node);
+                        break;
                 }
 
                 if (contextGen != null) tagger.addContextGenerator(contextGen);

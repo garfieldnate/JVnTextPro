@@ -65,7 +65,7 @@ public class IOB2DataReader extends DataReader {
         //TODO: won't work with Windows newlines
         String[] lines = dataStr.split("\\n");
 
-        List<Sentence> data = new ArrayList<Sentence>();
+        List<Sentence> data = new ArrayList<>();
         Sentence sent = new Sentence();
         for (String line : lines) {
             System.out.println(".");

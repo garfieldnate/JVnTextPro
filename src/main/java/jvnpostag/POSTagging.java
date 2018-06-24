@@ -30,7 +30,6 @@ package jvnpostag;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Paths;
@@ -73,11 +72,7 @@ public class POSTagging {
             }
 
             File dir = new File(inputDir);
-            String[] children = dir.list(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".wseg");
-                }
-            });
+            String[] children = dir.list((dir1, name) -> name.endsWith(".wseg"));
 
             for (String child : children) {
                 System.out.println("Tagging " + child);
@@ -111,11 +106,7 @@ public class POSTagging {
             return false;
         }
 
-        if (!(args[4].compareToIgnoreCase("-inputfile") == 0 || args[4].compareToIgnoreCase("-inputdir") == 0)) {
-            return false;
-        }
-
-        return true;
+        return args[4].compareToIgnoreCase("-inputfile") == 0 || args[4].compareToIgnoreCase("-inputdir") == 0;
     }
 
     public static void displayCopyright() {

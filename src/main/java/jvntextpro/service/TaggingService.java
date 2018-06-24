@@ -72,7 +72,7 @@ public class TaggingService extends Thread {
     /**
      * The option.
      */
-    private Options option;
+    private final Options option;
 
     //---------------------------
     // Constructor
@@ -114,7 +114,7 @@ public class TaggingService extends Thread {
         if (option.doPosTagging) vnTextPro.initPosTagger(Paths.get(option.modelDir, "jvnpostag", "maxent"));
 
 			/* start session threads*/
-        pool = new Vector<Session>();
+        pool = new Vector<>();
         for (int i = 0; i < maxNSession; ++i) {
             Session w = new Session(vnTextPro);
             w.start(); //start a pool of session threads at start-up time rather than on demand for efficiency
@@ -134,7 +134,7 @@ public class TaggingService extends Thread {
         try {
             this.socket = new ServerSocket(this.port);
         } catch (IOException ioe) {
-            System.out.println(ioe);
+            ioe.printStackTrace();
             System.exit(1);
         }
 

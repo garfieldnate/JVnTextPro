@@ -158,8 +158,7 @@ public class StringUtils {
             } else if (Character.isDigit(str.charAt(i))) hasNumber = true;
         }
 
-        if (hasNumber == true) return true;
-        else return false;
+        return hasNumber;
     }
 
     /**
@@ -171,11 +170,8 @@ public class StringUtils {
     public static boolean isFirstCap(String str) {
         if (isAllCap(str)) return false;
 
-        if (str.length() > 0 && Character.isLetter(str.charAt(0)) && Character.isUpperCase(str.charAt(0))) {
-            return true;
-        }
+        return str.length() > 0 && Character.isLetter(str.charAt(0)) && Character.isUpperCase(str.charAt(0));
 
-        return false;
     }
 
 
@@ -216,12 +212,9 @@ public class StringUtils {
      * @return true, if this token is ended with punctuation (such as ?:\;)
      */
     public static boolean endsWithPunc(String str) {
-        if (str.endsWith(".") || str.endsWith("?") || str.endsWith("!") || str.endsWith(",") || str.endsWith(":") || str
-            .endsWith("\"") || str.endsWith("'") || str.endsWith("''") || str.endsWith(";")) {
-            return true;
-        }
+        return str.endsWith(".") || str.endsWith("?") || str.endsWith("!") || str.endsWith(",") || str.endsWith(":")
+               || str.endsWith("\"") || str.endsWith("'") || str.endsWith("''") || str.endsWith(";");
 
-        return false;
     }
 
     /**
@@ -231,11 +224,8 @@ public class StringUtils {
      * @return true, if this token is ended with stop '.'
      */
     public static boolean endsWithStop(String str) {
-        if (str.endsWith(".") || str.endsWith("?") || str.endsWith("!")) {
-            return true;
-        }
+        return str.endsWith(".") || str.endsWith("?") || str.endsWith("!");
 
-        return false;
     }
 
     /**
@@ -290,11 +280,8 @@ public class StringUtils {
             return true;
         }
 
-        if (str.compareTo("!") == 0) {
-            return true;
-        }
+        return str.compareTo("!") == 0;
 
-        return false;
     }
 
     /**
@@ -327,7 +314,7 @@ public class StringUtils {
         if (objects.length == 0) {
             return "";
         }
-        StringBuffer buffer = new StringBuffer(objects[0].toString());
+        StringBuilder buffer = new StringBuilder(objects[0].toString());
         for (int i = 1; i < objects.length; i++) {
             buffer.append(sep);
             buffer.append(objects[i].toString());
@@ -342,11 +329,11 @@ public class StringUtils {
      * @param sep the sep
      * @return newly created .
      */
-    public static String join(Collection col, char sep) {
+    public static String join(Collection<?> col, char sep) {
         if (col.isEmpty()) {
             return "";
         }
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         boolean first = true;
         for (Object o : col) {
             if (first) {
@@ -409,7 +396,7 @@ public class StringUtils {
         if (s.length() > length) {
             return s.substring(0, length);
         }
-        StringBuffer buffer = new StringBuffer(s);
+        StringBuilder buffer = new StringBuilder(s);
         int spaces = length - s.length();
         while (spaces-- > 0) {
             buffer.append(' ');
@@ -540,12 +527,10 @@ public class StringUtils {
      */
     public static ArrayList<String> toList(String[] array) {
         if (array == null) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
-        ArrayList<String> list = new ArrayList<String>(array.length);
-        for (String s : array) {
-            list.add(s);
-        }
+        ArrayList<String> list = new ArrayList<>(array.length);
+        list.addAll(Arrays.asList(array));
         return list;
     }
 
@@ -557,9 +542,9 @@ public class StringUtils {
      */
     public static Vector<String> toVector(String[] array) {
         if (array == null) {
-            return new Vector<String>(0);
+            return new Vector<>(0);
         }
-        Vector<String> v = new Vector<String>(array.length);
+        Vector<String> v = new Vector<>(array.length);
         v.copyInto(array);
         return v;
     }
@@ -572,10 +557,8 @@ public class StringUtils {
      */
     public static ArrayList<String> toList(Set<String> set) {
         int n = set.size();
-        ArrayList<String> list = new ArrayList<String>(n);
-        for (String string : set) {
-            list.add(string);
-        }
+        ArrayList<String> list = new ArrayList<>(n);
+        list.addAll(set);
         return list;
     }
 

@@ -64,7 +64,7 @@ public class Viterbi {
          * The second.
          */
         public int second = -1;
-    } // enf of class PairDblInt
+    }
 
     /**
      * The memory size.
@@ -147,7 +147,7 @@ public class Viterbi {
      * @param Vi    the vi
      * @param isExp the is exp
      */
-    public void computeVi(List seq, int pos, DoubleVector Vi, boolean isExp) {
+    public void computeVi(List<Observation> seq, int pos, DoubleVector Vi, boolean isExp) {
         Vi.assign(0.0);
 
         // start scan features for sequence "seq" at position "pos"
@@ -232,7 +232,7 @@ public class Viterbi {
      *
      * @param seq the seq
      */
-    public void viterbiInference(List seq) {
+    public void viterbiInference(List<Observation> seq) {
         int i, j, k;
 
         int seqLen = seq.size();
@@ -281,12 +281,11 @@ public class Viterbi {
 
         // viterbi backtrack to find the best label path
         int maxIdx = findMax(memory[seqLen - 1]);
-        ((Observation) seq.get(seqLen - 1)).modelLabel = maxIdx;
+        seq.get(seqLen - 1).modelLabel = maxIdx;
         for (i = seqLen - 2; i >= 0; i--) {
-            ((Observation) seq.get(i)).modelLabel = memory[i + 1][maxIdx].second;
-            maxIdx = ((Observation) seq.get(i)).modelLabel;
+            seq.get(i).modelLabel = memory[i + 1][maxIdx].second;
+            maxIdx = seq.get(i).modelLabel;
         }
     }
 
-} // end of class Viterbi
-
+}

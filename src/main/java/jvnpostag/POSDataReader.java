@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import jvntextpro.data.DataReader;
@@ -40,7 +41,7 @@ import jvntextpro.data.Sentence;
 import jvntextpro.util.StringUtils;
 
 public class POSDataReader extends DataReader {
-    protected String[] tags = {
+    protected final String[] tags = {
         "N", "Np", "Nc", "Nu", "V", "A", "P", "L", "M", "R", "E", "C", "I", "T", "B", "Y", "X", "Ny", "Nb", "Vb", "Mrk"
     };
 
@@ -65,8 +66,8 @@ public class POSDataReader extends DataReader {
     public List<Sentence> readFile(String datafile) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(datafile), "UTF-8"));
 
-        String line = null;
-        List<Sentence> data = new ArrayList<Sentence>();
+        String line;
+        List<Sentence> data = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             Sentence sentence = new Sentence();
             boolean error = false;
@@ -77,15 +78,16 @@ public class POSDataReader extends DataReader {
             StringTokenizer tk = new StringTokenizer(line, " ");
 
             while (tk.hasMoreTokens()) {
-                String word = "", tag = null;
+                StringBuilder word = new StringBuilder();
+                String tag = null;
                 String token = tk.nextToken();
 
                 if (isTrainReading) {
-                    if (token == "/") {
-                        word = "/";
+                    if (Objects.equals(token, "/")) {
+                        word = new StringBuilder("/");
                         tag = "Mrk";
-                    } else if (token == "///") {
-                        word = "/";
+                    } else if (Objects.equals(token, "///")) {
+                        word = new StringBuilder("/");
                         tag = "Mrk";
                     } else {
 
@@ -94,23 +96,23 @@ public class POSDataReader extends DataReader {
                             error = true;
                             break;
                         } else if (fields.length == 2) {
-                            word = fields[0];
+                            word = new StringBuilder(fields[0]);
                             tag = fields[1];
                         } else if (fields.length > 2) {//token = 20/9/08
                             tag = fields[fields.length - 1];
                             for (int i = 0; i < fields.length - 2; ++i)
-                                word += fields[i] + "/";
-                            word += fields[fields.length - 2];
+                                word.append(fields[i]).append("/");
+                            word.append(fields[fields.length - 2]);
                         }
 
                         if (tag != null) {
-                            if (StringUtils.isPunc(tag)) sentence.addTWord(word, "Mrk");
+                            if (StringUtils.isPunc(tag)) sentence.addTWord(word.toString(), "Mrk");
                             else {
                                 boolean found = false;
-                                for (int i = 0; i < tags.length; ++i) {
-                                    if (tag.equalsIgnoreCase(tags[i])) {
+                                for (String tag1 : tags) {
+                                    if (tag.equalsIgnoreCase(tag1)) {
                                         //sentence.addTWord(word, tags[i]);
-                                        tag = tags[i];
+                                        tag = tag1;
                                         found = true;
                                         break;
                                     }
@@ -121,7 +123,7 @@ public class POSDataReader extends DataReader {
                                     System.out.println("error");
                                     System.out.println(tag);
                                 }
-                                sentence.addTWord(word, tag);
+                                sentence.addTWord(word.toString(), tag);
                             }
                         } else {
                             //sentence.addTWord(word, tag);
@@ -130,9 +132,9 @@ public class POSDataReader extends DataReader {
                         }
                     }
                 } else {
-                    word = token;
+                    word = new StringBuilder(token);
                     tag = null;
-                    sentence.addTWord(word, tag);
+                    sentence.addTWord(word.toString(), null);
                 }
             }
 
@@ -147,7 +149,7 @@ public class POSDataReader extends DataReader {
     public List<Sentence> readString(String dataStr) {
         String[] lines = dataStr.split("\n");
 
-        List<Sentence> data = new ArrayList<Sentence>();
+        List<Sentence> data = new ArrayList<>();
         for (String line : lines) {
             Sentence sentence = new Sentence();
             StringTokenizer tk = new StringTokenizer(line, " ");

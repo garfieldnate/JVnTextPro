@@ -85,7 +85,7 @@ public class Feature {
      * @param cp    the cp
      * @param fmap  the fmap
      */
-    public Feature(int label, int cp, Map fmap) {
+    public Feature(int label, int cp, Map<String, Integer> fmap) {
         FeatureInit(label, cp);
         strId2IdxAdd(fmap);
     }
@@ -99,7 +99,7 @@ public class Feature {
      * @param cpStr2Int the cp str2 int
      * @param lbStr2Int the lb str2 int
      */
-    public Feature(String str, Map cpStr2Int, Map lbStr2Int) {
+    public Feature(String str, Map<String, Integer> cpStr2Int, Map<String, Integer> lbStr2Int) {
         FeatureInit(str, cpStr2Int, lbStr2Int);
     }
 
@@ -113,7 +113,7 @@ public class Feature {
      * @param lbStr2Int the lb str2 int
      * @param fmap      the fmap
      */
-    public Feature(String str, Map cpStr2Int, Map lbStr2Int, Map fmap) {
+    public Feature(String str, Map<String, Integer> cpStr2Int, Map<String, Integer> lbStr2Int, Map<String, Integer> fmap) {
         FeatureInit(str, cpStr2Int, lbStr2Int);
         strId2IdxAdd(fmap);
     }
@@ -137,7 +137,7 @@ public class Feature {
      * @param cpStr2Int the cp str2 int
      * @param lbStr2Int the lb str2 int
      */
-    public void FeatureInit(String str, Map cpStr2Int, Map lbStr2Int) {
+    public void FeatureInit(String str, Map<String, Integer> cpStr2Int, Map<String, Integer> lbStr2Int) {
         StringTokenizer strTok = new StringTokenizer(str, " \t\r\n");
         // <label> <cp> <idx> <wgt>
 
@@ -152,9 +152,9 @@ public class Feature {
         float val = 1;
         double wgt = Double.parseDouble(strTok.nextToken());
 
-        Integer labelInt = (Integer) lbStr2Int.get(labelStr);
-        Integer cpInt = (Integer) cpStr2Int.get(cpStr);
-        FeatureInit(labelInt.intValue(), cpInt.intValue());
+        Integer labelInt = lbStr2Int.get(labelStr);
+        Integer cpInt = cpStr2Int.get(cpStr);
+        FeatureInit(labelInt, cpInt);
 
         this.idx = idx;
         this.val = val;
@@ -169,10 +169,10 @@ public class Feature {
      * @param fmap the fmap
      * @return the int
      */
-    public int strId2Idx(Map fmap) {
-        Integer idxInt = (Integer) fmap.get(strId);
+    public int strId2Idx(Map<String, Integer> fmap) {
+        Integer idxInt = fmap.get(strId);
         if (idxInt != null) {
-            this.idx = idxInt.intValue();
+            this.idx = idxInt;
         }
 
         return this.idx;
@@ -187,12 +187,12 @@ public class Feature {
      * @param fmap the fmap
      * @return the int
      */
-    public int strId2IdxAdd(Map fmap) {
+    public int strId2IdxAdd(Map<String, Integer> fmap) {
         strId2Idx(fmap);
 
         if (idx < 0) {
             idx = fmap.size();
-            fmap.put(strId, new Integer(idx));
+            fmap.put(strId, idx);
         }
 
         return idx;
@@ -206,7 +206,7 @@ public class Feature {
      * @param fmap the fmap
      * @return the int
      */
-    public int index(Map fmap) {
+    public int index(Map<String, Integer> fmap) {
         return strId2Idx(fmap);
     }
 
@@ -219,15 +219,15 @@ public class Feature {
      * @param lbInt2Str the lb int2 str
      * @return the string
      */
-    public String toString(Map cpInt2Str, Map lbInt2Str) {
+    public String toString(Map<Integer, String> cpInt2Str, Map<Integer, String> lbInt2Str) {
         String str = "";
 
-        String labelStr = (String) lbInt2Str.get(new Integer(label));
+        String labelStr = lbInt2Str.get(label);
         if (labelStr != null) {
             str += labelStr + " ";
         }
 
-        String cpStr = (String) cpInt2Str.get(new Integer(cp));
+        String cpStr = cpInt2Str.get(cp);
         if (cpStr != null) {
             str += cpStr + " ";
         }
@@ -237,5 +237,4 @@ public class Feature {
         return str;
     }
 
-} // end of class Feature
-
+}

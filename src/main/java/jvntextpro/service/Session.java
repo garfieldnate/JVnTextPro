@@ -45,7 +45,7 @@ public class Session extends Thread {
     /**
      * The textpro.
      */
-    JVnTextPro textpro;
+    final JVnTextPro textpro;
 
     /**
      * The incoming.
@@ -111,7 +111,6 @@ public class Session extends Thread {
                 System.out.println("The conection is interrupted");
             } catch (Exception e) {
                 // catching all exceptions because we don't want the server to crash
-                System.out.println(e);
                 e.printStackTrace();
             }
 

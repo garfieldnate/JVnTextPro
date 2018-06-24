@@ -40,7 +40,7 @@ public interface POSTagger {
     //--------------------------------
     // initialization
     //--------------------------------
-    public void init(Path modelfile) throws IOException, InitializationException;
+    void init(Path modelfile) throws InitializationException;
 
     //-------------------------------
     //tagging methods
@@ -52,7 +52,7 @@ public interface POSTagger {
      * @param instr string has been done word segmentation
      * @return string annotated with part-of-speech tags
      */
-    public String tagging(String instr);
+    String tagging(String instr);
 
 
     /**
@@ -61,13 +61,13 @@ public interface POSTagger {
      * @param file of which content has been done word segmentation
      * @return string annotated with part-of-speech tags
      */
-    public String tagging(File file) throws IOException;
+    String tagging(File file) throws IOException;
 
     /**
      * Set data writer and reader to this pos tagger this is used to be adaptable to different format of input/output
      * data
      */
-    public void setDataReader(DataReader reader);
+    void setDataReader(DataReader reader);
 
-    public void setDataWriter(DataWriter writer);
+    void setDataWriter(DataWriter writer);
 }

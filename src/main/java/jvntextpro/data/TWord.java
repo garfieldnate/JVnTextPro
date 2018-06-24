@@ -36,7 +36,7 @@ public class TWord {
     /**
      * The token.
      */
-    private String token;
+    private final String token;
 
     /**
      * The tag.
@@ -54,7 +54,7 @@ public class TWord {
     /**
      * The secondary tags.
      */
-    private Vector<String> secondaryTags = null;
+    private final Vector<String> secondaryTags = null;
 
     //constructors
 
@@ -66,7 +66,6 @@ public class TWord {
      */
     public TWord(String _word, String _tag) {
         token = _word.replaceAll(" ", "_");
-        ;
         tag = _tag;
     }
 
@@ -140,7 +139,7 @@ public class TWord {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public void print(Writer out) throws IOException {
-        if (tag == null) System.out.println(tag);
+        if (tag == null) System.out.println((String) null);
         out.write(token + "\t" + tag + "\n");
     }
 }

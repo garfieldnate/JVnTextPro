@@ -27,20 +27,19 @@
 
 package jvntokenizer;
 
-/**
- * @author Nguyen Cam Tu
- */
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+/**
+ * @author Nguyen Cam Tu
+ */
 public class JVnTokenizer {
 
     /**
@@ -74,11 +73,7 @@ public class JVnTokenizer {
             System.out.println("Tokenize input");
             //segment only files ends with .sent
             File inputDir = new File(args[1]);
-            File[] children = inputDir.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".sent");
-                }
-            });
+            File[] children = inputDir.listFiles((dir, name) -> name.endsWith(".sent"));
 
             for (File child : children) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(child), "UTF-8"));

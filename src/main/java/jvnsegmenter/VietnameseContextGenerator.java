@@ -55,25 +55,25 @@ public class VietnameseContextGenerator extends BasicContextGenerator {
      */
     @Override
     public String[] getContext(Sentence sent, int pos) {
-        List<String> cps = new ArrayList<String>();
+        List<String> cps = new ArrayList<>();
 
         for (int it = 0; it < cpnames.size(); ++it) {
             String cp = cpnames.get(it);
             Vector<Integer> paras = this.paras.get(it);
             String cpvalue = "";
 
-            String word = "";
-            for (int i = 0; i < paras.size(); ++i) {
-                if (pos + paras.get(i) < 0 || pos + paras.get(i) >= sent.size()) {
+            StringBuilder word = new StringBuilder();
+            for (Integer para : paras) {
+                if (pos + para < 0 || pos + para >= sent.size()) {
                     cpvalue = "";
                     continue;
                 }
 
-                word += sent.getWordAt(pos + paras.get(i)) + " ";
+                word.append(sent.getWordAt(pos + para)).append(" ");
             }
-            word = word.trim().toLowerCase();
+            word = new StringBuilder(word.toString().trim().toLowerCase());
 
-            VnSyllParser parser = new VnSyllParser(word);
+            VnSyllParser parser = new VnSyllParser(word.toString());
             if (!parser.isValidVnSyllable() && cp.equals("not_valid_vnsyll")) cpvalue = "nvs:" + word;
 
             if (!cpvalue.equals("")) cps.add(cpvalue);

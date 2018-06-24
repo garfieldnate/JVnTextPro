@@ -65,5 +65,4 @@ public class Mathlib {
         }
     }
 
-} // end of class Mathlib
-
+}

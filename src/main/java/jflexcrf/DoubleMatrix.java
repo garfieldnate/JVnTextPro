@@ -85,9 +85,7 @@ public class DoubleMatrix {
         mtrx = new double[rows][cols];
 
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                mtrx[i][j] = dm.mtrx[i][j];
-            }
+            System.arraycopy(dm.mtrx[i], 0, mtrx[i], 0, cols);
         }
     }
 
@@ -111,11 +109,8 @@ public class DoubleMatrix {
      */
     public void assign(DoubleMatrix dm) {
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                mtrx[i][j] = dm.mtrx[i][j];
-            }
+            System.arraycopy(dm.mtrx[i], 0, mtrx[i], 0, cols);
         }
     }
 
-} // end of class DoubleMatrix
-
+}

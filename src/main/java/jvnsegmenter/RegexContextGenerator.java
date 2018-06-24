@@ -45,32 +45,32 @@ public class RegexContextGenerator extends BasicContextGenerator {
     /**
      * The str number pattern.
      */
-    private static String strNumberPattern = "[+-]?\\d+([,.]\\d+)*";
+    private static final String strNumberPattern = "[+-]?\\d+([,.]\\d+)*";
 
     /**
      * The str short date pattern.
      */
-    private static String strShortDatePattern = "\\d+[/-:]\\d+";
+    private static final String strShortDatePattern = "\\d+[/-:]\\d+";
 
     /**
      * The str long date pattern.
      */
-    private static String strLongDatePattern = "\\d+[/-:]\\d+[/-:]\\d+";
+    private static final String strLongDatePattern = "\\d+[/-:]\\d+[/-:]\\d+";
 
     /**
      * The str percentage pattern.
      */
-    private static String strPercentagePattern = strNumberPattern + "%";
+    private static final String strPercentagePattern = strNumberPattern + "%";
 
     /**
      * The str currency pattern.
      */
-    private static String strCurrencyPattern = "\\p{Sc}" + strNumberPattern;
+    private static final String strCurrencyPattern = "\\p{Sc}" + strNumberPattern;
 
     /**
      * The str vi currency pattern.
      */
-    private static String strViCurrencyPattern = strNumberPattern + "[ \t]*\\p{Sc}";
+    private static final String strViCurrencyPattern = strNumberPattern + "[ \t]*\\p{Sc}";
 
     // Regular Expression Pattern
     /**
@@ -122,7 +122,7 @@ public class RegexContextGenerator extends BasicContextGenerator {
     @Override
     public String[] getContext(Sentence sent, int pos) {
         // generate context predicates
-        List<String> cps = new ArrayList<String>();
+        List<String> cps = new ArrayList<>();
 
 
         // get the context information from sequence
@@ -131,27 +131,28 @@ public class RegexContextGenerator extends BasicContextGenerator {
             Vector<Integer> paras = this.paras.get(it);
             String cpvalue = "";
 
-            String suffix = "", regex = "";
-            String word = "";
+            StringBuilder suffix = new StringBuilder();
+            String regex;
+            StringBuilder word = new StringBuilder();
             boolean outOfArrayIndex = false;
-            for (int i = 0; i < paras.size(); ++i) {
-                if (pos + paras.get(i) < 0 || pos + paras.get(i) >= sent.size()) {
+            for (Integer para : paras) {
+                if (pos + para < 0 || pos + para >= sent.size()) {
                     cpvalue = "";
                     outOfArrayIndex = true;
                     break;
                 }
 
-                suffix += paras.get(i) + ":";
-                word += sent.getWordAt(pos + paras.get(i)) + " ";
+                suffix.append(para).append(":");
+                word.append(sent.getWordAt(pos + para)).append(" ");
             }
             if (outOfArrayIndex) continue;
 
-            word = word.trim().toLowerCase();
-            suffix = suffix.substring(0, suffix.length() - 1);
-            suffix = ":" + suffix;
+            word = new StringBuilder(word.toString().trim().toLowerCase());
+            suffix = new StringBuilder(suffix.substring(0, suffix.length() - 1));
+            suffix.insert(0, ":");
 
             // Match to a specific pattern
-            regex = patternMatching(cp, word);
+            regex = patternMatching(cp, word.toString());
             if (!regex.equals("")) {
                 cpvalue = "re" + suffix + regex;
             }
@@ -196,27 +197,33 @@ public class RegexContextGenerator extends BasicContextGenerator {
         if (ptnNumber == null) patternCompile();
 
         Matcher matcher;
-        if (ptnName.equals("number")) {
-            matcher = ptnNumber.matcher(input);
-            if (matcher.matches()) suffix = ":number";
-        } else if (ptnName.equals("short_date")) {
-            matcher = ptnShortDate.matcher(input);
-            if (matcher.matches()) suffix = ":short-date";
-        } else if (ptnName.equals("long_date")) {
-            matcher = ptnLongDate.matcher(input);
-            if (matcher.matches()) suffix = ":long-date";
-        } else if (ptnName.equals("percentage")) {
-            matcher = ptnPercentage.matcher(input);
-            if (matcher.matches()) suffix = ":percentage";
-        } else if (ptnName.equals("currency")) {
-            matcher = ptnCurrency.matcher(input);
-            if (matcher.matches()) suffix = ":currency";
-            else {
-                matcher = ptnViCurrency.matcher(input);
-                if (matcher.matches()) {
-                    suffix = ":currency";
+        switch (ptnName) {
+            case "number":
+                matcher = ptnNumber.matcher(input);
+                if (matcher.matches()) suffix = ":number";
+                break;
+            case "short_date":
+                matcher = ptnShortDate.matcher(input);
+                if (matcher.matches()) suffix = ":short-date";
+                break;
+            case "long_date":
+                matcher = ptnLongDate.matcher(input);
+                if (matcher.matches()) suffix = ":long-date";
+                break;
+            case "percentage":
+                matcher = ptnPercentage.matcher(input);
+                if (matcher.matches()) suffix = ":percentage";
+                break;
+            case "currency":
+                matcher = ptnCurrency.matcher(input);
+                if (matcher.matches()) suffix = ":currency";
+                else {
+                    matcher = ptnViCurrency.matcher(input);
+                    if (matcher.matches()) {
+                        suffix = ":currency";
+                    }
                 }
-            }
+                break;
         }
         return suffix;
     }

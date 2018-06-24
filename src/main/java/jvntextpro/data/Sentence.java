@@ -43,7 +43,7 @@ public class Sentence {
      * Instantiates a new sentence.
      */
     public Sentence() {
-        sentence = new ArrayList<TWord>();
+        sentence = new ArrayList<>();
     }
 
     /**
@@ -127,8 +127,8 @@ public class Sentence {
      * Prints the.
      */
     public void print() {
-        for (int i = 0; i < sentence.size(); ++i) {
-            sentence.get(i).print();
+        for (TWord aSentence : sentence) {
+            aSentence.print();
         }
 
         System.out.print("\n");
@@ -141,8 +141,8 @@ public class Sentence {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public void print(Writer out) throws IOException {
-        for (int i = 0; i < sentence.size(); ++i) {
-            sentence.get(i).print(out);
+        for (TWord aSentence : sentence) {
+            aSentence.print(out);
         }
         out.write("\n");
     }

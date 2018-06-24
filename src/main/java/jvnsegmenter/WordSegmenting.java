@@ -29,7 +29,6 @@ package jvnsegmenter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Paths;
@@ -72,15 +71,11 @@ public class WordSegmenting {
             }
 
             File dir = new File(inputDir);
-            String[] children = dir.list(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".tkn");
-                }
-            });
+            String[] children = dir.list((dir1, name) -> name.endsWith(".tkn"));
 
-            for (int i = 0; i < children.length; i++) {
-                System.out.println("Segmenting " + children[i]);
-                String filename = inputDir + File.separator + children[i];
+            for (String child : children) {
+                System.out.println("Segmenting " + child);
+                String filename = inputDir + File.separator + child;
                 if ((new File(filename)).isDirectory()) {
                     continue;
                 }
@@ -110,11 +105,7 @@ public class WordSegmenting {
             return false;
         }
 
-        if (!(args[2].compareToIgnoreCase("-inputfile") == 0 || args[2].compareToIgnoreCase("-inputdir") == 0)) {
-            return false;
-        }
-
-        return true;
+        return args[2].compareToIgnoreCase("-inputfile") == 0 || args[2].compareToIgnoreCase("-inputdir") == 0;
     }
 
     /**

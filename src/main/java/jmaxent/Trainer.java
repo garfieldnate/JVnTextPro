@@ -57,16 +57,16 @@ public class Trainer {
 
         option.readOptions();
 
-        Data data = null;
-        Dictionary dict = null;
-        FeatureGen feaGen = null;
+        Data data;
+        Dictionary dict;
+        FeatureGen feaGen;
         Train train = null;
-        Inference inference = null;
-        Evaluation evaluation = null;
-        Model model = null;
+        Inference inference;
+        Evaluation evaluation;
+        Model model;
 
-        PrintWriter foutModel = null;
-        BufferedReader finModel = null;
+        PrintWriter foutModel;
+        BufferedReader finModel;
 
         if (isAll) {
             // both training and testing
@@ -222,7 +222,7 @@ public class Trainer {
 
             foutModel.close();
         }
-    } // end of the main method
+    }
 
     /**
      * Check args.
@@ -244,9 +244,7 @@ public class Trainer {
             return false;
         }
 
-        if (args[3].compareToIgnoreCase("-o") != 0) return false;
-
-        return true;
+        return args[3].compareToIgnoreCase("-o") == 0;
     }
 
     /**

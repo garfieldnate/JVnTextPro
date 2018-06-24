@@ -53,20 +53,25 @@ public class SyllableContextGenerator extends BasicContextGenerator {
      */
     @Override
     public String[] getContext(Sentence sent, int pos) {
-        List<String> cps = new ArrayList<String>();
+        List<String> cps = new ArrayList<>();
 
         for (int it = 0; it < cpnames.size(); ++it) {
             String cp = cpnames.get(it);
             Vector<Integer> paras = this.paras.get(it);
             String cpvalue = "";
-            if (cp.equals("initial_cap")) {
-                cpvalue = ic(sent, pos, paras.get(0));
-            } else if (cp.equals("all_cap")) {
-                cpvalue = ac(sent, pos, paras.get(0));
-            } else if (cp.equals("mark")) {
-                cpvalue = mk(sent, pos, paras.get(0));
-            } else if (cp.equals("first_obsrv")) {
-                if (pos + paras.get(0) == 0) cpvalue = "fi:" + paras.get(0);
+            switch (cp) {
+                case "initial_cap":
+                    cpvalue = ic(sent, pos, paras.get(0));
+                    break;
+                case "all_cap":
+                    cpvalue = ac(sent, pos, paras.get(0));
+                    break;
+                case "mark":
+                    cpvalue = mk(sent, pos, paras.get(0));
+                    break;
+                case "first_obsrv":
+                    if (pos + paras.get(0) == 0) cpvalue = "fi:" + paras.get(0);
+                    break;
             }
 
             if (!cpvalue.equals("")) cps.add(cpvalue);

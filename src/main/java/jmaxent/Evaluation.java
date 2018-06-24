@@ -95,7 +95,7 @@ public class Evaluation {
         int matchingCount = 0;
 
         for (int i = 0; i < model.data.tstData.size(); i++) {
-            Observation obsr = (Observation) model.data.tstData.get(i);
+            Observation obsr = model.data.tstData.get(i);
             if (obsr.humanLabel == obsr.modelLabel) {
                 matchingCount++;
             }
@@ -124,7 +124,7 @@ public class Evaluation {
         }
 
         for (i = 0; i < model.data.tstData.size(); i++) {
-            Observation obsr = (Observation) model.data.tstData.get(i);
+            Observation obsr = model.data.tstData.get(i);
 
             humanLabelCounts[obsr.humanLabel]++;
             modelLabelCounts[obsr.modelLabel]++;
@@ -149,7 +149,7 @@ public class Evaluation {
         }
 
         int count = 0;
-        double precision = 0.0, recall = 0.0, f1, total1Pre = 0.0, total1Rec = 0.0, total1F1 = 0.0, total2Pre = 0.0, total2Rec = 0.0, total2F1 = 0.0;
+        double precision, recall, f1, total1Pre = 0.0, total1Rec = 0.0, total1F1, total2Pre, total2Rec, total2F1;
         int totalHuman = 0, totalModel = 0, totalMatch = 0;
 
         for (i = 0; i < numLabels; i++) {
@@ -179,7 +179,7 @@ public class Evaluation {
             }
 
             String classStr = Integer.toString(i);
-            String labelStr = (String) model.data.lbInt2Str.get(new Integer(i));
+            String labelStr = model.data.lbInt2Str.get(i);
             if (labelStr != null) {
                 classStr = labelStr;
             }
@@ -225,5 +225,4 @@ public class Evaluation {
         return total2F1 * 100;
     }
 
-} // end of class Evaluation
-
+}

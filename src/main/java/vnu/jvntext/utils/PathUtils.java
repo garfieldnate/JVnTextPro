@@ -10,11 +10,11 @@ import java.util.Collections;
 
 public class PathUtils {
     private static final String JAR_SCHEME = "jar";
+
     /**
      * Retrieves a path for URI; automatically loads a new filesystem for jars when reading from "jar:" URI's.
      *
      * @return A path for the given URI
-     * @throws IOException
      */
     public static Path getPath(URI uri) throws IOException {
         if (JAR_SCHEME.equals(uri.getScheme())) {

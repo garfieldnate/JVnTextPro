@@ -49,11 +49,11 @@ import vnu.jvntext.utils.InitializationException;
 public class MaxentTagger implements POSTagger {
     DataReader reader = new POSDataReader();
     DataWriter writer = new POSDataWriter();
-    TaggingData dataTagger = new TaggingData();
+    final TaggingData dataTagger = new TaggingData();
 
     Classification classifier = null;
 
-    public MaxentTagger(Path modelDir) throws IOException, InitializationException {
+    public MaxentTagger(Path modelDir) throws InitializationException {
         init(modelDir);
     }
 
@@ -88,9 +88,8 @@ public class MaxentTagger implements POSTagger {
     public String tagging(String instr) {
         System.out.println("tagging ....");
         List<Sentence> data = reader.readString(instr);
-        for (int i = 0; i < data.size(); ++i) {
+        for (Sentence sent : data) {
 
-            Sentence sent = data.get(i);
             for (int j = 0; j < sent.size(); ++j) {
                 String[] cps = dataTagger.getContext(sent, j);
                 String label = classifier.classify(cps);
@@ -110,9 +109,8 @@ public class MaxentTagger implements POSTagger {
 
     public String tagging(File file) throws IOException {
         List<Sentence> data = reader.readFile(file.getPath());
-        for (int i = 0; i < data.size(); ++i) {
+        for (Sentence sent : data) {
 
-            Sentence sent = data.get(i);
             for (int j = 0; j < sent.size(); ++j) {
                 String[] cps = dataTagger.getContext(sent, j);
                 String label = classifier.classify(cps);

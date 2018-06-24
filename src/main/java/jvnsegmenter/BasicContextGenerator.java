@@ -62,12 +62,11 @@ public abstract class BasicContextGenerator extends ContextGenerator {
      * Read feature parameters.
      *
      * @param node the node
-     * @return true, if successful
      */
     protected void readFeatureParameters(Element node) {
         NodeList childrent = node.getChildNodes();
-        cpnames = new Vector<String>();
-        paras = new Vector<Vector<Integer>>();
+        cpnames = new Vector<>();
+        paras = new Vector<>();
 
         for (int i = 0; i < childrent.getLength(); i++) {
             if (childrent.item(i) instanceof Element) {
@@ -76,7 +75,7 @@ public abstract class BasicContextGenerator extends ContextGenerator {
 
                 //parse the value and get the parameters
                 String[] parastr = value.split(":");
-                Vector<Integer> para = new Vector<Integer>();
+                Vector<Integer> para = new Vector<>();
                 for (int j = 3; j < parastr.length; ++j) {
                     para.add(Integer.parseInt(parastr[j]));
                 }
@@ -94,7 +93,7 @@ public abstract class BasicContextGenerator extends ContextGenerator {
      * @return the vector
      */
     public static Vector<Element> readFeatureNodes(Path templateFile) throws IOException, SAXException, ParserConfigurationException {
-        Vector<Element> feaTypes = new Vector<Element>();
+        Vector<Element> feaTypes = new Vector<>();
 
         // Read feature template file........
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

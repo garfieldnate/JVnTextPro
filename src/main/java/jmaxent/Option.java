@@ -57,7 +57,7 @@ public class Option {
     /**
      * The model separator.
      */
-    public static String modelSeparator = "##########";
+    public static final String modelSeparator = "##########";
     // option file
     /**
      * The option file.
@@ -78,7 +78,7 @@ public class Option {
     /**
      * The label separator.
      */
-    public static String labelSeparator = "/";
+    public static final String labelSeparator = "/";
 
     // training log
     /**
@@ -156,7 +156,7 @@ public class Option {
     /**
      * The debug level.
      */
-    public int debugLevel = 1; // control output status information
+    public final int debugLevel = 1; // control output status information
 
     // evaluation options
     /**
@@ -198,8 +198,6 @@ public class Option {
 
     /**
      * Read options.
-     *
-     * @return true, if successful
      */
     public void readOptions() throws IOException {
         System.out.println("Reading maxent options...");
@@ -234,47 +232,40 @@ public class Option {
                 if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
                     continue;
                 }
-                isLogging = Boolean.valueOf(strVal).booleanValue();
+                isLogging = Boolean.valueOf(strVal);
 
             } else if (strOpt.compareToIgnoreCase("cpRareThreshold") == 0) {
-                int numTemp = Integer.parseInt(strVal);
-                cpRareThreshold = numTemp;
+                cpRareThreshold = Integer.parseInt(strVal);
 
             } else if (strOpt.compareToIgnoreCase("fRareThreshold") == 0) {
-                int numTemp = Integer.parseInt(strVal);
-                fRareThreshold = numTemp;
+                fRareThreshold = Integer.parseInt(strVal);
 
             } else if (strOpt.compareToIgnoreCase("numIterations") == 0) {
-                int numTemp = Integer.parseInt(strVal);
-                numIterations = numTemp;
+                numIterations = Integer.parseInt(strVal);
 
             } else if (strOpt.compareToIgnoreCase("initLambdaVal") == 0) {
-                double numTemp = Double.parseDouble(strVal);
-                initLambdaVal = numTemp;
+                initLambdaVal = Double.parseDouble(strVal);
 
             } else if (strOpt.compareToIgnoreCase("sigmaSquare") == 0) {
-                double numTemp = Double.parseDouble(strVal);
-                sigmaSquare = numTemp;
+                sigmaSquare = Double.parseDouble(strVal);
 
             } else if (strOpt.compareToIgnoreCase("epsForConvergence") == 0) {
-                double numTemp = Double.parseDouble(strVal);
-                epsForConvergence = numTemp;
+                epsForConvergence = Double.parseDouble(strVal);
 
             } else if (strOpt.compareToIgnoreCase("mForHessian") == 0) {
-                int numTemp = Integer.parseInt(strVal);
-                mForHessian = numTemp;
+                mForHessian = Integer.parseInt(strVal);
 
             } else if (strOpt.compareToIgnoreCase("evaluateDuringTraining") == 0) {
                 if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
                     continue;
                 }
-                evaluateDuringTraining = Boolean.valueOf(strVal).booleanValue();
+                evaluateDuringTraining = Boolean.parseBoolean(strVal);
 
             } else if (strOpt.compareToIgnoreCase("saveBestModel") == 0) {
                 if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
                     continue;
                 }
-                saveBestModel = Boolean.valueOf(strVal).booleanValue();
+                saveBestModel = Boolean.parseBoolean(strVal);
 
             } else if (strOpt.compareToIgnoreCase("trainLogFile") == 0) {
                 trainLogFile = strVal;
@@ -359,5 +350,4 @@ public class Option {
         fout.println();
     }
 
-} // end of class Option
-
+}

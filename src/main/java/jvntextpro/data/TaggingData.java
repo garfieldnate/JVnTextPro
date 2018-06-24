@@ -40,7 +40,7 @@ public class TaggingData {
      * Instantiates a new tagging data.
      */
     public TaggingData() {
-        cntxGenVector = new ArrayList<ContextGenerator>();
+        cntxGenVector = new ArrayList<>();
     }
 
     /**
@@ -58,7 +58,7 @@ public class TaggingData {
      * @param cntxGen the cntx gen
      */
     public TaggingData(ContextGenerator cntxGen) {
-        cntxGenVector = new ArrayList<ContextGenerator>();
+        cntxGenVector = new ArrayList<>();
         cntxGenVector.add(cntxGen);
     }
 
@@ -79,14 +79,14 @@ public class TaggingData {
      * @return the context
      */
     public String[] getContext(Sentence sent, int wordIdx) {
-        ArrayList<String> tempCps = new ArrayList<String>();
+        ArrayList<String> tempCps = new ArrayList<>();
 
-        for (int i = 0; i < cntxGenVector.size(); ++i) {
-            String[] context = cntxGenVector.get(i).getContext(sent, wordIdx);
+        for (ContextGenerator aCntxGenVector : cntxGenVector) {
+            String[] context = aCntxGenVector.getContext(sent, wordIdx);
             if (context != null) {
-                for (int j = 0; j < context.length; ++j) {
-                    if (context[j].trim().equals("")) continue;
-                    tempCps.add(context[j]);
+                for (String ctxt : context) {
+                    if (ctxt.trim().equals("")) continue;
+                    tempCps.add(ctxt);
                 }
             }
         }
@@ -103,18 +103,18 @@ public class TaggingData {
      * @return the string representing contexts extracted at wordIdx of the sentence sent
      */
     public String getContextStr(Sentence sent, int wordIdx) {
-        String cpStr = "";
+        StringBuilder cpStr = new StringBuilder();
 
-        for (int i = 0; i < cntxGenVector.size(); ++i) {
-            String[] context = cntxGenVector.get(i).getContext(sent, wordIdx);
+        for (ContextGenerator aCntxGenVector : cntxGenVector) {
+            String[] context = aCntxGenVector.getContext(sent, wordIdx);
             if (context != null) {
-                for (int j = 0; j < context.length; ++j) {
-                    if (context[j].trim().equals("")) continue;
-                    cpStr += context[j] + " ";
+                for (String ctxt : context) {
+                    if (ctxt.trim().equals("")) continue;
+                    cpStr.append(ctxt).append(" ");
                 }
             }
         }
 
-        return cpStr.trim();
+        return cpStr.toString().trim();
     }
 }

@@ -38,25 +38,24 @@ import jvntextpro.data.Sentence;
 
 public class POSDataWriter extends DataWriter {
 
-    public void writeFile(List lblSeqs, String filename) throws IOException {
+    public void writeFile(List<Sentence> lblSeqs, String filename) throws IOException {
         String ret = writeString(lblSeqs);
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
         out.write(ret);
         out.close();
     }
 
-    public String writeString(List lblSeqs) {
-        String ret = "";
-        for (int i = 0; i < lblSeqs.size(); ++i) {
-            Sentence sent = (Sentence) lblSeqs.get(i);
+    public String writeString(List<Sentence> lblSeqs) {
+        StringBuilder ret = new StringBuilder();
+        for (Sentence lblSeq : lblSeqs) {
 
-            for (int j = 0; j < sent.size(); ++j) {
-                ret += sent.getWordAt(j) + "/" + sent.getTagAt(j) + " ";
+            for (int j = 0; j < lblSeq.size(); ++j) {
+                ret.append(lblSeq.getWordAt(j)).append("/").append(lblSeq.getTagAt(j)).append(" ");
             }
-            ret = ret.trim() + "\n";
+            ret = new StringBuilder(ret.toString().trim() + "\n");
         }
 
-        return ret.trim();
+        return ret.toString().trim();
     }
 
 }

@@ -37,22 +37,22 @@ public class Maps {
     /**
      * The cp str2 int.
      */
-    public Map cpStr2Int = null;
+    public Map<String, Integer> cpStr2Int = null;
 
     /**
      * The cp int2 str.
      */
-    public Map cpInt2Str = null;
+    public Map<Integer, String> cpInt2Str = null;
 
     /**
      * The lb str2 int.
      */
-    public Map lbStr2Int = null;
+    public Map<String, Integer> lbStr2Int = null;
 
     /**
      * The lb int2 str.
      */
-    public Map lbInt2Str = null;
+    public Map<Integer, String> lbInt2Str = null;
 
     /**
      * Instantiates a new maps.
@@ -70,13 +70,13 @@ public class Maps {
         if (cpStr2Int != null) {
             cpStr2Int.clear();
         } else {
-            cpStr2Int = new HashMap();
+            cpStr2Int = new HashMap<>();
         }
 
         if (cpInt2Str != null) {
             cpInt2Str.clear();
         } else {
-            cpInt2Str = new HashMap();
+            cpInt2Str = new HashMap<>();
         }
 
         String line;
@@ -107,17 +107,17 @@ public class Maps {
             }
 
             String cpStr = strTok.nextToken();
-            String cpInt = strTok.nextToken();
+            Integer cpInt = Integer.parseInt(strTok.nextToken());
 
-            cpStr2Int.put(cpStr, new Integer(cpInt));
-            cpInt2Str.put(new Integer(cpInt), cpStr);
+            cpStr2Int.put(cpStr, cpInt);
+            cpInt2Str.put(cpInt, cpStr);
         }
 
         System.out.println(
             "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
     }
 
     /**
@@ -130,13 +130,13 @@ public class Maps {
         if (lbStr2Int != null) {
             lbStr2Int.clear();
         } else {
-            lbStr2Int = new HashMap();
+            lbStr2Int = new HashMap<>();
         }
 
         if (lbInt2Str != null) {
             lbInt2Str.clear();
         } else {
-            lbInt2Str = new HashMap();
+            lbInt2Str = new HashMap<>();
         }
 
         String line;
@@ -167,16 +167,16 @@ public class Maps {
             }
 
             String lbStr = strTok.nextToken();
-            String lbInt = strTok.nextToken();
+            Integer lbInt = Integer.parseInt(strTok.nextToken());
 
-            lbStr2Int.put(lbStr, new Integer(lbInt));
-            lbInt2Str.put(new Integer(lbInt), lbStr);
+            lbStr2Int.put(lbStr, lbInt);
+            lbInt2Str.put(lbInt, lbStr);
         }
 
         System.out.println("Reading label maps (" + Integer.toString(lbStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
-        line = fin.readLine();
+        fin.readLine();
     }
 
     /**
@@ -205,5 +205,4 @@ public class Maps {
         }
     }
 
-} // end of class Maps
-
+}

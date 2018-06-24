@@ -60,9 +60,9 @@ public class POSContextGenerator extends ContextGenerator {
     // Member variables
     //----------------------------------------------
     private static final String DEFAULT_E_DICT = "jvnpostag/ComputerDict.txt";
-    Map word2dictags = new HashMap<String, List>();
-    Vector<String> cpnames;
-    Vector<Vector<Integer>> paras;
+    private final Map<String, List<String>> word2dictags = new HashMap<>();
+    private Vector<String> cpnames;
+    private Vector<Vector<Integer>> paras;
 
     //----------------------------------------------
     // Constructor and Override methods
@@ -75,40 +75,55 @@ public class POSContextGenerator extends ContextGenerator {
     @Override
     public String[] getContext(Sentence sent, int pos) {
         // TODO Auto-generated method stub
-        List<String> cps = new ArrayList<String>();
+        List<String> cps = new ArrayList<>();
 
         for (int it = 0; it < cpnames.size(); ++it) {
             String cp = cpnames.get(it);
             Vector<Integer> paras = this.paras.get(it);
             String cpvalue = "";
-            if (cp.equals("w")) {
-                cpvalue = w(sent, pos, paras.get(0));
-            } else if (cp.equals("wj")) {
-                cpvalue = wj(sent, pos, paras.get(0), paras.get(1));
-            } else if (cp.equals("prf")) {
-                cpvalue = prf(sent, pos, paras.get(0));
-            } else if (cp.equals("sff")) {
-                cpvalue = sff(sent, pos, paras.get(0));
-            } else if (cp.equals("an")) {
-                cpvalue = an(sent, pos, paras.get(0));
-            } else if (cp.equals("hn")) {
-                cpvalue = hn(sent, pos, paras.get(0));
-            } else if (cp.equals("hyph")) {
-                cpvalue = hyph(sent, pos, paras.get(0));
-            } else if (cp.equals("slash")) {
-                cpvalue = slash(sent, pos, paras.get(0));
-            } else if (cp.equals("com")) {
-                cpvalue = com(sent, pos, paras.get(0));
-            } else if (cp.equals("ac")) {
-                cpvalue = ac(sent, pos, paras.get(0));
-            } else if (cp.equals("ic")) {
-                cpvalue = ic(sent, pos, paras.get(0));
-            } else if (cp.equals("mk")) {
-                cpvalue = mk(sent, pos, paras.get(0));
-            } else if (cp.equals("dict")) {
-                cps.add(dict(sent, pos, paras.get(0)));
-            } else if (cp.equals("rr")) {
-                cpvalue = rr(sent, pos, paras.get(0));
+            switch (cp) {
+                case "w":
+                    cpvalue = w(sent, pos, paras.get(0));
+                    break;
+                case "wj":
+                    cpvalue = wj(sent, pos, paras.get(0), paras.get(1));
+                    break;
+                case "prf":
+                    cpvalue = prf(sent, pos, paras.get(0));
+                    break;
+                case "sff":
+                    cpvalue = sff(sent, pos, paras.get(0));
+                    break;
+                case "an":
+                    cpvalue = an(sent, pos, paras.get(0));
+                    break;
+                case "hn":
+                    cpvalue = hn(sent, pos, paras.get(0));
+                    break;
+                case "hyph":
+                    cpvalue = hyph(sent, pos, paras.get(0));
+                    break;
+                case "slash":
+                    cpvalue = slash(sent, pos, paras.get(0));
+                    break;
+                case "com":
+                    cpvalue = com(sent, pos, paras.get(0));
+                    break;
+                case "ac":
+                    cpvalue = ac(sent, pos, paras.get(0));
+                    break;
+                case "ic":
+                    cpvalue = ic(sent, pos, paras.get(0));
+                    break;
+                case "mk":
+                    cpvalue = mk(sent, pos, paras.get(0));
+                    break;
+                case "dict":
+                    cps.add(dict(sent, pos, paras.get(0)));
+                    break;
+                case "rr":
+                    cpvalue = rr(sent, pos, paras.get(0));
+                    break;
             }
             if (!cpvalue.equals("")) cps.add(cpvalue);
         }
@@ -129,11 +144,10 @@ public class POSContextGenerator extends ContextGenerator {
             String[] tokens = line.split("\t");
 
             String word, tag;
-            if (tokens == null) continue;
 
             if (tokens.length != 2) {
                 continue;
-            } else if (tokens.length == 2) {
+            } else {
                 if (tokens[0].equals("")) {
                     if (temp == null) continue;
                     else {
@@ -146,11 +160,11 @@ public class POSContextGenerator extends ContextGenerator {
                     tag = tokens[1].trim();
                     temp = word;
                 }
-            } else continue;
+            }
 
             word = word.replace(" ", "_");
             //System.out.println(word);
-            List dictags = (List) word2dictags.get(word);
+            List<String> dictags = word2dictags.get(word);
             if (dictags == null) {
                 dictags = new ArrayList<String>();
             }
@@ -170,8 +184,8 @@ public class POSContextGenerator extends ContextGenerator {
 
         Element root = doc.getDocumentElement();
         NodeList childrent = root.getChildNodes();
-        cpnames = new Vector<String>();
-        paras = new Vector<Vector<Integer>>();
+        cpnames = new Vector<>();
+        paras = new Vector<>();
 
         for (int i = 0; i < childrent.getLength(); i++)
             if (childrent.item(i) instanceof Element) {
@@ -180,7 +194,7 @@ public class POSContextGenerator extends ContextGenerator {
 
                 //parse the value and get the parameters
                 String[] parastr = value.split(":");
-                Vector<Integer> para = new Vector<Integer>();
+                Vector<Integer> para = new Vector<>();
                 for (int j = 1; j < parastr.length; ++j) {
                     para.add(Integer.parseInt(parastr[j]));
                 }
@@ -351,20 +365,20 @@ public class POSContextGenerator extends ContextGenerator {
     }
 
     private String dict(Sentence sent, int pos, int i) {
-        String cp = "";
+        StringBuilder cp = new StringBuilder();
 
         if (0 <= (pos + i) && (pos + i) < sent.size()) {
             String word = sent.getWordAt(pos + i);
             if (word2dictags.containsKey(word)) {
-                List tags = (List) word2dictags.get(word);
+                List<String> tags = word2dictags.get(word);
 
-                for (int j = 0; j < tags.size(); ++j) {
-                    cp += "dict:" + Integer.toString(i) + ":" + tags.get(j) + " ";
+                for (String tag : tags) {
+                    cp.append("dict:").append(Integer.toString(i)).append(":").append(tag).append(" ");
                 }
             }
         }
 
-        return cp.trim();
+        return cp.toString().trim();
     }
 
     private String rr(Sentence sent, int pos, int i) {

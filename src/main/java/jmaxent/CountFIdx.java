@@ -50,5 +50,4 @@ public class CountFIdx {
         this.fidx = fidx;
     }
 
-} // end of class CountFeatureIdx
-
+}
