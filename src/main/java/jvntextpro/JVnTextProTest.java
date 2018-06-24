@@ -30,36 +30,30 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import jvntextpro.conversion.CompositeUnicode2Unicode;
+import vnu.jvntext.utils.InitializationException;
 
 public class JVnTextProTest {
+    private static final String OUTPUT_EXTENSION = ".pro";
+    private static CompositeUnicode2Unicode conversion;
+    private static JVnTextPro vnTextPro = new JVnTextPro();
 
-    /**
-     * The main method.
-     *
-     * @param args the arguments
-     */
-    public static void main(String[] args) throws IOException {
-        JVnTextProTestOption option = parseArguments(args);
-        if (option == null) {
-            return;
-        }
-
-        JVnTextPro vnTextPro = new JVnTextPro();
+    private static void init(JVnTextProTestOption option) throws IOException, InitializationException {
         vnTextPro.initSenTokenization();
-        CompositeUnicode2Unicode conversion = new CompositeUnicode2Unicode();
+        conversion = new CompositeUnicode2Unicode();
 
         if (option.doSenSeg) {
-            vnTextPro.initSenSegmenter(option.modelDir.getPath() + File.separator + "jvnsensegmenter");
+            if (option.modelDir != null) {
+                vnTextPro.initSenSegmenter(option.modelDir.resolve( "jvnsensegmenter"));
+            } else {
+                vnTextPro.initSenSegmenter();
+            }
         }
 
         if (option.doSenToken) {
@@ -67,60 +61,58 @@ public class JVnTextProTest {
         }
 
         if (option.doWordSeg) {
-            vnTextPro.initSegmenter(option.modelDir.getPath() + File.separator + "jvnsegmenter");
+            if (option.modelDir != null) {
+                vnTextPro.initSegmenter(option.modelDir.resolve( "jvnsegmenter"));
+            } else {
+                vnTextPro.initSegmenter();
+            }
         }
-
 
         if (option.doPosTagging) {
-            vnTextPro.initPosTagger(
-                option.modelDir.getPath() + File.separator + "jvnpostag" + File.separator + "maxent");
+            if (option.modelDir != null) {
+                vnTextPro.initPosTagger(option.modelDir.resolve("jvnpostag").resolve( "maxent"));
+            } else {
+                vnTextPro.initPosTagger();
+            }
+        }
+    }
+
+    /**
+     * Read and process an entire file, then print the results to another file with the extension ".pro".
+     */
+    private static void processFile(Path filePath) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        for (String line : Files.readAllLines(filePath)) {
+            line = conversion.convert(line);
+            sb.append(vnTextPro.process(line).trim()).append("\n");
         }
 
-
-        if (option.inFile.isFile()) {
-            //REad file, process and write file
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(option.inFile),
-                                                                             "UTF-8"
-            ));
-
-            String line;
-            StringBuilder sb = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                line = conversion.convert(line);
-                sb.append(vnTextPro.process(line).trim()).append("\n");
-            }
-
-            reader.close();
-
-            //write file
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                option.inFile.getPath() + ".pro"), "UTF-8"));
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath + OUTPUT_EXTENSION))) {
             writer.write(sb.toString());
-            writer.close();
-        } else if (option.inFile.isDirectory()) {
-            File[] children = option.inFile.listFiles();
+        }
+    }
 
-            for (File child : children) {
-                if (!child.getName().endsWith(option.fileType)) continue;
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
+    public static void main(String[] args) throws IOException, InitializationException {
+        JVnTextProTestOption option = parseArguments(args);
+        if (option == null) {
+            return;
+        }
 
-                //REad file, process and write file
-                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(child), "UTF-8"));
+        init(option);
 
-                String line;
-                StringBuilder sb = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    line = conversion.convert(line);
-                    sb.append(vnTextPro.process(line).trim()).append("\n");
-                }
-
-                reader.close();
-
-                //write file
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    child.getPath() + ".pro"), "UTF-8"));
-                writer.write(sb.toString());
-                writer.close();
+        if (Files.isDirectory(option.inputPath)) {
+            // TODO: would be better to just accept the blob, but can we break backwards compatibility?
+            for(Path child: Files.newDirectoryStream(option.inputPath, "*" + option.fileType)) {
+                processFile(child);
             }
+        } else {
+            //Read and process file
+            processFile(option.inputPath);
         }
     }
 
@@ -141,13 +133,13 @@ public class JVnTextProTest {
 
 class JVnTextProTestOption {
     @Option(name = "-input", required = true, usage = "(required) Specify input file/directory")
-    File inFile;
+    Path inputPath;
 
     @Option(name = "-filetype", usage = "Specify file types to process (in the case -input is a directory")
     String fileType = ".txt";
 
-    @Option(name = "-modeldir", required = true, usage = "Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
-    File modelDir;
+    @Option(name = "-modeldir", usage = "Specify model directory, which is the folder containing model directories of subproblem tools (Word Segmentation, POS Tag)")
+    Path modelDir;
 
     @Option(name = "-senseg", usage = "Specify if doing sentence segmentation is set or not, not set by default")
     boolean doSenSeg = false;

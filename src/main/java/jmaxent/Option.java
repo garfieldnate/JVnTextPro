@@ -29,27 +29,30 @@ package jmaxent;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
 public class Option {
+
+    private final static String DEFAULT_FILE_NAME = "option.txt";
 
     // model directory
     /**
      * The model dir.
      */
-    public String modelDir = ".";
+    public Path modelDir = Paths.get(".");
+
     // model file
     /**
      * The model file.
      */
-    public String modelFile = "model.txt";
+    public String modelFileName = "model.txt";
 
     /**
      * The model separator.
@@ -59,7 +62,7 @@ public class Option {
     /**
      * The option file.
      */
-    public String optionFile = "option.txt";
+    private final String optionFileName;
 
     // training data, testing data file
     /**
@@ -170,6 +173,7 @@ public class Option {
      * Instantiates a new option.
      */
     public Option() {
+        optionFileName = DEFAULT_FILE_NAME;
     }
 
     /**
@@ -177,12 +181,19 @@ public class Option {
      *
      * @param modelDir the model dir
      */
-    public Option(String modelDir) {
-        if (modelDir.endsWith(File.separator)) {
-            this.modelDir = modelDir.substring(0, modelDir.length() - 1);
-        } else {
-            this.modelDir = modelDir;
-        }
+    public Option(Path modelDir) {
+        this.modelDir = modelDir;
+        optionFileName = DEFAULT_FILE_NAME;
+    }
+
+    /**
+     * Instantiates a new option.
+     *
+     * @param modelDir the model dir
+     */
+    public Option(Path modelDir, String optionFileName) {
+        this.modelDir = modelDir;
+        this.optionFileName = optionFileName;
     }
 
     /**
@@ -190,107 +201,93 @@ public class Option {
      *
      * @return true, if successful
      */
-    public boolean readOptions() {
-        String filename = modelDir + File.separator + optionFile;
-        BufferedReader fin = null;
-        String line;
+    public void readOptions() throws IOException {
+        System.out.println("Reading maxent options...");
+        Path optionsFile = modelDir.resolve(optionFileName);
 
-        try {
-            fin = new BufferedReader(new FileReader(filename));
-
-            System.out.println("Reading options ...");
-
-            // read option lines
-            while ((line = fin.readLine()) != null) {
-                String trimLine = line.trim();
-                if (trimLine.startsWith("#")) {
-                    // comment line
-                    continue;
-                }
-
-                //System.out.println(line);
-
-                StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
-                int len = strTok.countTokens();
-                if (len != 2) {
-                    // invalid parameter line, ignore it
-                    continue;
-                }
-
-                String strOpt = strTok.nextToken();
-                String strVal = strTok.nextToken();
-
-                if (strOpt.compareToIgnoreCase("trainDataFile") == 0) {
-                    trainDataFile = strVal;
-
-                } else if (strOpt.compareToIgnoreCase("testDataFile") == 0) {
-                    testDataFile = strVal;
-
-                } else if (strOpt.compareToIgnoreCase("isLogging") == 0) {
-                    if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
-                        continue;
-                    }
-                    isLogging = Boolean.valueOf(strVal).booleanValue();
-
-                } else if (strOpt.compareToIgnoreCase("cpRareThreshold") == 0) {
-                    int numTemp = Integer.parseInt(strVal);
-                    cpRareThreshold = numTemp;
-
-                } else if (strOpt.compareToIgnoreCase("fRareThreshold") == 0) {
-                    int numTemp = Integer.parseInt(strVal);
-                    fRareThreshold = numTemp;
-
-                } else if (strOpt.compareToIgnoreCase("numIterations") == 0) {
-                    int numTemp = Integer.parseInt(strVal);
-                    numIterations = numTemp;
-
-                } else if (strOpt.compareToIgnoreCase("initLambdaVal") == 0) {
-                    double numTemp = Double.parseDouble(strVal);
-                    initLambdaVal = numTemp;
-
-                } else if (strOpt.compareToIgnoreCase("sigmaSquare") == 0) {
-                    double numTemp = Double.parseDouble(strVal);
-                    sigmaSquare = numTemp;
-
-                } else if (strOpt.compareToIgnoreCase("epsForConvergence") == 0) {
-                    double numTemp = Double.parseDouble(strVal);
-                    epsForConvergence = numTemp;
-
-                } else if (strOpt.compareToIgnoreCase("mForHessian") == 0) {
-                    int numTemp = Integer.parseInt(strVal);
-                    mForHessian = numTemp;
-
-                } else if (strOpt.compareToIgnoreCase("evaluateDuringTraining") == 0) {
-                    if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
-                        continue;
-                    }
-                    evaluateDuringTraining = Boolean.valueOf(strVal).booleanValue();
-
-                } else if (strOpt.compareToIgnoreCase("saveBestModel") == 0) {
-                    if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
-                        continue;
-                    }
-                    saveBestModel = Boolean.valueOf(strVal).booleanValue();
-
-                } else if (strOpt.compareToIgnoreCase("trainLogFile") == 0) {
-                    trainLogFile = strVal;
-                    // for future use
-                } else if (strOpt.compareToIgnoreCase("modelFile") == 0) {
-                    modelFile = strVal;
-                } else {
-                    //for future use
-                }
-
+        for (String line : Files.readAllLines(optionsFile)) {
+            String trimLine = line.trim();
+            if (trimLine.startsWith("#")) {
+                // comment line
+                continue;
             }
 
-            System.out.println("Reading options completed!");
+            //System.out.println(line);
 
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return false;
+            StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
+            int len = strTok.countTokens();
+            if (len != 2) {
+                // invalid parameter line, ignore it
+                continue;
+            }
+
+            String strOpt = strTok.nextToken();
+            String strVal = strTok.nextToken();
+
+            if (strOpt.compareToIgnoreCase("trainDataFile") == 0) {
+                trainDataFile = strVal;
+
+            } else if (strOpt.compareToIgnoreCase("testDataFile") == 0) {
+                testDataFile = strVal;
+
+            } else if (strOpt.compareToIgnoreCase("isLogging") == 0) {
+                if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
+                    continue;
+                }
+                isLogging = Boolean.valueOf(strVal).booleanValue();
+
+            } else if (strOpt.compareToIgnoreCase("cpRareThreshold") == 0) {
+                int numTemp = Integer.parseInt(strVal);
+                cpRareThreshold = numTemp;
+
+            } else if (strOpt.compareToIgnoreCase("fRareThreshold") == 0) {
+                int numTemp = Integer.parseInt(strVal);
+                fRareThreshold = numTemp;
+
+            } else if (strOpt.compareToIgnoreCase("numIterations") == 0) {
+                int numTemp = Integer.parseInt(strVal);
+                numIterations = numTemp;
+
+            } else if (strOpt.compareToIgnoreCase("initLambdaVal") == 0) {
+                double numTemp = Double.parseDouble(strVal);
+                initLambdaVal = numTemp;
+
+            } else if (strOpt.compareToIgnoreCase("sigmaSquare") == 0) {
+                double numTemp = Double.parseDouble(strVal);
+                sigmaSquare = numTemp;
+
+            } else if (strOpt.compareToIgnoreCase("epsForConvergence") == 0) {
+                double numTemp = Double.parseDouble(strVal);
+                epsForConvergence = numTemp;
+
+            } else if (strOpt.compareToIgnoreCase("mForHessian") == 0) {
+                int numTemp = Integer.parseInt(strVal);
+                mForHessian = numTemp;
+
+            } else if (strOpt.compareToIgnoreCase("evaluateDuringTraining") == 0) {
+                if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
+                    continue;
+                }
+                evaluateDuringTraining = Boolean.valueOf(strVal).booleanValue();
+
+            } else if (strOpt.compareToIgnoreCase("saveBestModel") == 0) {
+                if (!(strVal.compareToIgnoreCase("true") == 0 || strVal.compareToIgnoreCase("false") == 0)) {
+                    continue;
+                }
+                saveBestModel = Boolean.valueOf(strVal).booleanValue();
+
+            } else if (strOpt.compareToIgnoreCase("trainLogFile") == 0) {
+                trainLogFile = strVal;
+                // for future use
+            } else if (strOpt.compareToIgnoreCase("modelFileName") == 0) {
+                modelFileName = strVal;
+            } else {
+                System.err.println("Unknown maxent option: " + strOpt);
+            }
+
         }
 
-        return true;
+        System.out.println("Reading maxent options completed!");
     }
 
     /**
@@ -317,19 +314,9 @@ public class Option {
      *
      * @return the buffered reader
      */
-    public BufferedReader openModelFile() {
-        String filename = modelDir + File.separator + modelFile;
-        BufferedReader fin = null;
-
-        try {
-            fin = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
-
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return null;
-        }
-
-        return fin;
+    public BufferedReader openModelFile() throws IOException {
+        Path modelFile = modelDir.resolve(modelFileName);
+        return Files.newBufferedReader(modelFile);
     }
 
     /**
@@ -338,7 +325,7 @@ public class Option {
      * @return the prints the writer
      */
     public PrintWriter createModelFile() {
-        String filename = modelDir + File.separator + modelFile;
+        String filename = modelDir + File.separator + modelFileName;
         PrintWriter fout = null;
 
         try {
@@ -361,8 +348,8 @@ public class Option {
         fout.println("OPTION VALUES:");
         fout.println("==============");
         fout.println("Model directory: " + modelDir);
-        fout.println("Model file: " + modelFile);
-        fout.println("Option file: " + optionFile);
+        fout.println("Model file: " + modelFileName);
+        fout.println("Option file: " + optionFileName);
         fout.println("Training log file: " + trainLogFile + " (this one)");
         fout.println("Training data file: " + trainDataFile);
         fout.println("Testing data file: " + testDataFile);

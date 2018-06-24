@@ -27,6 +27,8 @@
 package jflexcrf;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class Labeling {
     /**
      * The model dir.
      */
-    private String modelDir = "";
+    private Path modelDir = Paths.get(".");
 
     /**
      * The tagger maps.
@@ -97,7 +99,7 @@ public class Labeling {
      * @param dataReader the data reader
      * @param dataWriter the data writer
      */
-    public Labeling(String modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) {
+    public Labeling(Path modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) {
         init(modelDir);
         this.dataTagger = dataTagger;
         this.dataWriter = dataWriter;
@@ -110,7 +112,7 @@ public class Labeling {
      * @param modelDir the model dir
      * @return true, if successful
      */
-    public boolean init(String modelDir) {
+    public boolean init(Path modelDir) {
         this.modelDir = modelDir;
 
         Option taggerOpt = new Option(this.modelDir);

@@ -33,8 +33,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,16 +70,23 @@ public class JVnSenSegmenter {
      * @return true, if successful
      */
 
-    public boolean init(String modelDir) {
+    public void init(Path modelDir) throws IOException {
+        System.out.println("Initializing JVnSenSegmenter from " + modelDir + "...");
+        classifier = new Classification(modelDir);
+        feaGen = new FeatureGenerator();
+        classifier.init();
+    }
+
+    public void init() throws IOException {
+        Path modelDir;
         try {
-            classifier = new Classification(modelDir);
-            feaGen = new FeatureGenerator();
-            classifier.init();
-            return true;
-        } catch (Exception e) {
-            System.out.println("Error while initilizing classifier: " + e.getMessage());
-            return false;
+             modelDir = Paths.get(JVnSenSegmenter.class.getResource("/" + JVnSenSegmenter.class.getPackage().getName()).toURI());
+        } catch (URISyntaxException e) {
+            // this should never happen
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+        init(modelDir);
     }
 
     /**
@@ -152,7 +163,7 @@ public class JVnSenSegmenter {
 
         try {
             JVnSenSegmenter senSegmenter = new JVnSenSegmenter();
-            senSegmenter.init(args[1]);
+            senSegmenter.init(Paths.get(args[1]));
 
             String option = args[2];
             if (option.equalsIgnoreCase("-inputfile")) {

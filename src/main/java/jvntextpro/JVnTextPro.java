@@ -29,7 +29,9 @@ package jvntextpro;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 
 import jvnpostag.MaxentTagger;
 import jvnsegmenter.CRFSegmenter;
@@ -37,6 +39,7 @@ import jvnsensegmenter.JVnSenSegmenter;
 import jvntextpro.conversion.CompositeUnicode2Unicode;
 import jvntextpro.util.VnSyllParser;
 import jvntokenizer.PennTokenizer;
+import vnu.jvntext.utils.InitializationException;
 
 public class JVnTextPro {
 
@@ -91,18 +94,14 @@ public class JVnTextPro {
      * @param modelDir the model dir
      * @return true, if successful
      */
-    public boolean initSenSegmenter(String modelDir) {
-        System.out.println("Initilize JVnSenSegmenter ...");
-
-        //initialize sentence segmentation
+    public void initSenSegmenter(Path modelDir) throws IOException {
         vnSenSegmenter = new JVnSenSegmenter();
-        if (!vnSenSegmenter.init(modelDir)) {
-            System.out.println("Error while initilizing JVnSenSegmenter");
-            vnSenSegmenter = null;
-            return false;
-        }
+        vnSenSegmenter.init(modelDir);
+    }
 
-        return true;
+    public void initSenSegmenter() throws IOException {
+        vnSenSegmenter = new JVnSenSegmenter();
+        vnSenSegmenter.init();
     }
 
     /**
@@ -111,21 +110,12 @@ public class JVnTextPro {
      * @param modelDir the model dir
      * @return true if the initialization is successful and false otherwise
      */
-    public boolean initSegmenter(String modelDir) {
-        System.out.println("Initilize JVnSegmenter ...");
-        System.out.println(modelDir);
+    public void initSegmenter(Path modelDir) {
+        vnSegmenter = new CRFSegmenter(modelDir);
+    }
+
+    public void initSegmenter() {
         vnSegmenter = new CRFSegmenter();
-
-        try {
-            vnSegmenter.init(modelDir);
-        } catch (Exception e) {
-            System.out.println("Error while initializing JVnSegmenter");
-            vnSegmenter = null;
-            return false;
-        }
-
-        //initialize taggerData
-        return true;
     }
 
     /**
@@ -134,15 +124,12 @@ public class JVnTextPro {
      * @param modelDir the model dir
      * @return true if the initialization is successful and false otherwise
      */
-    public boolean initPosTagger(String modelDir) {
-        try {
-            this.vnPosTagger = new MaxentTagger(modelDir);
-        } catch (Exception e) {
-            System.out.println("Error while initializing POS TAgger");
-            vnPosTagger = null;
-            return false;
-        }
-        return true;
+    public void initPosTagger(Path modelDir) throws IOException, InitializationException {
+        vnPosTagger = new MaxentTagger(modelDir);
+    }
+
+    public void initPosTagger() throws InitializationException {
+        vnPosTagger = new MaxentTagger();
     }
 
     /**

@@ -30,6 +30,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
 public class Option {
@@ -58,7 +60,7 @@ public class Option {
     /**
      * The model dir.
      */
-    public String modelDir = ".";
+    public Path modelDir = Paths.get(".");
     // model file (mapping, dictionary, and features)
     /**
      * The model file.
@@ -86,12 +88,8 @@ public class Option {
      *
      * @param modelDir the model dir
      */
-    public Option(String modelDir) {
-        if (modelDir.endsWith(File.separator)) {
-            this.modelDir = modelDir.substring(0, modelDir.length() - 1);
-        } else {
-            this.modelDir = modelDir;
-        }
+    public Option(Path modelDir) {
+        this.modelDir = modelDir;
     }
 
     /**

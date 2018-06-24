@@ -29,6 +29,9 @@ package jvnsegmenter;
 import org.w3c.dom.Element;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Vector;
 
 import jflexcrf.Labeling;
@@ -63,7 +66,7 @@ public class CRFSegmenter {
      *
      * @param modelDir the model dir
      */
-    public CRFSegmenter(String modelDir) {
+    public CRFSegmenter(Path modelDir) {
         init(modelDir);
     }
 
@@ -71,7 +74,7 @@ public class CRFSegmenter {
      * Instantiates a new cRF segmenter.
      */
     public CRFSegmenter() {
-        //do nothing until now
+        init();
     }
 
     /**
@@ -79,9 +82,10 @@ public class CRFSegmenter {
      *
      * @param modelDir the model dir
      */
-    public void init(String modelDir) {
+    public void init(Path modelDir) {
+        System.out.println("Initializing JVnSegmenter from " + modelDir + "...");
         //Read feature template file
-        String templateFile = modelDir + File.separator + "featuretemplate.xml";
+        Path templateFile = modelDir.resolve("featuretemplate.xml");
         Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
 
         for (int i = 0; i < nodes.size(); ++i) {
@@ -109,6 +113,18 @@ public class CRFSegmenter {
 
         //create context generators
         labeling = new Labeling(modelDir, dataTagger, reader, writer);
+    }
+
+    public void init() {
+        Path modelDir;
+        try {
+            modelDir = Paths.get(CRFSegmenter.class.getResource("/" + CRFSegmenter.class.getPackage().getName()).toURI());
+        } catch (URISyntaxException e) {
+            // this should never happen
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        init(modelDir);
     }
 
     /**

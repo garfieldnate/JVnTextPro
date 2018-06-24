@@ -32,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+import vnu.jvntext.utils.InitializationException;
+
 public abstract class TrainDataGenerating {
 
     /**
@@ -47,7 +49,7 @@ public abstract class TrainDataGenerating {
     /**
      * Initialize reader, tagger for reading input data and generating context predicates for each observation.
      */
-    public abstract void init();
+    public abstract void init() throws InitializationException;
 
     /**
      * Generate train data.

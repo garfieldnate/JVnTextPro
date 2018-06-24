@@ -28,16 +28,19 @@
 package jvnpostag;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
 import jvntextpro.data.DataReader;
 import jvntextpro.data.DataWriter;
+import vnu.jvntext.utils.InitializationException;
 
 public interface POSTagger {
 
     //--------------------------------
     // initialization
     //--------------------------------
-    public void init(String modelfile);
+    public void init(Path modelfile) throws IOException, InitializationException;
 
     //-------------------------------
     //tagging methods

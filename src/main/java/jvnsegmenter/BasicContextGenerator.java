@@ -30,8 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -96,7 +97,7 @@ public abstract class BasicContextGenerator extends ContextGenerator {
      * @param templateFile the template file
      * @return the vector
      */
-    public static Vector<Element> readFeatureNodes(String templateFile) {
+    public static Vector<Element> readFeatureNodes(Path templateFile) {
         Vector<Element> feaTypes = new Vector<Element>();
 
         try {
@@ -104,7 +105,7 @@ public abstract class BasicContextGenerator extends ContextGenerator {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
 
-            InputStream feaTplStream = new FileInputStream(templateFile);
+            InputStream feaTplStream = Files.newInputStream(templateFile);
             Document doc = builder.parse(feaTplStream);
 
             Element root = doc.getDocumentElement();

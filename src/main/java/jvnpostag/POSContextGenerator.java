@@ -30,12 +30,15 @@ package jvnpostag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +47,7 @@ import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import jvntextpro.data.ContextGenerator;
 import jvntextpro.data.Sentence;
@@ -63,7 +67,7 @@ public class POSContextGenerator extends ContextGenerator {
     //----------------------------------------------
     // Constructor and Override methods
     //----------------------------------------------
-    public POSContextGenerator(String featureTemplateFile) {
+    public POSContextGenerator(Path featureTemplateFile) throws IOException, SAXException, ParserConfigurationException {
         readDict();
         readFeatureTemplate(featureTemplateFile);
     }
@@ -115,90 +119,75 @@ public class POSContextGenerator extends ContextGenerator {
     //----------------------------------------------
     // IO methods
     //----------------------------------------------
-    public boolean readDict() {
-        try {
-            URL url = POSContextGenerator.class.getClassLoader().getResource(DEFAULT_E_DICT);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-            word2dictags.clear();
+    public void readDict() throws IOException {
+        URL url = POSContextGenerator.class.getClassLoader().getResource(DEFAULT_E_DICT);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+        word2dictags.clear();
 
-            String line, temp = null;
-            while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split("\t");
+        String line, temp = null;
+        while ((line = reader.readLine()) != null) {
+            String[] tokens = line.split("\t");
 
-                String word, tag;
-                if (tokens == null) continue;
+            String word, tag;
+            if (tokens == null) continue;
 
-                if (tokens.length != 2) {
-                    continue;
-                } else if (tokens.length == 2) {
-                    if (tokens[0].equals("")) {
-                        if (temp == null) continue;
-                        else {
-                            //System.out.println(temp);
-                            word = temp;
-                            tag = tokens[1];
-                        }
-                    } else {
-                        word = tokens[0].trim().toLowerCase();
-                        tag = tokens[1].trim();
-                        temp = word;
+            if (tokens.length != 2) {
+                continue;
+            } else if (tokens.length == 2) {
+                if (tokens[0].equals("")) {
+                    if (temp == null) continue;
+                    else {
+                        //System.out.println(temp);
+                        word = temp;
+                        tag = tokens[1];
                     }
-                } else continue;
-
-                word = word.replace(" ", "_");
-                //System.out.println(word);
-                List dictags = (List) word2dictags.get(word);
-                if (dictags == null) {
-                    dictags = new ArrayList<String>();
+                } else {
+                    word = tokens[0].trim().toLowerCase();
+                    tag = tokens[1].trim();
+                    temp = word;
                 }
-                dictags.add(tag);
-                word2dictags.put(word, dictags);
-            }
+            } else continue;
 
-            reader.close();
-            return true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return false;
+            word = word.replace(" ", "_");
+            //System.out.println(word);
+            List dictags = (List) word2dictags.get(word);
+            if (dictags == null) {
+                dictags = new ArrayList<String>();
+            }
+            dictags.add(tag);
+            word2dictags.put(word, dictags);
         }
+
+        reader.close();
     }
 
-    public boolean readFeatureTemplate(String file) {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
+    public void readFeatureTemplate(Path file) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
 
-            InputStream stream = new FileInputStream(file);
-            Document doc = builder.parse(stream);
+        InputStream stream = Files.newInputStream(file);
+        Document doc = builder.parse(stream);
 
-            Element root = doc.getDocumentElement();
-            NodeList childrent = root.getChildNodes();
-            cpnames = new Vector<String>();
-            paras = new Vector<Vector<Integer>>();
+        Element root = doc.getDocumentElement();
+        NodeList childrent = root.getChildNodes();
+        cpnames = new Vector<String>();
+        paras = new Vector<Vector<Integer>>();
 
-            for (int i = 0; i < childrent.getLength(); i++)
-                if (childrent.item(i) instanceof Element) {
-                    Element child = (Element) childrent.item(i);
-                    String value = child.getAttribute("value");
+        for (int i = 0; i < childrent.getLength(); i++)
+            if (childrent.item(i) instanceof Element) {
+                Element child = (Element) childrent.item(i);
+                String value = child.getAttribute("value");
 
-                    //parse the value and get the parameters
-                    String[] parastr = value.split(":");
-                    Vector<Integer> para = new Vector<Integer>();
-                    for (int j = 1; j < parastr.length; ++j) {
-                        para.add(Integer.parseInt(parastr[j]));
-                    }
-
-                    cpnames.add(parastr[0]);
-                    paras.add(para);
+                //parse the value and get the parameters
+                String[] parastr = value.split(":");
+                Vector<Integer> para = new Vector<Integer>();
+                for (int j = 1; j < parastr.length; ++j) {
+                    para.add(Integer.parseInt(parastr[j]));
                 }
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+                cpnames.add(parastr[0]);
+                paras.add(para);
+            }
     }
 
     //-----------------------------------------------

@@ -29,6 +29,8 @@ package jvnsegmenter;
 import org.w3c.dom.Element;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Vector;
 
 import jvntextpro.data.TaggingData;
@@ -39,14 +41,14 @@ public class WordTrainGenerating extends TrainDataGenerating {
     /**
      * The model dir.
      */
-    String modelDir;
+    Path modelDir;
 
     /**
      * Instantiates a new word train generating.
      *
      * @param modelDir the model dir
      */
-    public WordTrainGenerating(String modelDir) {
+    public WordTrainGenerating(Path modelDir) {
         this.modelDir = modelDir;
         init();
     }
@@ -60,7 +62,7 @@ public class WordTrainGenerating extends TrainDataGenerating {
         tagger = new TaggingData();
 
         //Read feature template file
-        String templateFile = modelDir + File.separator + "featuretemplate.xml";
+        Path templateFile = modelDir.resolve("featuretemplate.xml");
         Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
 
         for (int i = 0; i < nodes.size(); ++i) {
@@ -103,7 +105,7 @@ public class WordTrainGenerating extends TrainDataGenerating {
             return;
         }
 
-        WordTrainGenerating trainGen = new WordTrainGenerating(args[0]);
+        WordTrainGenerating trainGen = new WordTrainGenerating(Paths.get(args[0]));
         trainGen.generateTrainData(args[1], args[1]);
     }
 

@@ -29,6 +29,7 @@ package jmaxent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -86,7 +87,7 @@ public class Classification {
      *
      * @param modelDir the model dir
      */
-    public Classification(String modelDir) {
+    public Classification(Path modelDir) throws IOException {
         option = new Option(modelDir);
         option.readOptions();
 
@@ -105,44 +106,33 @@ public class Classification {
     /**
      * Inits the.
      */
-    public void init() {
-        try {
-            // open model file
-            finModel = option.openModelFile();
-            if (finModel == null) {
-                System.out.println("Couldn't open model file");
-                return;
-            }
+    public void init() throws IOException {
+        // open model file
+        finModel = option.openModelFile();
 
-            data = new Data(option);
-            // read context predicate map
-            data.readCpMaps(finModel);
-            // read label map
-            data.readLbMaps(finModel);
+        data = new Data(option);
+        // read context predicate map
+        data.readCpMaps(finModel);
+        // read label map
+        data.readLbMaps(finModel);
 
-            dict = new Dictionary(option, data);
-            // read dictionary
-            dict.readDict(finModel);
+        dict = new Dictionary(option, data);
+        // read dictionary
+        dict.readDict(finModel);
 
-            feagen = new FeatureGen(option, data, dict);
-            // read features
-            feagen.readFeatures(finModel);
+        feagen = new FeatureGen(option, data, dict);
+        // read features
+        feagen.readFeatures(finModel);
 
-            // create an inference object
-            inference = new Inference();
+        // create an inference object
+        inference = new Inference();
 
-            // create a model object
-            model = new Model(option, data, dict, feagen, null, inference, null);
-            model.initInference();
+        // create a model object
+        model = new Model(option, data, dict, feagen, null, inference, null);
+        model.initInference();
 
-            // close model file
-            finModel.close();
-
-        } catch (IOException e) {
-            System.out.println("Couldn't load the model, check the model file again");
-            System.out.println(e.toString());
-        }
-
+        // close model file
+        finModel.close();
         intCps = new ArrayList();
 
         initialized = true;

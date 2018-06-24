@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.OutputStreamWriter;
+import java.nio.file.Paths;
 
 public class WordSegmenting {
 
@@ -47,8 +48,7 @@ public class WordSegmenting {
         }
 
         //get model dir
-        String modelDir = args[1];
-        CRFSegmenter segmenter = new CRFSegmenter(modelDir);
+        CRFSegmenter segmenter = new CRFSegmenter(Paths.get(args[1]));
 
         //tagging
         try {

@@ -27,12 +27,21 @@
 
 package jvnpostag;
 
+import org.xml.sax.SAXException;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import jflexcrf.Labeling;
 import jvntextpro.data.DataReader;
 import jvntextpro.data.DataWriter;
 import jvntextpro.data.TaggingData;
+import vnu.jvntext.utils.InitializationException;
 
 public class CRFTagger implements POSTagger {
     DataReader reader = new POSDataReader();
@@ -42,13 +51,30 @@ public class CRFTagger implements POSTagger {
 
     Labeling labeling = null;
 
-    public CRFTagger(String modelDir) {
+    public CRFTagger(Path modelDir) throws InitializationException {
         init(modelDir);
     }
 
-    public void init(String modelDir) {
-        dataTagger.addContextGenerator(new POSContextGenerator(modelDir + File.separator + "featuretemplate.xml"));
+    @Override
+    public void init(Path modelDir) throws InitializationException {
+        try {
+            dataTagger.addContextGenerator(new POSContextGenerator(modelDir.resolve("featuretemplate.xml")));
+        } catch (SAXException|ParserConfigurationException|IOException e) {
+            throw new InitializationException(e);
+        }
         labeling = new Labeling(modelDir, dataTagger, reader, writer);
+    }
+
+    public void init() throws InitializationException {
+        Path modelDir;
+        try {
+            modelDir = Paths.get(CRFTagger.class.getResource("/" + CRFTagger.class.getPackage().getName() + "/crf").toURI());
+        } catch (URISyntaxException e) {
+            // this should never happen
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        init(modelDir);
     }
 
     public String tagging(String instr) {

@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 
 public class Trainer {
 
@@ -46,16 +47,13 @@ public class Trainer {
             return;
         }
 
-        String modelDir = args[2];
         boolean isAll = (args[0].compareToIgnoreCase("-all") == 0);
         boolean isTrn = (args[0].compareToIgnoreCase("-trn") == 0);
         boolean isTst = (args[0].compareToIgnoreCase("-tst") == 0);
         boolean isCont = (args[0].compareToIgnoreCase("-cont") == 0); //TUNC
 
         // create option object
-        Option option = new Option(modelDir);
-
-        option.optionFile = args[4];
+        Option option = new Option(Paths.get(args[2]), args[4]);
 
         option.readOptions();
 
@@ -256,7 +254,7 @@ public class Trainer {
      */
     public static void displayHelp() {
         System.out.println("Usage:");
-        System.out.println("\tTrainer -all/-trn/-tst -d <model directory> -o <optionFile>");
+        System.out.println("\tTrainer -all/-trn/-tst -d <model directory> -o <OPTION_FILE_NAME>");
     }
 }
 

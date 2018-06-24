@@ -30,10 +30,10 @@ package jvntextpro.service;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Paths;
 import java.util.Vector;
 
 import jvntextpro.JVnTextPro;
@@ -107,12 +107,12 @@ public class TaggingService extends Thread {
 
             if (option.doSenToken) vnTextPro.initSenTokenization();
 
-            if (option.doSenSeg) vnTextPro.initSenSegmenter(option.modelDir + File.separator + "jvnsensegmenter");
+            if (option.doSenSeg) vnTextPro.initSenSegmenter(Paths.get(option.modelDir, "jvnsegmenter"));
 
-            if (option.doWordSeg) vnTextPro.initSegmenter(option.modelDir + File.separator + "jvnsegmenter");
+            if (option.doWordSeg) vnTextPro.initSegmenter(Paths.get(option.modelDir, "jvnsegmenter"));
 
             if (option.doPosTagging)
-                vnTextPro.initPosTagger(option.modelDir + File.separator + "jvnpostag" + File.separator + "maxent");
+                vnTextPro.initPosTagger(Paths.get(option.modelDir, "jvnpostag", "maxent"));
 
 			/* start session threads*/
             pool = new Vector<Session>();

@@ -26,22 +26,31 @@
  */
 package jvnpostag;
 
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import jvntextpro.data.TaggingData;
 import jvntextpro.data.TrainDataGenerating;
+import vnu.jvntext.utils.InitializationException;
 
 public class POSTrainGenerating extends TrainDataGenerating {
 
     /**
      * The template file.
      */
-    String templateFile;
+    Path templateFile;
 
     /**
      * Instantiates a new pOS train generating.
      *
      * @param templateFile the template file (in xml format) to generate context predicates using POSContextGenerator
      */
-    public POSTrainGenerating(String templateFile) {
+    public POSTrainGenerating(Path templateFile) throws InitializationException {
         this.templateFile = templateFile;
         init();
     }
@@ -50,10 +59,14 @@ public class POSTrainGenerating extends TrainDataGenerating {
      * @see jvntextpro.data.TrainDataGenerating#init()
      */
     @Override
-    public void init() {
+    public void init() throws InitializationException {
         this.reader = new POSDataReader(true);
         this.tagger = new TaggingData();
-        tagger.addContextGenerator(new POSContextGenerator(templateFile));
+        try {
+            tagger.addContextGenerator(new POSContextGenerator(templateFile));
+        } catch(ParserConfigurationException|SAXException|IOException e) {
+            throw new InitializationException(e);
+        }
     }
 
     /**
@@ -61,7 +74,7 @@ public class POSTrainGenerating extends TrainDataGenerating {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InitializationException {
         //tagging
         if (args.length != 2) {
             System.out.println("POSTrainGenerating [template File] [File/Folder]");
@@ -72,7 +85,7 @@ public class POSTrainGenerating extends TrainDataGenerating {
             return;
         }
 
-        POSTrainGenerating trainGen = new POSTrainGenerating(args[0]);
+        POSTrainGenerating trainGen = new POSTrainGenerating(Paths.get(args[0]));
         trainGen.generateTrainData(args[1], args[1]);
     }
 }

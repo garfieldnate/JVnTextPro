@@ -27,8 +27,16 @@
 
 package jvnpostag;
 
+import org.xml.sax.SAXException;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import jmaxent.Classification;
 import jvntextpro.data.DataReader;
@@ -36,6 +44,7 @@ import jvntextpro.data.DataWriter;
 import jvntextpro.data.Sentence;
 import jvntextpro.data.TaggingData;
 import jvntextpro.util.StringUtils;
+import vnu.jvntext.utils.InitializationException;
 
 public class MaxentTagger implements POSTagger {
     DataReader reader = new POSDataReader();
@@ -44,13 +53,34 @@ public class MaxentTagger implements POSTagger {
 
     Classification classifier = null;
 
-    public MaxentTagger(String modelDir) {
+    public MaxentTagger(Path modelDir) throws IOException, InitializationException {
         init(modelDir);
     }
+    public MaxentTagger() throws InitializationException {
+        init();
+    }
 
-    public void init(String modeldir) {
-        dataTagger.addContextGenerator(new POSContextGenerator(modeldir + File.separator + "featuretemplate.xml"));
-        classifier = new Classification(modeldir);
+    @Override
+    public void init(Path modeldir) throws InitializationException {
+        System.out.println("Initializing MaxentTagger from " + modeldir + "...");
+        try {
+            dataTagger.addContextGenerator(new POSContextGenerator(modeldir.resolve("featuretemplate.xml")));
+            classifier = new Classification(modeldir);
+        } catch(SAXException|ParserConfigurationException|IOException e) {
+            throw new InitializationException(e);
+        }
+    }
+
+    public void init() throws InitializationException {
+        Path modelDir;
+        try {
+            modelDir = Paths.get(MaxentTagger.class.getResource("/" + MaxentTagger.class.getPackage().getName() + "/maxent").toURI());
+        } catch (URISyntaxException e) {
+            // this should never happen
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        init(modelDir);
     }
 
     public String tagging(String instr) {
