@@ -240,11 +240,8 @@ public class Trainer {
             return false;
         }
 
-        if (args[1].compareToIgnoreCase("-d") != 0) {
-            return false;
-        }
+        return args[1].compareToIgnoreCase("-d") == 0 && args[3].compareToIgnoreCase("-o") == 0;
 
-        return args[3].compareToIgnoreCase("-o") == 0;
     }
 
     /**

@@ -120,11 +120,24 @@ public class Data {
 
         System.out.println("Reading the context predicate maps ...");
 
+        if (readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str)) return;
+
+        System.out.println(
+            "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
+
+        // read the line ###...
+        fin.readLine();
+
+        option.numCps = cpStr2Int.size();
+    }
+
+    public static boolean readPredicateMaps(BufferedReader fin, int numCps, Map<String, Integer> cpStr2Int, Map<Integer, String> cpInt2Str) throws IOException {
+        String line;
         for (int i = 0; i < numCps; i++) {
             line = fin.readLine();
             if (line == null) {
                 System.out.println("Invalid context predicate mapping line");
-                return;
+                return true;
             }
 
             StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
@@ -138,14 +151,7 @@ public class Data {
             cpStr2Int.put(cpStr, cpInt);
             cpInt2Str.put(cpInt, cpStr);
         }
-
-        System.out.println(
-            "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
-
-        // read the line ###...
-        fin.readLine();
-
-        option.numCps = cpStr2Int.size();
+        return false;
     }
 
     /**
@@ -240,25 +246,7 @@ public class Data {
         }
 
         System.out.println("Reading the context predicate maps ...");
-
-        for (int i = 0; i < numLabels; i++) {
-            line = fin.readLine();
-            if (line == null) {
-                System.out.println("Invalid context predicate mapping line");
-                return;
-            }
-
-            StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
-            if (strTok.countTokens() != 2) {
-                continue;
-            }
-
-            String lbStr = strTok.nextToken();
-            Integer lbInt = Integer.parseInt(strTok.nextToken());
-
-            lbStr2Int.put(lbStr, lbInt);
-            lbInt2Str.put(lbInt, lbStr);
-        }
+        readPredicateMaps(fin, numLabels, lbStr2Int, lbInt2Str);
 
         System.out.println("Reading label maps (" + Integer.toString(lbStr2Int.size()) + " entries) completed!");
 

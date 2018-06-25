@@ -102,11 +102,9 @@ public class POSTagging {
 
         if (args[1].compareToIgnoreCase("crfs") != 0 && args[1].compareToIgnoreCase("maxent") != 0) return false;
 
-        if (args[2].compareToIgnoreCase("-modeldir") != 0) {
-            return false;
-        }
+        return args[2].compareToIgnoreCase("-modeldir") == 0 && (args[4].compareToIgnoreCase("-inputfile") == 0
+                                                                 || args[4].compareToIgnoreCase("-inputdir") == 0);
 
-        return args[4].compareToIgnoreCase("-inputfile") == 0 || args[4].compareToIgnoreCase("-inputdir") == 0;
     }
 
     public static void displayCopyright() {

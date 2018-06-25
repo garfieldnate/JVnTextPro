@@ -69,34 +69,7 @@ public class WordTrainGenerating extends TrainDataGenerating {
         Path templateFile = modelDir.resolve("featuretemplate.xml");
         try {
             Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
-
-            for (Element node : nodes) {
-                String cpType = node.getAttribute("value");
-                BasicContextGenerator contextGen = null;
-
-                switch (cpType) {
-                    case "Conjunction":
-                        contextGen = new ConjunctionContextGenerator(node);
-                        break;
-                    case "Lexicon":
-                        contextGen = new LexiconContextGenerator(node);
-                        LexiconContextGenerator.loadVietnameseDict(modelDir.resolve("VNDic_UTF-8.txt"));
-                        LexiconContextGenerator.loadViLocationList(modelDir.resolve("vnlocations.txt"));
-                        LexiconContextGenerator.loadViPersonalNames(modelDir.resolve("vnpernames.txt"));
-                        break;
-                    case "Regex":
-                        contextGen = new RegexContextGenerator(node);
-                        break;
-                    case "SyllableFeature":
-                        contextGen = new SyllableContextGenerator(node);
-                        break;
-                    case "ViSyllableFeature":
-                        contextGen = new VietnameseContextGenerator(node);
-                        break;
-                }
-
-                if (contextGen != null) tagger.addContextGenerator(contextGen);
-            }
+            CRFSegmenter.initContextGenerators(modelDir, nodes, tagger);
         } catch (IOException | SAXException | ParserConfigurationException e) {
             throw new InitializationException(e);
         }

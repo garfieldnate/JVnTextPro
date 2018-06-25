@@ -135,6 +135,7 @@ public class RegexContextGenerator extends BasicContextGenerator {
             String regex;
             StringBuilder word = new StringBuilder();
             boolean outOfArrayIndex = false;
+            //noinspection Duplicates
             for (Integer para : paras) {
                 if (pos + para < 0 || pos + para >= sent.size()) {
                     cpvalue = "";

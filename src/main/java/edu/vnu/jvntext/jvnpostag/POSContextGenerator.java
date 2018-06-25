@@ -165,7 +165,7 @@ public class POSContextGenerator extends ContextGenerator {
             //System.out.println(word);
             List<String> dictags = word2dictags.get(word);
             if (dictags == null) {
-                dictags = new ArrayList<String>();
+                dictags = new ArrayList<>();
             }
             dictags.add(tag);
             word2dictags.put(word, dictags);

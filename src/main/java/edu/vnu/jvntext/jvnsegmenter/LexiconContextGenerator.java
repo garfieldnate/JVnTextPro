@@ -100,6 +100,7 @@ public class LexiconContextGenerator extends BasicContextGenerator {
             StringBuilder suffix = new StringBuilder();
             StringBuilder word = new StringBuilder();
             boolean outOfArrayIndex = false;
+            //noinspection Duplicates
             for (Integer para : paras) {
                 if (pos + para < 0 || pos + para >= sent.size()) {
                     cpvalue = "";

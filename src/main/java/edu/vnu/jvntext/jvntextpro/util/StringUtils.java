@@ -168,9 +168,8 @@ public class StringUtils {
      * @return true, if str has the first character capitalized
      */
     public static boolean isFirstCap(String str) {
-        if (isAllCap(str)) return false;
-
-        return str.length() > 0 && Character.isLetter(str.charAt(0)) && Character.isUpperCase(str.charAt(0));
+        return !isAllCap(str) && str.length() > 0 && Character.isLetter(str.charAt(0))
+               && Character.isUpperCase(str.charAt(0));
 
     }
 
@@ -276,11 +275,7 @@ public class StringUtils {
             return true;
         }
 
-        if (str.compareTo("?") == 0) {
-            return true;
-        }
-
-        return str.compareTo("!") == 0;
+        return str.compareTo("?") == 0 || str.compareTo("!") == 0;
 
     }
 

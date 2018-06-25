@@ -89,29 +89,20 @@ public class MaxentTagger implements POSTagger {
     public String tagging(String instr) {
         System.out.println("tagging ....");
         List<Sentence> data = reader.readString(instr);
-        for (Sentence sent : data) {
-
-            for (int j = 0; j < sent.size(); ++j) {
-                String[] cps = dataTagger.getContext(sent, j);
-                String label = classifier.classify(cps);
-
-                if (label.equalsIgnoreCase("Mrk")) {
-                    if (StringUtils.isPunc(sent.getWordAt(j))) label = sent.getWordAt(j);
-                    else label = "X";
-                }
-
-                sent.getTWordAt(j).setTag(label);
-            }
-        }
+        tagging(data);
 
         return writer.writeString(data);
     }
 
-
     public String tagging(File file) throws IOException {
         List<Sentence> data = reader.readFile(file.getPath());
-        for (Sentence sent : data) {
+        tagging(data);
 
+        return writer.writeString(data);
+    }
+
+    private void tagging(List<Sentence> data) {
+        for (Sentence sent : data) {
             for (int j = 0; j < sent.size(); ++j) {
                 String[] cps = dataTagger.getContext(sent, j);
                 String label = classifier.classify(cps);
@@ -125,8 +116,6 @@ public class MaxentTagger implements POSTagger {
                 //System.out.println(sent.getTagAt(j));
             }
         }
-
-        return writer.writeString(data);
     }
 
     public void setDataReader(DataReader reader) {

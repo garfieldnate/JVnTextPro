@@ -101,11 +101,9 @@ public class WordSegmenting {
             return false;
         }
 
-        if (args[0].compareToIgnoreCase("-modeldir") != 0) {
-            return false;
-        }
+        return args[0].compareToIgnoreCase("-modeldir") == 0 && (args[2].compareToIgnoreCase("-inputfile") == 0
+                                                                 || args[2].compareToIgnoreCase("-inputdir") == 0);
 
-        return args[2].compareToIgnoreCase("-inputfile") == 0 || args[2].compareToIgnoreCase("-inputdir") == 0;
     }
 
     /**

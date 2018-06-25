@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import edu.vnu.jvntext.jmaxent.Data;
+
 public class Maps {
 
     /**
@@ -93,25 +95,7 @@ public class Maps {
         }
 
         System.out.println("Reading the context predicate maps ...");
-
-        for (int i = 0; i < numCps; i++) {
-            line = fin.readLine();
-            if (line == null) {
-                System.out.println("Invalid context predicate mapping line");
-                return;
-            }
-
-            StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
-            if (strTok.countTokens() != 2) {
-                continue;
-            }
-
-            String cpStr = strTok.nextToken();
-            Integer cpInt = Integer.parseInt(strTok.nextToken());
-
-            cpStr2Int.put(cpStr, cpInt);
-            cpInt2Str.put(cpInt, cpStr);
-        }
+        Data.readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str);
 
         System.out.println(
             "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
