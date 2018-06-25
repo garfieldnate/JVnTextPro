@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-group = 'vnu.jvntext'
+group = 'edu.vnu.jvntext.jvntextpro'
 version = '2.0'
 
 description = """JVnTextPro: A Java-based Vietnamese Text Processing Tool. URL: http://jvntextpro.sourceforge.net/"""
@@ -29,7 +29,7 @@ sourceSets {
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'jvntextpro.JVnTextProTest'
+        attributes 'Main-Class': 'edu.vnu.jvntext.jvntextpro.JVnTextProTest'
     }
     baseName = baseName + "-executable"
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
