@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jvntextpro.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -37,6 +40,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class TaggingClient {
+    private static final Logger logger = LoggerFactory.getLogger(TaggingClient.class);
     //-----------------------
     // Data
     //-----------------------
@@ -118,7 +122,7 @@ public class TaggingClient {
         try {
             this.sock.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Problem closing the socket", e);
         }
     }
 

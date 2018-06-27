@@ -28,11 +28,13 @@
 package edu.vnu.jvntext.jmaxent;
 
 import org.riso.numerical.LBFGS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 
 public class Train {
-
+    private static final Logger logger = LoggerFactory.getLogger(Train.class);
     // the model object
     /**
      * The model.
@@ -101,7 +103,7 @@ public class Train {
         numLabels = model.data.numLabels();
         numFeatures = model.feaGen.numFeatures();
         if (numLabels <= 0 || numFeatures <= 0) {
-            System.out.println("Invalid number of labels or features");
+            logger.warn("Invalid number of labels or features");
             return;
         }
 
@@ -165,7 +167,7 @@ public class Train {
             lambda[i] = model.option.initLambdaVal;
         }
 
-        System.out.println("Start to train ...");
+        logger.info("Start to train ...");
         if (model.option.isLogging) {
             model.option.writeOptions(fout);
             fout.println("Start to train ...");
@@ -211,7 +213,7 @@ public class Train {
                     iflag
                 );
             } catch (LBFGS.ExceptionWithIflag e) {
-                System.out.println("L-BFGS failed!");
+                logger.warn("L-BFGS failed!");
                 if (model.option.isLogging) {
                     fout.println("L-BFGS failed!");
                 }
@@ -224,7 +226,7 @@ public class Train {
             // get the end time of the current iteration
             end_iter = System.currentTimeMillis();
             elapsed_iter = end_iter - start_iter;
-            System.out.println("\tIteration elapsed: " + Double.toString((double) elapsed_iter / 1000) + " seconds");
+            logger.info("\tIteration elapsed: " + Double.toString((double) elapsed_iter / 1000) + " seconds");
             if (model.option.isLogging) {
                 fout.println("\tIteration elapsed: " + Double.toString((double) elapsed_iter / 1000) + " seconds");
             }
@@ -248,7 +250,7 @@ public class Train {
                     }
                 }
 
-                System.out.println(
+                logger.debug(
                     "\tCurrent max accuracy: " + Double.toString(maxAccuracy) + " (at iteration " + Integer.toString(
                         maxAccuracyIter) + ")");
                 if (model.option.isLogging) {
@@ -259,7 +261,7 @@ public class Train {
                 // get the end time of the current iteration
                 end_iter = System.currentTimeMillis();
                 elapsed_iter = end_iter - start_iter;
-                System.out.println("\tIteration elapsed (including testing & evaluation): " + Double.toString(
+                logger.debug("\tIteration elapsed (including testing & evaluation): " + Double.toString(
                     (double) elapsed_iter / 1000) + " seconds");
                 if (model.option.isLogging) {
                     fout.println("\tIteration elapsed (including testing & evaluation): " + Double.toString(
@@ -274,7 +276,7 @@ public class Train {
         // get the end time of the training process
         end_train = System.currentTimeMillis();
         elapsed_train = end_train - start_train;
-        System.out.println(
+        logger.debug(
             "\tThe training process elapsed: " + Double.toString((double) elapsed_train / 1000) + " seconds");
         if (model.option.isLogging) {
             fout.println(
@@ -348,13 +350,12 @@ public class Train {
             logLi += obsrLogLi;
         }
 
-        System.out.println();
-        System.out.println("Iteration: " + Integer.toString(numIter));
-        System.out.println("\tLog-likelihood                 = " + Double.toString(logLi));
+        logger.debug("Iteration: " + Integer.toString(numIter));
+        logger.debug("\tLog-likelihood                 = " + Double.toString(logLi));
         double gradLogLiNorm = Train.norm(gradLogLi);
-        System.out.println("\tNorm (log-likelihood gradient) = " + Double.toString(gradLogLiNorm));
+        logger.debug("\tNorm (log-likelihood gradient) = " + Double.toString(gradLogLiNorm));
         double lambdaNorm = Train.norm(lambda);
-        System.out.println("\tNorm (lambda)                  = " + Double.toString(lambdaNorm));
+        logger.debug("\tNorm (lambda)                  = " + Double.toString(lambdaNorm));
 
         if (model.option.isLogging) {
             fout.println();

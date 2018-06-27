@@ -150,7 +150,6 @@ public class POSContextGenerator extends ContextGenerator {
                 if (tokens[0].equals("")) {
                     if (temp == null) continue;
                     else {
-                        //System.out.println(temp);
                         word = temp;
                         tag = tokens[1];
                     }
@@ -162,7 +161,6 @@ public class POSContextGenerator extends ContextGenerator {
             }
 
             word = word.replace(" ", "_");
-            //System.out.println(word);
             List<String> dictags = word2dictags.get(word);
             if (dictags == null) {
                 dictags = new ArrayList<>();

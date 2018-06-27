@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jmaxent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +42,7 @@ import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
 public class Option {
+    private static final Logger logger = LoggerFactory.getLogger(Option.class);
 
     private final static String DEFAULT_FILE_NAME = "option.txt";
 
@@ -200,7 +204,7 @@ public class Option {
      * Read options.
      */
     public void readOptions() throws IOException {
-        System.out.println("Reading maxent options...");
+        logger.info("Reading maxent options...");
         Path optionsFile = modelDir.resolve(optionFileName);
 
         for (String line : Files.readAllLines(optionsFile)) {
@@ -209,8 +213,6 @@ public class Option {
                 // comment line
                 continue;
             }
-
-            //System.out.println(line);
 
             StringTokenizer strTok = new StringTokenizer(line, "= \t\r\n");
             int len = strTok.countTokens();
@@ -273,12 +275,12 @@ public class Option {
             } else if (strOpt.compareToIgnoreCase("modelFileName") == 0) {
                 modelFileName = strVal;
             } else {
-                System.err.println("Unknown maxent option: " + strOpt);
+                logger.warn("Unknown maxent option: " + strOpt);
             }
 
         }
 
-        System.out.println("Reading maxent options completed!");
+        logger.info("Reading maxent options completed!");
     }
 
     /**

@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 group = 'edu.vnu.jvntext.jvntextpro'
-version = '2.0'
+version = '2.01'
 
 description = """JVnTextPro: A Java-based Vietnamese Text Processing Tool. URL: http://jvntextpro.sourceforge.net/"""
 
@@ -17,28 +17,41 @@ dependencies {
     compile group: 'org.htmlparser', name: 'htmlparser', version:'2.1'
     compile group: 'com.dbtsai.lbfgs', name: 'lbfgs', version:'0.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }
 
 sourceSets {
     main {
+        // include models in the resources so we can load them when the user provides none
         resources {
             srcDir 'models'
         }
     }
 }
 
+jar {
+    // clients should configure slf4j themselves
+    exclude('logback.xml')
+}
+
 task fatJar(type: Jar) {
+    description "Build an executable jar with all dependencies included"
     manifest {
         attributes 'Main-Class': 'edu.vnu.jvntext.jvntextpro.JVnTextProTest'
     }
     baseName = baseName + "-executable"
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+    // output to STDOUT in the executable jar
+    from (sourceSets.main.resources) {
+        include ('logback.xml')
+    }
     with jar
 }
 
 //set compiler specific configs
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
-    // whew, there's a lot of work to do!
     options.compilerArgs << "-Xlint:all"
 }

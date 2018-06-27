@@ -26,6 +26,9 @@
  */
 package edu.vnu.jvntext.jvntextpro.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import edu.vnu.jvntext.utils.InitializationException;
 
 public abstract class TrainDataGenerating {
+    Logger logger = LoggerFactory.getLogger(TrainDataGenerating.class);
 
     /**
      * The reader.
@@ -62,12 +66,12 @@ public abstract class TrainDataGenerating {
         File file = new File(inputPath);
         ArrayList<Sentence> data = new ArrayList<>();
         if (file.isFile()) {
-            System.out.println("Reading " + file.getName());
+            logger.info("Reading " + file.getName());
             data = (ArrayList<Sentence>) reader.readFile(inputPath);
         } else if (file.isDirectory()) {
             String[] filenames = file.list();
             for (String filename : filenames) {
-                System.out.println("Reading " + filename);
+                logger.info("Reading " + filename);
                 ArrayList<Sentence> temp = (ArrayList<Sentence>) reader.readFile(
                     file.getPath() + File.separator + filename);
                 data.addAll(temp);
@@ -75,9 +79,11 @@ public abstract class TrainDataGenerating {
         }
 
         StringBuilder result = new StringBuilder();
-        System.out.println(data.size() + "sentences read");
+        logger.info(data.size() + "sentences read");
         for (int i = 0; i < data.size(); ++i) {
-            if (i % 20 == 0) System.out.println("Finished " + i + " in " + data.size() + " sentences");
+            if (i % 20 == 0) {
+                logger.info("Finished " + i + " in " + data.size() + " sentences");
+            }
             Sentence sent = data.get(i);
 
             for (int j = 0; j < sent.size(); ++j) {

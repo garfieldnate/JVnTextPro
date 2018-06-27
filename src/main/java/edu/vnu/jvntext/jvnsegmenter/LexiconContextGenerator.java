@@ -216,7 +216,6 @@ public class LexiconContextGenerator extends BasicContextGenerator {
                 }
             }
         }
-        // Print lacviet_dict into lacviet.dict file
     }
 
     /**

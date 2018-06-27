@@ -26,6 +26,9 @@
 
 package edu.vnu.jvntext.jflexcrf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,6 +36,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Dictionary {
+    private static final Logger logger = LoggerFactory.getLogger(Dictionary.class);
 
     /**
      * The dict.
@@ -62,21 +66,20 @@ public class Dictionary {
 
         // get dictionary size
         if ((line = fin.readLine()) == null) {
-            System.out.println("No dictionary size information");
+            logger.warn("No dictionary size information");
             return;
         }
         int dictSize = Integer.parseInt(line);
         if (dictSize <= 0) {
-            System.out.println("Invalid dictionary size");
+            logger.warn("Invalid dictionary size: " + dictSize);
         }
 
-        System.out.println("Reading dictionary ...");
-
+        logger.info("Reading dictionary ...");
         // main loop for reading dictionary content
         for (int i = 0; i < dictSize; i++) {
             line = fin.readLine();
             if (line == null) {
-                System.out.println("Invalid dictionary line");
+                logger.warn("Line " + (i + 1) + " of dictionary is invalid");
                 return;
             }
 
@@ -116,7 +119,7 @@ public class Dictionary {
             dict.put(cp, elem);
         }
 
-        System.out.println("Reading dictionary (" + Integer.toString(dict.size()) + " entries) completed!");
+        logger.info("Reading dictionary (" + Integer.toString(dict.size()) + " entries) completed!");
 
         // read the line ###...
         fin.readLine();

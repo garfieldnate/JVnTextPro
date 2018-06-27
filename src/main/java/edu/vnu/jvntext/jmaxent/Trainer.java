@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jmaxent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +37,7 @@ import java.io.PrintWriter;
 import java.nio.file.Paths;
 
 public class Trainer {
+    private static final Logger logger = LoggerFactory.getLogger(Trainer.class);
 
     /**
      * The main method.
@@ -73,13 +77,13 @@ public class Trainer {
 
             PrintWriter flog = option.openTrainLogFile();
             if (flog == null) {
-                System.out.println("Couldn't create training log file");
+                logger.warn("Couldn't create training log file");
                 return;
             }
 
             foutModel = option.createModelFile();
             if (foutModel == null) {
-                System.out.println("Couldn't create model file");
+                logger.warn("Couldn't create model file");
                 return;
             }
 
@@ -117,13 +121,13 @@ public class Trainer {
 
             PrintWriter flog = option.openTrainLogFile();
             if (flog == null) {
-                System.out.println("Couldn't create training log file");
+                logger.warn("Couldn't create training log file");
                 return;
             }
 
             foutModel = option.createModelFile();
             if (foutModel == null) {
-                System.out.println("Couldn't create model file");
+                logger.warn("Couldn't create model file");
                 return;
             }
 
@@ -155,7 +159,7 @@ public class Trainer {
 
             finModel = option.openModelFile();
             if (finModel == null) {
-                System.out.println("Couldn't open model file");
+                logger.warn("Couldn't open model file");
                 return;
             }
 
@@ -184,13 +188,13 @@ public class Trainer {
         if (isCont) { //continue last training
             PrintWriter flog = option.openTrainLogFile(); //append
             if (flog == null) {
-                System.out.println("Couldn't create training log file");
+                logger.warn("Couldn't create training log file");
                 return;
             }
 
             finModel = option.openModelFile();
             if (finModel == null) {
-                System.out.println("Couldn't open model file");
+                logger.warn("Couldn't open model file");
                 return;
             }
 
@@ -210,7 +214,7 @@ public class Trainer {
 
             foutModel = option.createModelFile(); //overwrite the old model file
             if (foutModel == null) {
-                System.out.println("Couldn't create model file");
+                logger.warn("Couldn't create model file");
                 return;
             }
 
@@ -230,24 +234,18 @@ public class Trainer {
      * @param args the args
      * @return true, if successful
      */
-    public static boolean checkArgs(String[] args) {
-        if (args.length < 5) {
-            return false;
-        }
-
-        if (!(args[0].compareToIgnoreCase("-all") == 0 || args[0].compareToIgnoreCase("-trn") == 0
-              || args[0].compareToIgnoreCase("-tst") == 0) || args[0].compareToIgnoreCase("-cont") == 0) {
-            return false;
-        }
-
-        return args[1].compareToIgnoreCase("-d") == 0 && args[3].compareToIgnoreCase("-o") == 0;
+    private static boolean checkArgs(String[] args) {
+        return args.length >= 5 && (args[0].compareToIgnoreCase("-all") == 0 || args[0].compareToIgnoreCase("-trn") == 0
+                                    || args[0].compareToIgnoreCase("-tst") == 0)
+               && args[0].compareToIgnoreCase("-cont") != 0 && args[1].compareToIgnoreCase("-d") == 0
+               && args[3].compareToIgnoreCase("-o") == 0;
 
     }
 
     /**
      * Display help.
      */
-    public static void displayHelp() {
+    private static void displayHelp() {
         System.out.println("Usage:");
         System.out.println("\tTrainer -all/-trn/-tst -d <model directory> -o <OPTION_FILE_NAME>");
     }

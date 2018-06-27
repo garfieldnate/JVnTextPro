@@ -27,10 +27,14 @@
 
 package edu.vnu.jvntext.jmaxent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintWriter;
 import java.util.List;
 
 public class Model {
+    Logger logger = LoggerFactory.getLogger(Model.class);
 
     /**
      * The option.
@@ -149,7 +153,7 @@ public class Model {
      */
     public void initInference() {
         if (lambda == null) {
-            System.out.println("numFetures: " + feaGen.numFeatures());
+            logger.info("numFetures: " + feaGen.numFeatures());
             lambda = new double[feaGen.numFeatures() + 1];
 
             // reading feature weights from the feature list

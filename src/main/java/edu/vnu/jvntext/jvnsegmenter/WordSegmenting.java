@@ -26,6 +26,9 @@
  */
 package edu.vnu.jvntext.jvnsegmenter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +39,7 @@ import java.nio.file.Paths;
 import edu.vnu.jvntext.utils.InitializationException;
 
 public class WordSegmenting {
+    private static final Logger logger = LoggerFactory.getLogger(WordSegmenting.class);
 
     /**
      * The main method.
@@ -53,13 +57,13 @@ public class WordSegmenting {
         CRFSegmenter segmenter = new CRFSegmenter(Paths.get(args[1]));
 
         //tagging
-        System.out.println(args[2]);
         if (args[2].equalsIgnoreCase("-inputfile")) {
-            System.out.println(args[3]);
             File inputFile = new File(args[3]);
+            String outputPath = inputFile.getPath() + ".wseg";
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                inputFile.getPath() + ".wseg"), "UTF-8"));
+                outputPath), "UTF-8"));
 
+            logger.info("Segmenting " + inputFile + ", writing to " + outputPath);
             String result = segmenter.segmenting(inputFile);
 
             writer.write(result);
@@ -74,14 +78,14 @@ public class WordSegmenting {
             String[] children = dir.list((dir1, name) -> name.endsWith(".tkn"));
 
             for (String child : children) {
-                System.out.println("Segmenting " + child);
                 String filename = inputDir + File.separator + child;
                 if ((new File(filename)).isDirectory()) {
                     continue;
                 }
-
+                String outputPath = filename + ".wseg";
+                logger.info("Segmenting " + filename + ", writing to " + outputPath);
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    filename + ".wseg"), "UTF-8"));
+                    outputPath), "UTF-8"));
 
                 writer.write(segmenter.segmenting(new File(filename)));
 

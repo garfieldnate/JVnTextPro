@@ -39,7 +39,6 @@ import edu.vnu.jvntext.jvntextpro.data.TrainDataGenerating;
 import edu.vnu.jvntext.utils.InitializationException;
 
 public class POSTrainGenerating extends TrainDataGenerating {
-
     /**
      * The template file.
      */

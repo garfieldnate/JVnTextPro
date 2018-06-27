@@ -27,11 +27,15 @@
 
 package edu.vnu.jvntext.jvntextpro.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Vector;
 
 public class TWord {
+    private static final Logger logger = LoggerFactory.getLogger(TWord.class);
 
     /**
      * The token.
@@ -123,13 +127,13 @@ public class TWord {
         } else return null;
     }
 
-    //DEBUG
+    // DEBUG
 
     /**
      * Prints the.
      */
     public void print() {
-        System.out.println(token + "\t" + tag);
+        logger.debug(token + "\t" + tag);
     }
 
     /**
@@ -139,7 +143,9 @@ public class TWord {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public void print(Writer out) throws IOException {
-        if (tag == null) System.out.println((String) null);
+        if(tag == null) {
+            logger.debug("null tag");
+        }
         out.write(token + "\t" + tag + "\n");
     }
 }

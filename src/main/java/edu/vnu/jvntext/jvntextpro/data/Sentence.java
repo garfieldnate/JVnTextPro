@@ -130,8 +130,6 @@ public class Sentence {
         for (TWord aSentence : sentence) {
             aSentence.print();
         }
-
-        System.out.print("\n");
     }
 
     /**

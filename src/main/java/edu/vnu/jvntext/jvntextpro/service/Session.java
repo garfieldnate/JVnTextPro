@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jvntextpro.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -38,6 +41,7 @@ import java.util.Vector;
 import edu.vnu.jvntext.jvntextpro.JVnTextPro;
 
 public class Session extends Thread {
+    private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
     //------------------------
     // Data
@@ -85,9 +89,8 @@ public class Session extends Thread {
                     wait();
                 }
 
-                System.out.println("Socket opening ...");
+                logger.info("Opening session socket...");
                 BufferedReader in = new BufferedReader(new InputStreamReader(incoming.getInputStream(), "UTF-8"));
-                //PrintStream out = (PrintStream) incoming.getOutputStream();
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(incoming.getOutputStream(), "UTF-8"));
 
                 StringBuilder content = new StringBuilder();
@@ -100,18 +103,16 @@ public class Session extends Thread {
                     content.append((char) ch);
                 }
 
-                //System.out.println(content);
                 String tagged = textpro.process(content.toString());
-                //Thread.sleep(4000);
 
                 out.write(tagged.trim());
                 out.write((char) 0);
                 out.flush();
             } catch (InterruptedIOException e) {
-                System.out.println("The conection is interrupted");
+                logger.error("Session connection was interrupted", e);
             } catch (Exception e) {
                 // catching all exceptions because we don't want the server to crash
-                e.printStackTrace();
+                logger.error("Exception caught while running session thread", e);
             }
 
             //update pool

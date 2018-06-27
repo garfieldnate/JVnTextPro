@@ -28,6 +28,9 @@
 package edu.vnu.jvntext.jvntokenizer;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,6 +44,7 @@ import java.io.OutputStreamWriter;
  * @author Nguyen Cam Tu
  */
 public class JVnTokenizer {
+    private static final Logger logger = LoggerFactory.getLogger(JVnTokenizer.class);
 
     /**
      * The main method.
@@ -60,6 +64,7 @@ public class JVnTokenizer {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1] + ".tkn"),
                                                                            "UTF-8"
             ));
+            logger.info("tokenizing " + args[1]);
 
             String line;
             while ((line = in.readLine()) != null) {
@@ -70,7 +75,6 @@ public class JVnTokenizer {
             in.close();
             out.close();
         } else if (option.equalsIgnoreCase("-inputdir")) {
-            System.out.println("Tokenize input");
             //segment only files ends with .sent
             File inputDir = new File(args[1]);
             File[] children = inputDir.listFiles((dir, name) -> name.endsWith(".sent"));
@@ -80,6 +84,7 @@ public class JVnTokenizer {
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(child + ".tkn"),
                                                                                "UTF-8"
                 ));
+                logger.info("tokenizing " + child);
 
                 String line;
                 while ((line = in.readLine()) != null) {

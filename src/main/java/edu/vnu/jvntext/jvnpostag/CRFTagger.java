@@ -27,6 +27,8 @@
 
 package edu.vnu.jvntext.jvnpostag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -44,6 +46,7 @@ import edu.vnu.jvntext.jvntextpro.data.TaggingData;
 import edu.vnu.jvntext.utils.InitializationException;
 
 public class CRFTagger implements POSTagger {
+    private static final Logger logger = LoggerFactory.getLogger(CRFTagger.class);
     DataReader reader = new POSDataReader();
     DataWriter writer = new POSDataWriter();
 
@@ -72,7 +75,7 @@ public class CRFTagger implements POSTagger {
                                                 .toURI());
         } catch (URISyntaxException e) {
             // this should never happen
-            e.printStackTrace();
+            logger.error("problem getting the model path from resources", e);
             throw new RuntimeException(e);
         }
         init(modelDir);

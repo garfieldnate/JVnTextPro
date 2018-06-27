@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jmaxent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,6 +40,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class FeatureGen {
+    Logger logger = LoggerFactory.getLogger(FeatureGen.class);
 
     /**
      * The features.
@@ -124,7 +128,7 @@ public class FeatureGen {
         }
 
         if (data.trnData == null || dict.dict == null) {
-            System.out.println("No data or dictionary for generating features");
+            logger.warn("No data or dictionary for generating features");
             return;
         }
 
@@ -219,16 +223,16 @@ public class FeatureGen {
 
         // get the number of features
         if ((line = fin.readLine()) == null) {
-            System.out.println("Unknown number of features");
+            logger.warn("Unknown number of features");
             return;
         }
         int numFeatures = Integer.parseInt(line);
         if (numFeatures <= 0) {
-            System.out.println("Invalid number of features");
+            logger.warn("Invalid number of features");
             return;
         }
 
-        System.out.println("Reading features ...");
+        logger.info("Reading features ...");
 
         // main loop for reading features
         for (int i = 0; i < numFeatures; i++) {
@@ -240,7 +244,7 @@ public class FeatureGen {
 
             StringTokenizer strTok = new StringTokenizer(line, " ");
             if (strTok.countTokens() != 4) {
-                System.out.println(i + " invalid feature line ");
+                logger.warn(i + " invalid feature line ");
                 // invalid feature line, ignore it
                 continue;
             }
@@ -259,7 +263,7 @@ public class FeatureGen {
             }
         }
 
-        System.out.println("Reading " + Integer.toString(features.size()) + " features completed!");
+        logger.info("Reading " + Integer.toString(features.size()) + " features completed!");
 
         // read the line ###...
         fin.readLine();

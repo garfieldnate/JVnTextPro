@@ -135,9 +135,7 @@ public class Evaluation {
 
         NumberFormat fm = new DecimalFormat("#.00");
 
-        System.out.println();
         System.out.println("\tPer-class performance evaluation:");
-        System.out.println();
         System.out.println("\t\tClass\tHuman\tModel\tMatch\tPre.(%)\tRec.(%)\tF1-score");
         System.out.println("\t\t-----\t-----\t-----\t-----\t-------\t-------\t--------");
         if (fout != null && model.option.isLogging) {

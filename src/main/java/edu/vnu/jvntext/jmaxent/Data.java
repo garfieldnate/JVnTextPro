@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jmaxent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,7 +43,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Data {
-
+    private static final Logger logger = LoggerFactory.getLogger(Data.class);
     /**
      * The option.
      */
@@ -108,21 +111,21 @@ public class Data {
 
         // get size of the map
         if ((line = fin.readLine()) == null) {
-            System.out.println("No context predicate map size information");
+            logger.warn("No context predicate map size information");
             return;
         }
 
         int numCps = Integer.parseInt(line);
         if (numCps <= 0) {
-            System.out.println("Invalid context predicate mapping size");
+            logger.warn("Invalid context predicate mapping size");
             return;
         }
 
-        System.out.println("Reading the context predicate maps ...");
+        logger.info("Reading the context predicate maps ...");
 
         if (readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str)) return;
 
-        System.out.println(
+        logger.info(
             "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
@@ -136,7 +139,7 @@ public class Data {
         for (int i = 0; i < numCps; i++) {
             line = fin.readLine();
             if (line == null) {
-                System.out.println("Invalid context predicate mapping line");
+                logger.warn("Invalid context predicate mapping line");
                 return true;
             }
 
@@ -235,20 +238,20 @@ public class Data {
 
         // get size of the map
         if ((line = fin.readLine()) == null) {
-            System.out.println("No label map size information");
+            logger.warn("No label map size information");
             return;
         }
 
         int numLabels = Integer.parseInt(line);
         if (numLabels <= 0) {
-            System.out.println("Invalid label mapping size");
+            logger.warn("Invalid label mapping size");
             return;
         }
 
-        System.out.println("Reading the context predicate maps ...");
+        logger.info("Reading the context predicate maps ...");
         readPredicateMaps(fin, numLabels, lbStr2Int, lbInt2Str);
 
-        System.out.println("Reading label maps (" + Integer.toString(lbStr2Int.size()) + " entries) completed!");
+        logger.info("Reading label maps (" + Integer.toString(lbStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
         fin.readLine();
@@ -335,7 +338,7 @@ public class Data {
         //    BufferedWriter flog = new BufferedWriter(new OutputStreamWriter(
         //	/	new FileOutputStream((new File(dataFile)).getParent() + File.separator + "log.txt"), "UTF-8"));
 
-        System.out.println("Reading training data ...");
+        logger.info("Reading training data ...");
 
         String line;
         while ((line = fin.readLine()) != null) {
@@ -407,7 +410,7 @@ public class Data {
             trnData.add(obsr);
         }
 
-        System.out.println("Reading " + Integer.toString(trnData.size()) + " training data examples completed!");
+        logger.info("Reading " + Integer.toString(trnData.size()) + " training data examples completed!");
         // flog.close();
 
         option.numCps = cpStr2Int.size();
@@ -431,7 +434,7 @@ public class Data {
         BufferedReader fin;
 
         fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
-        System.out.println("Reading testing data ...");
+        logger.info("Reading testing data from " + dataFile);
 
         String line;
         while ((line = fin.readLine()) != null) {
@@ -461,7 +464,7 @@ public class Data {
 
             Integer labelInt = lbStr2Int.get(labelStr);
             if (labelInt == null) {
-                System.out.println("Reading testing observation, label not found or invalid");
+                logger.warn("Reading testing observation, label not found or invalid");
                 return;
             }
 
@@ -476,7 +479,7 @@ public class Data {
             tstData.add(obsr);
         }
 
-        System.out.println("Reading " + Integer.toString(tstData.size()) + " testing data examples completed!");
+        logger.info("Reading " + Integer.toString(tstData.size()) + " testing data examples completed!");
 
         option.numTestExps = tstData.size();
     }

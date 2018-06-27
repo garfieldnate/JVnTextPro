@@ -26,12 +26,16 @@
 
 package edu.vnu.jvntext.jflexcrf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
 public class Model {
+    private static final Logger logger = LoggerFactory.getLogger(Model.class);
     /**
      * The tagger opt.
      */
@@ -123,7 +127,6 @@ public class Model {
             lambda = new double[numFeatures];
             for (int i = 0; i < numFeatures; i++) {
                 Feature f = taggerFGen.features.get(i);
-                //System.out.println(f.idx);
                 lambda[f.idx] = f.wgt;
             }
         }
@@ -149,13 +152,13 @@ public class Model {
      * @param data the data
      */
     public void inferenceAll(List<List<Observation>> data) {
-        System.out.println("Starting inference ...");
+        logger.info("Starting inference ...");
 
         long start, stop, elapsed;
         start = System.currentTimeMillis();
 
         for (int i = 0; i < data.size(); i++) {
-            System.out.println("sequence " + Integer.toString(i + 1));
+            logger.debug("sequence " + Integer.toString(i + 1));
             List<Observation> seq = data.get(i);
             inference(seq);
         }
@@ -163,8 +166,8 @@ public class Model {
         stop = System.currentTimeMillis();
         elapsed = stop - start;
 
-        System.out.println("Inference " + Integer.toString(data.size()) + " sequences completed!");
-        System.out.println("Inference time: " + Double.toString((double) elapsed / 1000) + " seconds");
+        logger.info("Inference " + Integer.toString(data.size()) + " sequences completed!");
+        logger.info("Inference time: " + Double.toString((double) elapsed / 1000) + " seconds");
     }
 
 }

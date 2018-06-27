@@ -26,6 +26,9 @@
 
 package edu.vnu.jvntext.jflexcrf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,6 +38,7 @@ import java.util.StringTokenizer;
 import edu.vnu.jvntext.jmaxent.Data;
 
 public class Maps {
+    Logger logger = LoggerFactory.getLogger(Maps.class);
 
     /**
      * The cp str2 int.
@@ -85,19 +89,19 @@ public class Maps {
 
         // get size of context predicate map
         if ((line = fin.readLine()) == null) {
-            System.out.println("No context predicate map size information");
+            logger.warn("No context predicate map size information");
             return;
         }
         int numCps = Integer.parseInt(line);
         if (numCps <= 0) {
-            System.out.println("Invalid mapping size");
+            logger.warn("Invalid mapping size");
             return;
         }
 
-        System.out.println("Reading the context predicate maps ...");
+        logger.info("Reading the context predicate maps ...");
         Data.readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str);
 
-        System.out.println(
+        logger.info(
             "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
@@ -127,21 +131,21 @@ public class Maps {
 
         // get size of label map
         if ((line = fin.readLine()) == null) {
-            System.out.println("No label map size information");
+            logger.error("No label map size information");
             return;
         }
         int numLabels = Integer.parseInt(line);
         if (numLabels <= 0) {
-            System.out.println("Invalid label map size");
+            logger.error("Invalid label map size");
             return;
         }
 
-        System.out.println("Reading label maps ...");
+        logger.info("Reading label maps ...");
 
         for (int i = 0; i < numLabels; i++) {
             line = fin.readLine();
             if (line == null) {
-                System.out.println("Invalid label map line");
+                logger.warn("Invalid label map line");
                 return;
             }
 
@@ -157,7 +161,7 @@ public class Maps {
             lbInt2Str.put(lbInt, lbStr);
         }
 
-        System.out.println("Reading label maps (" + Integer.toString(lbStr2Int.size()) + " entries) completed!");
+        logger.info("Reading label maps (" + Integer.toString(lbStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
         fin.readLine();

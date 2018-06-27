@@ -26,6 +26,8 @@
  */
 package edu.vnu.jvntext.jvnsegmenter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -45,6 +47,7 @@ import edu.vnu.jvntext.utils.InitializationException;
 import edu.vnu.jvntext.utils.PathUtils;
 
 public class CRFSegmenter {
+    private static final Logger logger = LoggerFactory.getLogger(CRFSegmenter.class);
 
     /**
      * The reader.
@@ -88,7 +91,7 @@ public class CRFSegmenter {
      * @param modelDir the model dir
      */
     private void init(Path modelDir) throws InitializationException, IOException {
-        System.out.println("Initializing JVnSegmenter from " + modelDir + "...");
+        logger.info("Initializing JVnSegmenter from " + modelDir + "...");
         //Read feature template file
         Path templateFile = modelDir.resolve("featuretemplate.xml");
         try {
@@ -139,7 +142,7 @@ public class CRFSegmenter {
             modelDir = PathUtils.getResourceDirectory(CRFSegmenter.class);
         } catch (URISyntaxException | IOException e) {
             // this should never happen
-            e.printStackTrace();
+            logger.error("problem getting the model path from resources", e);
             throw new RuntimeException(e);
         }
         init(modelDir);

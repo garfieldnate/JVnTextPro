@@ -26,6 +26,9 @@
 
 package edu.vnu.jvntext.jflexcrf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +36,7 @@ import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
 public class Option {
+    private static final Logger logger = LoggerFactory.getLogger(Option.class);
 
     /**
      * The Constant FIRST_ORDER.
@@ -95,7 +99,7 @@ public class Option {
      */
     public void readOptions() throws IOException {
         Path optionsPath = modelDir.resolve(optionFile);
-        System.out.println("Reading options from " + optionsPath + "...");
+        logger.info("Reading options from " + optionsPath + "...");
         // read option lines
         for (String line : Files.readAllLines(optionsPath)) {
             String trimLine = line.trim();
@@ -119,7 +123,7 @@ public class Option {
             }
         }
 
-        System.out.println("Reading options completed!");
+        logger.info("Reading options completed!");
     }
 
 }

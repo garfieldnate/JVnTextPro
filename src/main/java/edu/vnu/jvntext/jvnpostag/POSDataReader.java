@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jvnpostag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,11 +44,12 @@ import edu.vnu.jvntext.jvntextpro.data.Sentence;
 import edu.vnu.jvntext.jvntextpro.util.StringUtils;
 
 public class POSDataReader extends DataReader {
-    protected final String[] tags = {
+    private static final Logger logger = LoggerFactory.getLogger(POSDataReader.class);
+    private static final String[] tags = {
         "N", "Np", "Nc", "Nu", "V", "A", "P", "L", "M", "R", "E", "C", "I", "T", "B", "Y", "X", "Ny", "Nb", "Vb", "Mrk"
     };
 
-    protected boolean isTrainReading = false;
+    private boolean isTrainReading = false;
 
     //-------------------------------------
     // Constructor
@@ -71,7 +75,6 @@ public class POSDataReader extends DataReader {
         while ((line = reader.readLine()) != null) {
             Sentence sentence = new Sentence();
             boolean error = false;
-            //System.out.println(line);
 
             if (line.startsWith("#")) continue;
 
@@ -120,8 +123,7 @@ public class POSDataReader extends DataReader {
 
                                 if (!found) {
                                     error = true;
-                                    System.out.println("error");
-                                    System.out.println(tag);
+                                    logger.warn("problem with tag: " + tag);
                                 }
                                 sentence.addTWord(word.toString(), tag);
                             }
@@ -133,12 +135,13 @@ public class POSDataReader extends DataReader {
                     }
                 } else {
                     word = new StringBuilder(token);
-                    tag = null;
                     sentence.addTWord(word.toString(), null);
                 }
             }
 
-            if (!error) data.add(sentence);
+            if (!error) {
+                data.add(sentence);
+            }
         }
 
         reader.close();

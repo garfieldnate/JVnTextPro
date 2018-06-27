@@ -29,6 +29,8 @@ package edu.vnu.jvntext.jvntextpro.service;
 
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -40,6 +42,7 @@ import edu.vnu.jvntext.jvntextpro.JVnTextPro;
 import edu.vnu.jvntext.utils.InitializationException;
 
 public class TaggingService extends Thread {
+    private static final Logger logger = LoggerFactory.getLogger(TaggingService.class);
 
     //---------------------------
     // Data
@@ -116,9 +119,9 @@ public class TaggingService extends Thread {
 			/* start session threads*/
         pool = new Vector<>();
         for (int i = 0; i < maxNSession; ++i) {
-            Session w = new Session(vnTextPro);
-            w.start(); //start a pool of session threads at start-up time rather than on demand for efficiency
-            pool.add(w);
+            Session session = new Session(vnTextPro);
+            session.start(); //start a pool of session threads at start-up time rather than on demand for efficiency
+            pool.add(session);
         }
     }
 
@@ -130,17 +133,23 @@ public class TaggingService extends Thread {
 	 */
     @Override
     public void run() {
-        System.out.println("Starting tagging service!");
+        logger.info("Starting tagging service!");
         try {
             this.socket = new ServerSocket(this.port);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (IOException e) {
+            logger.error("Error starting socket for tagging service", e);
             System.exit(1);
         }
 
         try {
             init();
-            System.out.println("Tagging service is started successfully");
+        } catch (IOException|InitializationException e) {
+            logger.error("Error starting initializing tagging service", e);
+            System.exit(1);
+        }
+
+        try {
+            logger.info("Tagging service is started successfully");
             Socket incoming;
             incoming = this.socket.accept();
             Session w;
@@ -155,8 +164,9 @@ public class TaggingService extends Thread {
                     w.setSocket(incoming);
                 }
             }
-        } catch (IOException | InitializationException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            // catch all errors to prevent service from crashing
+            logger.error("error running TaggingService", e);
         }
     }
 

@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import edu.vnu.jvntext.jvntextpro.data.Sentence;
 
@@ -76,32 +75,37 @@ public class RegexContextGenerator extends BasicContextGenerator {
     /**
      * The ptn number.
      */
-    private static Pattern ptnNumber;
+    private static Pattern ptnNumber = Pattern.compile(strNumberPattern);
 
     /**
      * The ptn short date.
      */
-    private static Pattern ptnShortDate;
+    private static Pattern
+        ptnShortDate = Pattern.compile(strShortDatePattern);
 
     /**
      * The ptn long date.
      */
-    private static Pattern ptnLongDate;
+    private static Pattern
+        ptnLongDate = Pattern.compile(strLongDatePattern);
 
     /**
      * The ptn percentage.
      */
-    private static Pattern ptnPercentage;
+    private static Pattern
+        ptnPercentage = Pattern.compile(strPercentagePattern);
 
     /**
      * The ptn currency.
      */
-    private static Pattern ptnCurrency;
+    private static Pattern
+        ptnCurrency = Pattern.compile(strCurrencyPattern);
 
     /**
      * The ptn vi currency.
      */
-    private static Pattern ptnViCurrency;
+    private static Pattern
+        ptnViCurrency = Pattern.compile(strViCurrencyPattern);
 
     //----------------------------
     //methods
@@ -169,24 +173,6 @@ public class RegexContextGenerator extends BasicContextGenerator {
     //----------------------------
 
     /**
-     * Pattern compile.
-     */
-    private static void patternCompile() {
-        try {
-            ptnNumber = Pattern.compile(strNumberPattern);
-            ptnShortDate = Pattern.compile(strShortDatePattern);
-            ptnLongDate = Pattern.compile(strLongDatePattern);
-            ptnPercentage = Pattern.compile(strPercentagePattern);
-            ptnCurrency = Pattern.compile(strCurrencyPattern);
-            ptnViCurrency = Pattern.compile(strViCurrencyPattern);
-        } catch (PatternSyntaxException ex) {
-            System.err.println(ex.getMessage());
-            System.exit(1);
-        }
-
-    }
-
-    /**
      * Pattern matching.
      *
      * @param ptnName the ptn name
@@ -195,7 +181,6 @@ public class RegexContextGenerator extends BasicContextGenerator {
      */
     private static String patternMatching(String ptnName, String input) {
         String suffix = "";
-        if (ptnNumber == null) patternCompile();
 
         Matcher matcher;
         switch (ptnName) {

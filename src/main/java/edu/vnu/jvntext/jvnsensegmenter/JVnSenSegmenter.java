@@ -27,6 +27,9 @@
 
 package edu.vnu.jvntext.jvnsensegmenter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -47,32 +50,30 @@ import edu.vnu.jvntext.jmaxent.Classification;
 import edu.vnu.jvntext.utils.PathUtils;
 
 public class JVnSenSegmenter {
+    private static final Logger logger = LoggerFactory.getLogger(JVnSenSegmenter.class);
 
     /**
      * The positive label.
      */
-    public static final String positiveLabel = "y";
+    private static final String positiveLabel = "y";
 
     /**
      * The classifier.
      */
-    public Classification classifier = null;
-
-    /**
-     * The fea gen.
-     */
-    public FeatureGenerator feaGen = null;
+    private Classification classifier = null;
 
     /**
      * Creates a new instance of JVnSenSegmenter.
      *
      * @param modelDir the model dir
      */
-
     public void init(Path modelDir) throws IOException {
-        System.out.println("Initializing JVnSenSegmenter from " + modelDir + "...");
+        logger.info("Initializing JVnSenSegmenter from " + modelDir + "...");
         classifier = new Classification(modelDir);
-        feaGen = new FeatureGenerator();
+        /*
+      The fea gen.
+     */
+        FeatureGenerator feaGen = new FeatureGenerator();
         classifier.init();
     }
 
@@ -82,7 +83,7 @@ public class JVnSenSegmenter {
             modelDir = PathUtils.getResourceDirectory(JVnSenSegmenter.class);
         } catch (URISyntaxException e) {
             // this should never happen
-            e.printStackTrace();
+            logger.error("problem getting the model path from resources", e);
             throw new RuntimeException(e);
         }
         init(modelDir);
@@ -97,7 +98,6 @@ public class JVnSenSegmenter {
     public String senSegment(String text) {
         //text normalization
         text = text.replaceAll("([\t \n])+", "$1");
-        //System.out.println(text);
 
         //generate context predicates
         List<Integer> markList = new ArrayList<>();
@@ -126,7 +126,6 @@ public class JVnSenSegmenter {
         int finalMarkPos = markList.get(markList.size() - 1);
         result.append(text.substring(finalMarkPos + 1, text.length()));
 
-        //System.out.println(result);
         result = new StringBuilder(result.toString().replaceAll("\n ", "\n"));
         result = new StringBuilder(result.toString().replaceAll("\n\n", "\n"));
         result = new StringBuilder(result.toString().replaceAll("\\.\\. \\.", "..."));
@@ -172,7 +171,7 @@ public class JVnSenSegmenter {
             File[] children = inputDir.listFiles((dir, name) -> name.endsWith(".txt"));
 
             for (File child : children) {
-                System.out.println("Segmenting sentences in " + child);
+                logger.info("Segmenting sentences in " + child);
                 senSegmentFile(child.getPath(), child.getPath() + ".sent", senSegmenter);
             }
         } else displayHelp();

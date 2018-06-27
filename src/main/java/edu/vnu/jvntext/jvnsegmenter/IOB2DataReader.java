@@ -27,6 +27,8 @@
 package edu.vnu.jvntext.jvnsegmenter;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +48,7 @@ import edu.vnu.jvntext.jvntextpro.data.TWord;
  * The Class IOB2DataReader.
  */
 public class IOB2DataReader extends DataReader {
+    private static final Logger logger = LoggerFactory.getLogger(IOB2DataReader.class);
 
     /* (non-Javadoc)
      * @see edu.vnu.jvntext.jvntextpro.data.DataReader#readFile(java.lang.String)
@@ -68,7 +71,6 @@ public class IOB2DataReader extends DataReader {
         List<Sentence> data = new ArrayList<>();
         Sentence sent = new Sentence();
         for (String line : lines) {
-            System.out.println(".");
             if (line.isEmpty() || line.equalsIgnoreCase("$")) {
                 data.add(sent);
                 sent = new Sentence();
@@ -82,6 +84,7 @@ public class IOB2DataReader extends DataReader {
                 }
             }
         }
+        logger.debug("Read " + data.size() + " lines of data");
         return data;
     }
 

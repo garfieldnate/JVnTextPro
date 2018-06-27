@@ -26,6 +26,9 @@
 
 package edu.vnu.jvntext.jflexcrf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class FeatureGen {
+    Logger logger = LoggerFactory.getLogger(FeatureGen.class);
 
     /**
      * The features.
@@ -127,17 +131,17 @@ public class FeatureGen {
 
         // get the number of features
         if ((line = fin.readLine()) == null) {
-            System.out.println("Unknown number of features");
+            logger.warn("Unknown number of features");
             return;
         }
         int numFeatures = Integer.parseInt(line);
-        System.out.println("Number of features: " + numFeatures);
+        logger.info("Number of features: " + numFeatures);
         if (numFeatures <= 0) {
-            System.out.println("Invalid number of features");
+            logger.warn("Invalid number of features");
             return;
         }
 
-        System.out.println("Reading features ...");
+        logger.info("Reading features ...");
 
         // main loop for reading features
         for (int i = 0; i < numFeatures; i++) {
@@ -159,7 +163,6 @@ public class FeatureGen {
             Integer fidx = fmap.get(f.strId);
             if (fidx == null) {
                 // insert the feature into the feature map
-                //        System.out.println("\tinsert into the feature map");
                 fmap.put(f.strId, f.idx);
                 features.add(f);
 
@@ -168,12 +171,11 @@ public class FeatureGen {
                 }
             } else {
                 features.add(f);
-                //System.out.println(line + "-----------> [" + f.strId + "]");
             }
 
         }
 
-        System.out.println("Reading " + Integer.toString(features.size()) + " features completed!");
+        logger.info("Reading " + Integer.toString(features.size()) + " features completed!");
 
         // read the line ###...
         fin.readLine();

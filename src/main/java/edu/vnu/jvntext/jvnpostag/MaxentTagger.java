@@ -27,6 +27,8 @@
 
 package edu.vnu.jvntext.jvnpostag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -47,6 +49,7 @@ import edu.vnu.jvntext.utils.InitializationException;
 import edu.vnu.jvntext.utils.PathUtils;
 
 public class MaxentTagger implements POSTagger {
+    private static final Logger logger = LoggerFactory.getLogger(MaxentTagger.class);
     DataReader reader = new POSDataReader();
     DataWriter writer = new POSDataWriter();
     final TaggingData dataTagger = new TaggingData();
@@ -63,7 +66,7 @@ public class MaxentTagger implements POSTagger {
 
     @Override
     public void init(Path modeldir) throws InitializationException {
-        System.out.println("Initializing MaxentTagger from " + modeldir + "...");
+        logger.info("Initializing MaxentTagger from " + modeldir + "...");
         try {
             dataTagger.addContextGenerator(new POSContextGenerator(modeldir.resolve("featuretemplate.xml")));
             classifier = new Classification(modeldir);
@@ -80,14 +83,14 @@ public class MaxentTagger implements POSTagger {
             //                "/" + MaxentTagger.class.getPackage().getName() + "/maxent").toURI());
         } catch (URISyntaxException | IOException e) {
             // this should never happen
-            e.printStackTrace();
+            logger.error("problem getting the model path from resources", e);
             throw new InitializationException(e);
         }
         init(modelDir);
     }
 
     public String tagging(String instr) {
-        System.out.println("tagging ....");
+        logger.debug("tagging ....");
         List<Sentence> data = reader.readString(instr);
         tagging(data);
 
@@ -113,7 +116,6 @@ public class MaxentTagger implements POSTagger {
                 }
 
                 sent.getTWordAt(j).setTag(label);
-                //System.out.println(sent.getTagAt(j));
             }
         }
     }
