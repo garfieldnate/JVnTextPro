@@ -1,9 +1,14 @@
+plugins {
+    id "com.jfrog.bintray" version "1.8.3"
+}
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 group = 'edu.vnu.jvntext.jvntextpro'
-version = '2.01'
+version = '3.0.0'
+description = """A Java-based Vietnamese Text Processing Tool."""
 
-description = """JVnTextPro: A Java-based Vietnamese Text Processing Tool. URL: http://jvntextpro.sourceforge.net/"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -12,13 +17,18 @@ repositories {
     mavenCentral()
 }
 
+// needed for custom dependency in fatJar task
+configurations {
+    fatJarConf
+}
+
 dependencies {
-    compile group: 'args4j', name: 'args4j', version:'2.33'
-    compile group: 'org.htmlparser', name: 'htmlparser', version:'2.1'
-    compile group: 'com.dbtsai.lbfgs', name: 'lbfgs', version:'0.1'
+    compile group: 'args4j', name: 'args4j', version: '2.33'
+    compile group: 'org.htmlparser', name: 'htmlparser', version: '2.1'
+    compile group: 'com.dbtsai.lbfgs', name: 'lbfgs', version: '0.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    fatJarConf group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }
 
 sourceSets {
@@ -31,7 +41,7 @@ sourceSets {
 }
 
 jar {
-    // clients should configure slf4j themselves
+    // library clients should configure slf4j themselves
     exclude('logback.xml')
 }
 
@@ -42,10 +52,11 @@ task fatJar(type: Jar) {
     }
     baseName = baseName + "-executable"
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.fatJarConf.collect { it.isDirectory() ? it : zipTree(it) } }
+
     // output to STDOUT in the executable jar
-    from (sourceSets.main.resources) {
-        include ('logback.xml')
+    from(sourceSets.main.resources) {
+        include('logback.xml')
     }
     with jar
 }
@@ -54,4 +65,92 @@ task fatJar(type: Jar) {
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:all"
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier 'sources'
+}
+
+task javadocsJar(type: Jar) {
+    from javadoc
+    classifier 'javadoc'
+}
+
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "GPL 3.0"
+            url "https://www.gnu.org/licenses/gpl-3.0.en.html"
+        }
+    }
+    developers {
+        developer {
+            id "garfieldnate"
+            name "Nathan Glenn"
+            email "nathan.g.glenn@gmail.com"
+        }
+    }
+
+    scm {
+        url project.property("vcsUrl")
+    }
+}
+
+publishing {
+    publications {
+        JVnTextProPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocsJar
+            groupId project.group
+            artifactId project.name
+            version project.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', project.description)
+                root.appendNode('name', project.name)
+                root.appendNode('url', 'http://jvntextpro.sourceforge.net/')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_API_KEY')
+    dryRun = true
+    pkg {
+        repo = 'generic'
+        name = project.name
+        userOrg = user
+        licenses = ['GPL-3.0']
+        vcsUrl = project.property("vcsUrl")
+        issueTrackerUrl = project.property("vcsUrl") + "/issues"
+        labels = ['NLP', 'Vietnamese']
+        publicDownloadNumbers = true
+        version {
+            name = project.version + '-Final'
+            desc = project.name + ' ' + project.version + ' final'
+            vcsTag = project.version
+            gpg {
+                sign = true
+                passphrase = project.property("signing.password")
+            }
+            mavenCentralSync {
+                user = 'userToken'
+                password = 'paasword'
+            }
+        }
+    }
+}
+
+//signing {
+//    sign publishing.publications.JVnTextProPublication
+//}
+
+wrapper {
+    gradleVersion = '4.8.1'
 }

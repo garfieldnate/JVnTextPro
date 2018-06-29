@@ -137,7 +137,7 @@ public class StringUtils {
      * Contain letter and digit.
      *
      * @param str the string
-     * @return true, if str consists both letters & digits
+     * @return true, if str consists both letters &amp; digits
      */
     public static boolean containLetterAndDigit(String str) {
         return (containLetter(str) && containNumber(str));
