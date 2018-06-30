@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import vn.edu.vnu.jvntext.utils.InitializationException;
+
 public class Classification {
 
     /**
@@ -77,7 +79,7 @@ public class Classification {
      *
      * @param modelDir the model dir
      */
-    public Classification(Path modelDir) throws IOException {
+    public Classification(Path modelDir) throws IOException, InitializationException {
         option = new Option(modelDir);
         option.readOptions();
 
@@ -96,11 +98,7 @@ public class Classification {
     /**
      * Inits the.
      */
-    public void init() throws IOException {
-        // open model file
-        /*
-      The fin model.
-     */
+    public void init() throws IOException, InitializationException {
         BufferedReader finModel = option.openModelFile();
 
         data = new Data(option);
@@ -113,9 +111,7 @@ public class Classification {
         // read dictionary
         dict.readDict(finModel);
 
-        /*
-      The feagen.
-     */
+
         FeatureGen feagen = new FeatureGen(option, data, dict);
         // read features
         feagen.readFeatures(finModel);

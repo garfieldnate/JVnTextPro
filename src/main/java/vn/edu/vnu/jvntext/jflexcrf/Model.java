@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+import vn.edu.vnu.jvntext.utils.InitializationException;
+
 public class Model {
     private static final Logger logger = LoggerFactory.getLogger(Model.class);
     /**
@@ -95,7 +97,7 @@ public class Model {
     /**
      * Inits the.
      */
-    public void init() throws IOException {
+    public void init() throws IOException, InitializationException {
         // open model file to load model here ... complete later
         BufferedReader fin = Files.newBufferedReader(taggerOpt.modelDir.resolve(taggerOpt.modelFile));
         // read context predicate map and label map

@@ -92,12 +92,12 @@ public class JVnTextPro {
      *
      * @param modelDir the model dir
      */
-    public void initSenSegmenter(Path modelDir) throws IOException {
+    public void initSenSegmenter(Path modelDir) throws IOException, InitializationException {
         vnSenSegmenter = new JVnSenSegmenter();
         vnSenSegmenter.init(modelDir);
     }
 
-    public void initSenSegmenter() throws IOException {
+    public void initSenSegmenter() throws IOException, InitializationException {
         vnSenSegmenter = new JVnSenSegmenter();
         vnSenSegmenter.init();
     }

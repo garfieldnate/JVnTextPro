@@ -37,6 +37,7 @@ import vn.edu.vnu.jvntext.jvntextpro.data.DataReader;
 import vn.edu.vnu.jvntext.jvntextpro.data.DataWriter;
 import vn.edu.vnu.jvntext.jvntextpro.data.Sentence;
 import vn.edu.vnu.jvntext.jvntextpro.data.TaggingData;
+import vn.edu.vnu.jvntext.utils.InitializationException;
 
 public class Labeling {
 
@@ -100,7 +101,7 @@ public class Labeling {
      * @param dataReader the data reader
      * @param dataWriter the data writer
      */
-    public Labeling(Path modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) throws IOException {
+    public Labeling(Path modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) throws IOException, InitializationException {
         init(modelDir);
         this.dataTagger = dataTagger;
         this.dataWriter = dataWriter;
@@ -112,7 +113,7 @@ public class Labeling {
      *
      * @param modelDir the model dir
      */
-    public void init(Path modelDir) throws IOException {
+    public void init(Path modelDir) throws IOException, InitializationException {
         this.modelDir = modelDir;
 
         Option taggerOpt = new Option(this.modelDir);

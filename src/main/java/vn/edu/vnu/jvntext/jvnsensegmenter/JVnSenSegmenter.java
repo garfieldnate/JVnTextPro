@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import vn.edu.vnu.jvntext.jmaxent.Classification;
+import vn.edu.vnu.jvntext.utils.InitializationException;
 import vn.edu.vnu.jvntext.utils.PathUtils;
 
 public class JVnSenSegmenter {
@@ -67,7 +68,7 @@ public class JVnSenSegmenter {
      *
      * @param modelDir the model dir
      */
-    public void init(Path modelDir) throws IOException {
+    public void init(Path modelDir) throws IOException, InitializationException {
         logger.info("Initializing JVnSenSegmenter from " + modelDir + "...");
         classifier = new Classification(modelDir);
         /*
@@ -77,7 +78,7 @@ public class JVnSenSegmenter {
         classifier.init();
     }
 
-    public void init() throws IOException {
+    public void init() throws IOException, InitializationException {
         Path modelDir;
         try {
             modelDir = PathUtils.getResourceDirectory(JVnSenSegmenter.class);
@@ -153,7 +154,7 @@ public class JVnSenSegmenter {
      *
      * @param args the arguments
      */
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, InitializationException {
         if (args.length != 4) {
             displayHelp();
             System.exit(1);

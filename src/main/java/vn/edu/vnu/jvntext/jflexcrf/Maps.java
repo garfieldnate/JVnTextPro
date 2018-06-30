@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import vn.edu.vnu.jvntext.jmaxent.Data;
+import vn.edu.vnu.jvntext.utils.InitializationException;
 
 public class Maps {
     Logger logger = LoggerFactory.getLogger(Maps.class);
@@ -72,7 +73,7 @@ public class Maps {
      * @param fin the fin
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void readCpMaps(BufferedReader fin) throws IOException {
+    public void readCpMaps(BufferedReader fin) throws IOException, InitializationException {
         if (cpStr2Int != null) {
             cpStr2Int.clear();
         } else {

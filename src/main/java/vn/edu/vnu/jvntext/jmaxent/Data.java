@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import vn.edu.vnu.jvntext.utils.InitializationException;
+
 public class Data {
     private static final Logger logger = LoggerFactory.getLogger(Data.class);
     /**
@@ -94,7 +96,7 @@ public class Data {
      * @param fin the fin
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void readCpMaps(BufferedReader fin) throws IOException {
+    public void readCpMaps(BufferedReader fin) throws IOException, InitializationException {
         if (cpStr2Int != null) {
             cpStr2Int.clear();
         } else {
@@ -123,7 +125,7 @@ public class Data {
 
         logger.info("Reading the context predicate maps ...");
 
-        if (readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str)) return;
+        readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str);
 
         logger.info(
             "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
@@ -134,13 +136,13 @@ public class Data {
         option.numCps = cpStr2Int.size();
     }
 
-    public static boolean readPredicateMaps(BufferedReader fin, int numCps, Map<String, Integer> cpStr2Int, Map<Integer, String> cpInt2Str) throws IOException {
+    public static void readPredicateMaps(BufferedReader fin, int numCps, Map<String, Integer> cpStr2Int, Map<Integer, String> cpInt2Str) throws IOException, InitializationException {
         String line;
         for (int i = 0; i < numCps; i++) {
             line = fin.readLine();
             if (line == null) {
-                logger.warn("Invalid context predicate mapping line");
-                return true;
+                // TODO: provide more context for user, e.g. line number
+                throw new InitializationException("Invalid context predicate mapping line");
             }
 
             StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
@@ -154,7 +156,6 @@ public class Data {
             cpStr2Int.put(cpStr, cpInt);
             cpInt2Str.put(cpInt, cpStr);
         }
-        return false;
     }
 
     /**
@@ -221,7 +222,7 @@ public class Data {
      * @param fin the fin
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void readLbMaps(BufferedReader fin) throws IOException {
+    public void readLbMaps(BufferedReader fin) throws IOException, InitializationException {
         if (lbStr2Int != null) {
             lbStr2Int.clear();
         } else {

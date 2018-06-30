@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
 
+import vn.edu.vnu.jvntext.utils.InitializationException;
+
 public class Trainer {
     private static final Logger logger = LoggerFactory.getLogger(Trainer.class);
 
@@ -45,7 +47,7 @@ public class Trainer {
      * @param args the arguments
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InitializationException {
         if (!checkArgs(args)) {
             displayHelp();
             return;
