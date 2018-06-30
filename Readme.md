@@ -16,17 +16,20 @@ Project Managers:
 
 2. Graduate School of Information Sciences (GSIS), Tohoku University, Japan
 
-Development Team:
+Version 3.0.0 was released by Nathan Glenn.
 
-Current version (2.0) of JVnTextPro is developed by the project managers and under the terms of the GNU General Public License. We highly welcome anyone, who would like to develop this tool for the benifits of NLP community in general and Vietnamese NLP community in particular, to join us. Please contact the project managers for further details.
+JVnTextPro is developed by the project managers and under the terms of the GNU General Public License. 
+We highly welcome anyone, who would like to develop this tool for the benifits of NLP community in general and Vietnamese NLP community in particular, to join us. 
+Please contact the project managers for further details.
 
 ## Downloads
 
-* Version 2.0
-    - [download](http://sourceforge.net/projects/jvntextpro)
-    - [JavaDoc](http://jvntextpro.sourceforge.net/v2.0/doc/index.html)
-    - [Manual](http://jvntextpro.sourceforge.net/v2.0/JVnTextPro_Manual.pdf)
+* Version 3.0.0
 
+    - [library jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0.jar)
+    - [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-executable-3.0.0.jar)
+    - [sources jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0-sources.jar)
+    - [JavaDoc jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0-javadoc.jar)
 
 ## Related Work
 
