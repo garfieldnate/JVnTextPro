@@ -15,6 +15,7 @@ This is the first release since 2010. The codebase has been cleaned and updated 
 * Now requires Java 1.8 (released March, 2014). The current Java compiler no longer supports targeting versions previous to 1.7, and 1.8 contains many convenient functions.
 * The library no longer prints all logging statements to standard out. Instead, messages are logged via the [slf4j](https://www.slf4j.org/) API. Clients including the library in their own project must pick their own implementation library (such as logback). The executable jar still prints to standard out.
 * Removed C-style exception handling; many methods which returned `boolean` to indicate a failure are now `void` and have a `throws` declaration.
+* Removed string paths from most public-facing methods. Java 7's NIO (Path, Files, etc.) is now used extensively.
 
 ### Added
 
