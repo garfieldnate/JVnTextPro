@@ -30,50 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-// TODO: Auto-generated Javadoc
-class TONE {
-    public static final TONE NO_TONE = new TONE(0);
-
-    public static final TONE ACUTE = new TONE(1);
-
-    public static final TONE ACCENT = new TONE(2);
-
-    public static final TONE QUESTION = new TONE(3);
-
-    public static final TONE TILDE = new TONE(4);
-
-    public static final TONE DOT = new TONE(5);
-
-    public static TONE getTone(int v) {
-        switch (v) {
-            case 0:
-                return NO_TONE;
-            case 1:
-                return ACUTE;
-            case 2:
-                return ACCENT;
-            case 3:
-                return QUESTION;
-            case 4:
-                return TILDE;
-            case 5:
-                return DOT;
-            default:
-                return NO_TONE;
-        }
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    private TONE(int v) {
-        value = v;
-    }
-
-    private final int value;
-}
-
 /*
  * This class parse a vietnamese syllable in UTF-8 encoding
  */
@@ -374,7 +330,9 @@ public class VnSyllParser {
             if (idx == -1) break;
 
             strVowel.append(vnVowels.charAt((idx / 6) * 6));
-            if (tone.getValue() == TONE.NO_TONE.getValue()) tone = TONE.getTone(idx % 6);
+            if (tone == TONE.NO_TONE) {
+                tone = TONE.getTone(idx % 6);
+            }
         }
 
         for (String alMainVowel : alMainVowels) {
@@ -439,6 +397,34 @@ public class VnSyllParser {
         StringTokenizer strTknr = new StringTokenizer(str, "|");
         while (strTknr.hasMoreTokens()) {
             al.add(strTknr.nextToken());
+        }
+    }
+
+    private enum TONE {
+        NO_TONE(0),
+        ACUTE(1),
+        ACCENT(2),
+        QUESTION(3),
+        TILDE(4),
+        DOT(5);
+
+        private final int value;
+
+        TONE(int v) {
+            value = v;
+        }
+
+        public static TONE getTone(int v) {
+            for(TONE t : TONE.values()) {
+                if(t.getValue() == v) {
+                    return t;
+                }
+            }
+            return NO_TONE;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 }

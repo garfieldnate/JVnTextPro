@@ -32,24 +32,21 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
-
 /**
  * This class provides functionality to convert from a composite unicode string in vietnamese to a unicode string.
  *
  * @author TuNC
  */
 public class CompositeUnicode2Unicode {
-
-    /**
-     * The cps uni2 uni.
-     */
-    final Map<String, String> cpsUni2Uni;
-
     /**
      * The Constant DEFAULT_MAP_RESOURCE.
      */
     private static final String DEFAULT_MAP_RESOURCE = "Composite2Unicode.txt";
+
+    /**
+     * The cps uni2 uni.
+     */
+    private final Map<String, String> cpsUni2Uni = new HashMap<>();
 
     //---------------------------------------------------------------
     //Constructor
@@ -59,13 +56,11 @@ public class CompositeUnicode2Unicode {
      * Instantiates a new composite unicode2 unicode.
      */
     public CompositeUnicode2Unicode() throws IOException {
-        cpsUni2Uni = new HashMap<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(CompositeUnicode2Unicode.class.getResourceAsStream(
             DEFAULT_MAP_RESOURCE)));
         String line;
         while ((line = reader.readLine()) != null) {
             String[] onemap = line.split("\t");
-
             if (onemap.length != 2) continue;
             cpsUni2Uni.put(onemap[0], onemap[1]);
         }
@@ -85,8 +80,6 @@ public class CompositeUnicode2Unicode {
      */
     public String convert(String text) {
         String ret = text;
-
-        if (cpsUni2Uni == null) return ret;
 
         for (String cpsChar : cpsUni2Uni.keySet()) {
             ret = ret.replaceAll(cpsChar, cpsUni2Uni.get(cpsChar));
