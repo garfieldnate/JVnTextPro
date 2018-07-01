@@ -19,24 +19,35 @@ Requires [Java 8](https://java.com/en/download/) or later.
 
 ### Models
 
-Starting with version 3.0.0 the default models are included in the jar files. If you would like to
-train your own models, please refer to the [original manual](http://jvntextpro.sourceforge.net/v2.0/JVnTextPro_Manual.pdf).
+Starting with version 3.0.1, the models are released either as a separate jar or as part of the 
+executable jar (see details below). If you would like to train your own models, please refer 
+to the [original manual](http://jvntextpro.sourceforge.net/v2.0/JVnTextPro_Manual.pdf).
 
 ### Usage in Java
 
 You should first add JVnTextPro as a dependency in your Maven, Ivy, or Gradle files. JVnTextPro is available from [JCenter](https://bintray.com/garfieldnate/general/JVnTextPro) and
-[Maven Central](https://search.maven.org/#artifactdetails%7Cvn.edu.vnu.jvntext.jvntextpro%7CJVnTextPro%7C3.0.0%7Cjar).
+[Maven Central](http://search.maven.org/#search|ga|1|JVnTextPro).
 
-You should include an implementation for [slf4j](https://www.slf4j.org/). If you are just running some
+If you have not trained your own models (and most users have not!), then you should also download the jar containing the models.
+
+You should also include an implementation for [slf4j](https://www.slf4j.org/). If you are just running some
 experiments and don't care about where the logging statements go, you can just use the 
 [slf4j Simple Binding](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple).
+
+For example, if you are using gradle and slf4j simple, you would add the following to your project:
+
+    dependencies {
+        compile 'vn.edu.vnu.jvntext.jvntextpro:JVnTextPro:3.0.1'
+        classpath 'vn.edu.vnu.jvntext.jvntextpro:JVnTextPro:3.0.1:models'
+        compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    }
 
 An example usage of the API is located in [src/main/java/vn/edu/vnu/jvntext/jvntextpro/Demo.java](src/main/java/vn/edu/vnu/jvntext/jvntextpro/Demo.java).
 Just copy it into your project and edit as needed.
 
 ### Command line/terminal
 
-Download the [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-executable-3.0.0.jar)
+Download the [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-executable.jar)
 from GitHub. Place the text you want to process into a text file or directory of text files. 
 The text must be UTF-8 encoded. Then you can run JVnTextPro in your terminal like so:
 
@@ -49,12 +60,13 @@ For more usage details, run the jar without any parameters.
 
 ## Downloads
 
-* Version 3.0.0
+* Version 3.0.1
 
-    - [library jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0.jar)
-    - [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-executable-3.0.0.jar)
-    - [sources jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0-sources.jar)
-    - [JavaDoc jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0-javadoc.jar)
+    - [library jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1.jar)
+    - [models jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1.jar)
+    - [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-executable.jar)
+    - [sources jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-sources.jar)
+    - [JavaDoc jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-javadoc.jar)
 
 ## Project Managers
 
@@ -66,7 +78,7 @@ For more usage details, run the jar without any parameters.
 
 2. Graduate School of Information Sciences (GSIS), Tohoku University, Japan
 
-Version 3.0.0 was released by Nathan Glenn, an independent open source developer.
+Version 3.0.1 was released by Nathan Glenn, an independent open source developer.
 
 ## Contributing
 

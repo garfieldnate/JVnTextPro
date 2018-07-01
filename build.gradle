@@ -1,3 +1,8 @@
+// Useful tasks:
+// (default) jar: creates library jar
+// fatJar: creates executable jar
+// bintrayUpload: performs full release/publication
+
 plugins {
     id "com.jfrog.bintray" version "1.8.3"
 }
