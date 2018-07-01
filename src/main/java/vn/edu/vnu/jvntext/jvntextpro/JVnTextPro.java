@@ -46,30 +46,12 @@ public class JVnTextPro {
     //==============================================
     // Instance Variables
     //==============================================
-    /**
-     * The vn sen segmenter.
-     */
-    JVnSenSegmenter vnSenSegmenter = null;
 
-    /**
-     * The vn segmenter.
-     */
-    CRFSegmenter vnSegmenter = null;
-
-    /**
-     * The vn pos tagger.
-     */
-    MaxentTagger vnPosTagger = null;
-
-    /**
-     * The is tokenization.
-     */
-    boolean isTokenization = false;
-
-    /**
-     * The convertor.
-     */
-    public CompositeUnicode2Unicode convertor;
+    private JVnSenSegmenter vnSenSegmenter = null;
+    private CRFSegmenter vnSegmenter = null;
+    private MaxentTagger vnPosTagger = null;
+    private boolean isTokenization = false;
+    private CompositeUnicode2Unicode unicodeNormalizer;
 
     //==============================================
     // Constructors
@@ -79,7 +61,7 @@ public class JVnTextPro {
      * Instantiates a new j vn text pro.
      */
     public JVnTextPro() throws IOException {
-        convertor = new CompositeUnicode2Unicode();
+        unicodeNormalizer = new CompositeUnicode2Unicode();
     }
 
     //==============================================
@@ -149,7 +131,7 @@ public class JVnTextPro {
         String ret = text;
 
         //Pipeline
-        ret = convertor.convert(ret);
+        ret = unicodeNormalizer.convert(ret);
         ret = senSegment(ret);
         ret = senTokenize(ret);
         ret = wordSegment(ret);

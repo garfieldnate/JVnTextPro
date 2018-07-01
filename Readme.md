@@ -2,25 +2,50 @@
 
 A Java-based Vietnamese Text Processing Tool
 
-Project URL: http://jvntextpro.sourceforge.net/
+Original project URL: http://jvntextpro.sourceforge.net/
 
-JVnTextPro is a Java open source tool, which is based on Conditional Random Fields (CRFs) and Maximum Entropy (Maxent), for Natural Language Processing (NLP) in Vietnamese. This tool consists of several steps (or sub-problem tools) for Vietnamese preprocessing and processing designed in a pipeline manner in which output of one step is used for the next step. The sub-problem tools are sentence segmentation tool, sentence tokenization tool, word segmentation tool and Part-of-Speech tagging tool. This tool would be useful for Vietnamese NLP community. We highly appreciate any bug report, comment, and suggestion that help to fix errors and improve the accuracy.
+JVnTextPro is a Java open source tool, which is based on Conditional Random Fields (CRFs) and 
+Maximum Entropy (Maxent), for Natural Language Processing (NLP) in Vietnamese. This tool 
+consists of several steps (or sub-problem tools) for Vietnamese preprocessing and processing 
+designed in a pipeline manner in which output of one step is used for the next step. The 
+sub-problem tools are sentence segmentation tool, sentence tokenization tool, word segmentation 
+tool and Part-of-Speech tagging tool. This tool would be useful for Vietnamese NLP community. 
+We highly appreciate any bug report, comment, or suggestion that helps to fix errors and 
+improve the accuracy.
 
-Project Managers:
+## Usage
 
-* Cam-Tu Nguyen (1,2) (ncamtu at gmail dot com)
-* Xuan-Hieu Phan (1) (pxhieu at gmail dot com)
-* Thu-Trang Nguyen (1) (trangnt84 at gmail dot com)
+Requires [Java 8](https://java.com/en/download/) or later.
 
-1. College of Technology, Vietnam National University, Hanoi
+### Models
 
-2. Graduate School of Information Sciences (GSIS), Tohoku University, Japan
+Starting with version 3.0.0 the default models are included in the jar files. If you would like to
+train your own models, please refer to the [original manual](http://jvntextpro.sourceforge.net/v2.0/JVnTextPro_Manual.pdf).
 
-Version 3.0.0 was released by Nathan Glenn.
+### Usage in Java
 
-JVnTextPro is developed by the project managers and under the terms of the GNU General Public License. 
-We highly welcome anyone, who would like to develop this tool for the benifits of NLP community in general and Vietnamese NLP community in particular, to join us. 
-Please contact the project managers for further details.
+You should first add JVnTextPro as a dependency in your Maven, Ivy, or Gradle files. JVnTextPro is available from [JCenter](https://bintray.com/garfieldnate/general/JVnTextPro) and
+[Maven Central](https://search.maven.org/#artifactdetails%7Cvn.edu.vnu.jvntext.jvntextpro%7CJVnTextPro%7C3.0.0%7Cjar).
+
+You should include an implementation for [slf4j](https://www.slf4j.org/). If you are just running some
+experiments and don't care about where the logging statements go, you can just use the 
+[slf4j Simple Binding](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple).
+
+An example usage of the API is located in [src/main/java/vn/edu/vnu/jvntext/jvntextpro/Demo.java](src/main/java/vn/edu/vnu/jvntext/jvntextpro/Demo.java).
+Just copy it into your project and edit as needed.
+
+### Command line/terminal
+
+Download the [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-executable-3.0.0.jar)
+from GitHub. Place the text you want to process into a text file or directory of text files. 
+The text must be UTF-8 encoded. Then you can run JVnTextPro in your terminal like so:
+
+    java -jar JVnTextPro-executable-X.X.X.jar -senseg -wordseg -postag -input <input file or directory>
+
+If the input argument is a directory, it should contain `.txt` files to be analyzed. (You can changed
+the expected file extension using the `-filetype` argument.) The output file(s) will have a `.pro` extension.
+
+For more usage details, run the jar without any parameters.
 
 ## Downloads
 
@@ -31,22 +56,44 @@ Please contact the project managers for further details.
     - [sources jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0-sources.jar)
     - [JavaDoc jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.0/JVnTextPro-3.0.0-javadoc.jar)
 
+## Project Managers
+
+* Cam-Tu Nguyen (1,2) (ncamtu at gmail dot com)
+* Xuan-Hieu Phan (1) (pxhieu at gmail dot com)
+* Thu-Trang Nguyen (1) (trangnt84 at gmail dot com)
+
+1. College of Technology, Vietnam National University, Hanoi
+
+2. Graduate School of Information Sciences (GSIS), Tohoku University, Japan
+
+Version 3.0.0 was released by Nathan Glenn, an independent open source developer.
+
+## Contributing
+
+We gladly welcome and encourage contributions to the source code, models, training data,
+documentation and any other aspect of the project. GitHub pull requests are welcome.
+If you find issues or have a request, please file an issue on GitHub here:
+https://github.com/garfieldnate/JVnTextPro/issues
+
+If you would like to contribute but are unsure of how or what you can contribute, 
+please contact the project managers.
+
 ## Related Work
 
-[JVnSegmenter](http://jvnsegmenter.sourceforge.net/): a Java-based Vietnamese Word Segmentation Tool
-[JNSP](http://jnsp.sourceforge.net/): a Java-based Ngram Statistic Package (for collocation detections - in English and Vietnamese)
-[FlexCRFs](http://flexcrfs.sourceforge.net/): Flexible Conditional Random Fields
-[GibbsLDA++](http://gibbslda.sourceforge.net/): A C/C++ and Gibbs Sampling-based Implementation of Latent Dirichlet Allocation (LDA)
-[CRFTagger](http://crftagger.sourceforge.net/): CRF English POS Tagger
-[CRFChunker](http://crfchunker.sourceforge.net/): CRF English Phrase Chunker
-[JTextPro](http://jtextpro.sourceforge.net/): A Java-based Text Processing Toolkit
-[JWebPro](http://jwebpro.sourceforge.net/): A Java-based Web Processing Toolkit
+* [JVnSegmenter](http://jvnsegmenter.sourceforge.net/): a Java-based Vietnamese Word Segmentation Tool
+* [JNSP](http://jnsp.sourceforge.net/): a Java-based Ngram Statistic Package (for collocation detections - in English and Vietnamese)
+* [FlexCRFs](http://flexcrfs.sourceforge.net/): Flexible Conditional Random Fields
+* [GibbsLDA++](http://gibbslda.sourceforge.net/): A C/C++ and Gibbs Sampling-based Implementation of Latent Dirichlet Allocation (LDA)
+* [CRFTagger](http://crftagger.sourceforge.net/): CRF English POS Tagger
+* [CRFChunker](http://crfchunker.sourceforge.net/): CRF English Phrase Chunker
+* [JTextPro](http://jtextpro.sourceforge.net/): A Java-based Text Processing Toolkit
+* [JWebPro](http://jwebpro.sourceforge.net/): A Java-based Web Processing Toolkit
 
 ## Citation
 
-Researches using this tool for running experiments should include the following citation:
+If you use this tool in your research, please use the following citation:
 
-Cam-Tu Nguyen, Xuan-Hieu Phan and Thu-Trang Nguyen, "JVnTextPro: A Java-based Vietnamese Text Processing Tool", http://jvntextpro.sourceforge.net/, 2010.
+    Cam-Tu Nguyen, Xuan-Hieu Phan and Thu-Trang Nguyen, "JVnTextPro: A Java-based Vietnamese Text Processing Tool", http://jvntextpro.sourceforge.net/, 2010.
 
 ## License
 
