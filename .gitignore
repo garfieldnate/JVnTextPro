@@ -17,3 +17,7 @@ doc/*
 .gradle/
 *.iml
 build/
+.idea/
+out/
+*.ipr
+*.iws
