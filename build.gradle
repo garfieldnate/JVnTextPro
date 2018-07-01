@@ -80,8 +80,8 @@ task javadocsJar(type: Jar) {
 def pomConfig = {
     licenses {
         license {
-            name "GPL 3.0"
-            url "https://www.gnu.org/licenses/gpl-3.0.en.html"
+            name "GPL 2.0"
+            url "https://www.gnu.org/licenses/gpl-2.0.en.html"
         }
     }
     developers {
@@ -140,7 +140,7 @@ bintray {
         name = project.name
         desc = project.description
         userOrg = user
-        licenses = ['GPL-3.0']
+        licenses = ['GPL-2.0']
         vcsUrl = project.property("vcsUrl")
         issueTrackerUrl = project.property("vcsUrl") + "/issues"
         websiteUrl = project.property("website")

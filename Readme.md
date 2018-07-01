@@ -97,4 +97,4 @@ If you use this tool in your research, please use the following citation:
 
 ## License
 
-The project is released under the GPL version 3.0.
+The project is released under the GPL version 2.0.
