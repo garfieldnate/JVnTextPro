@@ -6,7 +6,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group = 'vn.edu.vnu.jvntext.jvntextpro'
-version = '3.0.0'
+version = '3.0.1'
 description = """NLP Toolkit for Vietnamese"""
 
 sourceCompatibility = 1.8
@@ -30,26 +30,25 @@ dependencies {
     fatJarConf group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }
 
-sourceSets {
-    main {
-        // include models in the resources so we can load them when the user provides none
-        resources {
-            srcDir 'models'
-        }
+// include models in the resources during development
+idea {
+    module {
+        resourceDirs += file('models')
     }
 }
 
 jar {
     // library clients should configure slf4j themselves
     exclude('logback.xml')
+    // models are released in a separate jar
+    exclude('/models')
 }
 
 task fatJar(type: Jar) {
-    description "Build an executable jar with all dependencies included"
+    description "Build an executable jar with all dependencies and models included"
     manifest {
         attributes 'Main-Class': project.group + '.JVnTextProTest'
     }
-    baseName = baseName + "-executable"
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     from { configurations.fatJarConf.collect { it.isDirectory() ? it : zipTree(it) } }
 
@@ -57,6 +56,10 @@ task fatJar(type: Jar) {
     from(sourceSets.main.resources) {
         include('logback.xml')
     }
+    from('models') {
+        include('**')
+    }
+    classifier 'executable'
     with jar
 }
 
@@ -74,6 +77,14 @@ task sourcesJar(type: Jar) {
 task javadocsJar(type: Jar) {
     from javadoc
     classifier 'javadoc'
+}
+
+task modelsJar(type: Jar) {
+    description "Build a jar containing just the default models"
+    from('models') {
+        include('**')
+    }
+    classifier 'models'
 }
 
 // Create the pom configuration:
@@ -117,6 +128,8 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact javadocsJar
+            artifact modelsJar
+            artifact fatJar
             groupId project.group
             artifactId project.name
             version project.version

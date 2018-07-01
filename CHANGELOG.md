@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2018-07-01
+
+### Changed
+
+* Models are now provided in a separate jar file
+
 ## [3.0.0] - 2018-06-30
 
 This is the first release since 2010. The codebase has been cleaned and updated extensively, and the process of building and running has been improved dramatically.
