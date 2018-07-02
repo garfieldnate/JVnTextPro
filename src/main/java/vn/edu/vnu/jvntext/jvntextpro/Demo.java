@@ -19,17 +19,17 @@ public class Demo {
 
         vnTextPro.initSenSegmenter();
         // use this method instead if you have a custom model
-//        vnTextPro.initSenSegmenter(Paths.get("path", "to", "senSegModels"));
+        //        vnTextPro.initSenSegmenter(Paths.get("path", "to", "senSegModels"));
 
         vnTextPro.initSenTokenization();
 
         vnTextPro.initSegmenter();
         // use this method instead if you have a custom model
-//        vnTextPro.initSegmenter(Paths.get("path", "to", "segModels"));
+        //        vnTextPro.initSegmenter(Paths.get("path", "to", "segModels"));
 
         vnTextPro.initPosTagger();
         // use this method instead if you have a custom model
-//        vnTextPro.initPosTagger(Paths.get("path", "to", "posTagModels"));
+        //        vnTextPro.initPosTagger(Paths.get("path", "to", "posTagModels"));
     }
 
     public static void main(String[] args) throws IOException, InitializationException {

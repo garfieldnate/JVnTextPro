@@ -37,8 +37,8 @@ experiments and don't care about where the logging statements go, you can just u
 For example, if you are using gradle and slf4j simple, you would add the following to your project:
 
     dependencies {
-        compile 'vn.edu.vnu.jvntext.jvntextpro:JVnTextPro:3.0.1'
-        classpath 'vn.edu.vnu.jvntext.jvntextpro:JVnTextPro:3.0.1:models'
+        compile 'vn.edu.vnu.jvntext.jvntextpro:JVnTextPro:3.0.2'
+        classpath 'vn.edu.vnu.jvntext.jvntextpro:JVnTextPro:3.0.2:models'
         compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     }
 
@@ -47,7 +47,7 @@ Just copy it into your project and edit as needed.
 
 ### Command line/terminal
 
-Download the [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-executable.jar)
+Download the [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.2/JVnTextPro-3.0.2-executable.jar)
 from GitHub. Place the text you want to process into a text file or directory of text files. 
 The text must be UTF-8 encoded. Then you can run JVnTextPro in your terminal like so:
 
@@ -60,13 +60,13 @@ For more usage details, run the jar without any parameters.
 
 ## Downloads
 
-* Version 3.0.1
+* Version 3.0.2
 
-    - [library jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1.jar)
-    - [models jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1.jar)
-    - [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-executable.jar)
-    - [sources jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-sources.jar)
-    - [JavaDoc jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.1/JVnTextPro-3.0.1-javadoc.jar)
+    - [library jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.2/JVnTextPro-3.0.2.jar)
+    - [models jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.2/JVnTextPro-3.0.2.jar)
+    - [executable jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.2/JVnTextPro-3.0.2-executable.jar)
+    - [sources jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.2/JVnTextPro-3.0.2-sources.jar)
+    - [JavaDoc jar](https://github.com/garfieldnate/JVnTextPro/releases/download/3.0.2/JVnTextPro-3.0.2-javadoc.jar)
 
 ## Project Managers
 
@@ -78,7 +78,7 @@ For more usage details, run the jar without any parameters.
 
 2. Graduate School of Information Sciences (GSIS), Tohoku University, Japan
 
-Version 3.0.1 was released by Nathan Glenn, an independent open source developer.
+Version 3.0.2 was released by Nathan Glenn, an independent open source developer.
 
 ## Contributing
 

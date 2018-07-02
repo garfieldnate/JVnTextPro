@@ -31,9 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,8 +125,7 @@ public class Data {
 
         readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str);
 
-        logger.info(
-            "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
+        logger.info("Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
         fin.readLine();
@@ -299,9 +296,9 @@ public class Data {
     /**
      * Read trn data.
      *
-     * @param dataFile the data file
+     * @param dataReader the data file
      */
-    public void readTrnData(String dataFile) throws IOException {
+    public void readTrnData(BufferedReader dataReader) throws IOException {
         if (cpStr2Int != null) {
             cpStr2Int.clear();
         } else {
@@ -332,17 +329,13 @@ public class Data {
             trnData = new ArrayList<>();
         }
 
-        // open data file
-        BufferedReader fin;
-
-        fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
         //    BufferedWriter flog = new BufferedWriter(new OutputStreamWriter(
         //	/	new FileOutputStream((new File(dataFile)).getParent() + File.separator + "log.txt"), "UTF-8"));
 
         logger.info("Reading training data ...");
 
         String line;
-        while ((line = fin.readLine()) != null) {
+        while ((line = dataReader.readLine()) != null) {
             StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
             int len = strTok.countTokens();
 
@@ -422,23 +415,19 @@ public class Data {
     /**
      * Read tst data.
      *
-     * @param dataFile the data file
+     * @param dataReader the data file
      */
-    public void readTstData(String dataFile) throws IOException {
+    public void readTstData(BufferedReader dataReader) throws IOException {
         if (tstData != null) {
             tstData.clear();
         } else {
             tstData = new ArrayList<>();
         }
 
-        // open data file
-        BufferedReader fin;
-
-        fin = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
-        logger.info("Reading testing data from " + dataFile);
+        logger.info("Reading testing data from " + dataReader);
 
         String line;
-        while ((line = fin.readLine()) != null) {
+        while ((line = dataReader.readLine()) != null) {
             StringTokenizer strTok = new StringTokenizer(line, " \t\r\n");
             int len = strTok.countTokens();
 

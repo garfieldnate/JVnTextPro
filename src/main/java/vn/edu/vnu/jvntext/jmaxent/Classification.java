@@ -87,6 +87,18 @@ public class Classification {
     }
 
     /**
+     * Instantiates a new classification
+     *
+     * @param clazz to get model resources from
+     */
+    public Classification(Class<?> clazz) throws IOException, InitializationException {
+        option = new Option(clazz);
+        option.readOptions();
+
+        init();
+    }
+
+    /**
      * Checks if is initialized.
      *
      * @return true, if is initialized

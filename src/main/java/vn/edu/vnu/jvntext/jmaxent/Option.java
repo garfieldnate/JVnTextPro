@@ -31,53 +31,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
+import vn.edu.vnu.jvntext.utils.InitializationException;
+import vn.edu.vnu.jvntext.utils.PathUtils;
+
 public class Option {
     private static final Logger logger = LoggerFactory.getLogger(Option.class);
 
     private final static String DEFAULT_FILE_NAME = "option.txt";
-
-    // model directory
-    /**
-     * The model dir.
-     */
-    public Path modelDir = Paths.get(".");
+    private final Path optionPath;
 
     // model file
     /**
      * The model file.
      */
-    public String modelFileName = "model.txt";
+    private String modelFileName = "model.txt";
 
     /**
      * The model separator.
      */
     public static final String modelSeparator = "##########";
-    // option file
-    /**
-     * The option file.
-     */
-    private final String optionFileName;
 
     // training data, testing data file
     /**
      * The train data file.
      */
-    public String trainDataFile = "train.labeled";
+    private String trainDataFile = "train.labeled";
 
     /**
      * The test data file.
      */
-    public String testDataFile = "test.labeled";
+    private String testDataFile = "test.labeled";
 
     /**
      * The label separator.
@@ -88,7 +79,7 @@ public class Option {
     /**
      * The train log file.
      */
-    public String trainLogFile = "trainlog.txt";
+    private String trainLogFile = "trainlog.txt";
 
     /**
      * The is logging.
@@ -177,7 +168,7 @@ public class Option {
      * Instantiates a new option.
      */
     public Option() {
-        optionFileName = DEFAULT_FILE_NAME;
+        optionPath = Paths.get(DEFAULT_FILE_NAME);
     }
 
     /**
@@ -186,8 +177,7 @@ public class Option {
      * @param modelDir the model dir
      */
     public Option(Path modelDir) {
-        this.modelDir = modelDir;
-        optionFileName = DEFAULT_FILE_NAME;
+        optionPath = modelDir.resolve(DEFAULT_FILE_NAME);
     }
 
     /**
@@ -196,8 +186,20 @@ public class Option {
      * @param modelDir the model dir
      */
     public Option(Path modelDir, String optionFileName) {
-        this.modelDir = modelDir;
-        this.optionFileName = optionFileName;
+        optionPath = modelDir.resolve(optionFileName);
+    }
+
+    /**
+     * Instantiates a new option.
+     *
+     * @param clazz to load option resource from
+     */
+    public Option(Class<?> clazz) throws InitializationException, IOException {
+        try {
+            optionPath = PathUtils.getPath(clazz.getResource(DEFAULT_FILE_NAME).toURI());
+        } catch (URISyntaxException e) {
+            throw new InitializationException(e);
+        }
     }
 
     /**
@@ -205,9 +207,7 @@ public class Option {
      */
     public void readOptions() throws IOException {
         logger.info("Reading maxent options...");
-        Path optionsFile = modelDir.resolve(optionFileName);
-
-        for (String line : Files.readAllLines(optionsFile)) {
+        for (String line : Files.readAllLines(optionPath)) {
             String trimLine = line.trim();
             if (trimLine.startsWith("#")) {
                 // comment line
@@ -277,10 +277,18 @@ public class Option {
             } else {
                 logger.warn("Unknown maxent option: " + strOpt);
             }
-
         }
 
         logger.info("Reading maxent options completed!");
+    }
+
+    //TODO: return input stream, not path
+    public BufferedReader getTrainReader() throws IOException {
+        return Files.newBufferedReader(optionPath.resolveSibling(trainDataFile));
+    }
+
+    public BufferedReader getTestReader() throws IOException {
+        return Files.newBufferedReader(optionPath.resolveSibling(testDataFile));
     }
 
     /**
@@ -289,8 +297,7 @@ public class Option {
      * @return the prints the writer
      */
     public PrintWriter openTrainLogFile() throws IOException {
-        String filename = modelDir + File.separator + trainLogFile;
-        return new PrintWriter(new OutputStreamWriter((new FileOutputStream(filename)), "UTF-8"));
+        return new PrintWriter(Files.newBufferedWriter(optionPath.resolveSibling(trainLogFile)));
     }
 
     /**
@@ -299,8 +306,7 @@ public class Option {
      * @return the buffered reader
      */
     public BufferedReader openModelFile() throws IOException {
-        Path modelFile = modelDir.resolve(modelFileName);
-        return Files.newBufferedReader(modelFile);
+        return Files.newBufferedReader(optionPath.resolveSibling(modelFileName));
     }
 
     /**
@@ -309,8 +315,7 @@ public class Option {
      * @return the prints the writer
      */
     public PrintWriter createModelFile() throws IOException {
-        String filename = modelDir + File.separator + modelFileName;
-        return new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
+        return new PrintWriter(Files.newBufferedWriter(optionPath.resolveSibling(modelFileName)));
     }
 
     /**
@@ -321,9 +326,9 @@ public class Option {
     public void writeOptions(PrintWriter fout) {
         fout.println("OPTION VALUES:");
         fout.println("==============");
-        fout.println("Model directory: " + modelDir);
+        fout.println("Model directory: " + optionPath.getParent());
         fout.println("Model file: " + modelFileName);
-        fout.println("Option file: " + optionFileName);
+        fout.println("Option file: " + optionPath.getFileName());
         fout.println("Training log file: " + trainLogFile + " (this one)");
         fout.println("Training data file: " + trainDataFile);
         fout.println("Testing data file: " + testDataFile);

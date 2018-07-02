@@ -276,8 +276,7 @@ public class Train {
         // get the end time of the training process
         end_train = System.currentTimeMillis();
         elapsed_train = end_train - start_train;
-        logger.debug(
-            "\tThe training process elapsed: " + Double.toString((double) elapsed_train / 1000) + " seconds");
+        logger.debug("\tThe training process elapsed: " + Double.toString((double) elapsed_train / 1000) + " seconds");
         if (model.option.isLogging) {
             fout.println(
                 "\tThe training process elapsed: " + Double.toString((double) elapsed_train / 1000) + " seconds");

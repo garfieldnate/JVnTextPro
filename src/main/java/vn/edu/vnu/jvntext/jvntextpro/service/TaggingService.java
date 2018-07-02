@@ -143,7 +143,7 @@ public class TaggingService extends Thread {
 
         try {
             init();
-        } catch (IOException|InitializationException e) {
+        } catch (IOException | InitializationException e) {
             logger.error("Error starting initializing tagging service", e);
             System.exit(1);
         }

@@ -40,6 +40,7 @@ import java.nio.file.Paths;
 import javax.xml.parsers.ParserConfigurationException;
 
 import vn.edu.vnu.jvntext.jflexcrf.Labeling;
+import vn.edu.vnu.jvntext.jflexcrf.Option;
 import vn.edu.vnu.jvntext.jvntextpro.data.DataReader;
 import vn.edu.vnu.jvntext.jvntextpro.data.DataWriter;
 import vn.edu.vnu.jvntext.jvntextpro.data.TaggingData;
@@ -47,38 +48,38 @@ import vn.edu.vnu.jvntext.utils.InitializationException;
 
 public class CRFTagger implements POSTagger {
     private static final Logger logger = LoggerFactory.getLogger(CRFTagger.class);
-    DataReader reader = new POSDataReader();
-    DataWriter writer = new POSDataWriter();
+    private DataReader reader = new POSDataReader();
+    private DataWriter writer = new POSDataWriter();
 
-    final TaggingData dataTagger = new TaggingData();
+    private final TaggingData dataTagger = new TaggingData();
 
-    Labeling labeling = null;
+    private Labeling labeling = null;
 
     public CRFTagger(Path modelDir) throws InitializationException {
         init(modelDir);
     }
 
-    @Override
-    public void init(Path modelDir) throws InitializationException {
-        try {
-            dataTagger.addContextGenerator(new POSContextGenerator(modelDir.resolve("featuretemplate.xml")));
-            labeling = new Labeling(modelDir, dataTagger, reader, writer);
-        } catch (SAXException | ParserConfigurationException | IOException e) {
-            throw new InitializationException(e);
-        }
-    }
-
-    public void init() throws InitializationException {
+    public CRFTagger() throws InitializationException {
         Path modelDir;
         try {
-            modelDir = Paths.get(CRFTagger.class.getResource("/" + CRFTagger.class.getPackage().getName() + "/crf")
+            modelDir = Paths.get(CRFTagger.class.getResource("crf")
                                                 .toURI());
         } catch (URISyntaxException e) {
             // this should never happen
-            logger.error("problem getting the model path from resources", e);
+            logger.error("problem getting the model path from class resources", e);
             throw new RuntimeException(e);
         }
         init(modelDir);
+    }
+
+    private void init(Path modelDir) throws InitializationException {
+        try {
+            dataTagger.addContextGenerator(new POSContextGenerator(modelDir.resolve("featuretemplate.xml")));
+            Option options = new Option(modelDir);
+            labeling = new Labeling(options, dataTagger, reader, writer);
+        } catch (SAXException | ParserConfigurationException | IOException e) {
+            throw new InitializationException(e);
+        }
     }
 
     public String tagging(String instr) {

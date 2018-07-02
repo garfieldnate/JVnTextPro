@@ -143,7 +143,7 @@ public class TWord {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public void print(Writer out) throws IOException {
-        if(tag == null) {
+        if (tag == null) {
             logger.debug("null tag");
         }
         out.write(token + "\t" + tag + "\n");

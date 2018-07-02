@@ -28,8 +28,6 @@ package vn.edu.vnu.jvntext.jflexcrf;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,119 +38,51 @@ import vn.edu.vnu.jvntext.jvntextpro.data.TaggingData;
 import vn.edu.vnu.jvntext.utils.InitializationException;
 
 public class Labeling {
-
     //-----------------------------------------------
     // Member Variables
     //-----------------------------------------------
     /**
-     * The model dir.
-     */
-    private Path modelDir = Paths.get(".");
-
-    /**
      * The tagger maps.
      */
-    public Maps taggerMaps = null;
-
-    /**
-     * The tagger dict.
-     */
-    public Dictionary taggerDict = null;
-
-    /**
-     * The tagger f gen.
-     */
-    private FeatureGen taggerFGen = null;
-
-    /**
-     * The tagger vtb.
-     */
-    private Viterbi taggerVtb = null;
+    private final Maps taggerMaps;
 
     /**
      * The tagger model.
      */
-    private Model taggerModel = null;
+    private final Model taggerModel;
 
     /**
      * The data tagger.
      */
-    private TaggingData dataTagger = null;
+    private final TaggingData dataTagger;
 
     /**
      * The data reader.
      */
-    private DataReader dataReader = null;
+    private final DataReader dataReader;
 
     /**
      * The data writer.
      */
-    private DataWriter dataWriter = null;
-
-    //-----------------------------------------------
-    // Initilization
-    //-----------------------------------------------
+    private final DataWriter dataWriter;
 
     /**
      * Instantiates a new labeling.
      *
-     * @param modelDir   the model dir
+     * @param taggerOpt  options for the model
      * @param dataTagger the data tagger
      * @param dataReader the data reader
      * @param dataWriter the data writer
      */
-    public Labeling(Path modelDir, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) throws IOException, InitializationException {
-        init(modelDir);
+    public Labeling(Option taggerOpt, TaggingData dataTagger, DataReader dataReader, DataWriter dataWriter) throws IOException, InitializationException {
         this.dataTagger = dataTagger;
         this.dataWriter = dataWriter;
         this.dataReader = dataReader;
-    }
-
-    /**
-     * Inits the.
-     *
-     * @param modelDir the model dir
-     */
-    public void init(Path modelDir) throws IOException, InitializationException {
-        this.modelDir = modelDir;
-
-        Option taggerOpt = new Option(this.modelDir);
-        taggerOpt.readOptions();
-
         taggerMaps = new Maps();
-        taggerDict = new Dictionary();
-        taggerFGen = new FeatureGen(taggerMaps, taggerDict);
-        taggerVtb = new Viterbi();
 
-        taggerModel = new Model(taggerOpt, taggerMaps, taggerDict, taggerFGen, taggerVtb);
-        taggerModel.init();
-    }
-
-    /**
-     * Sets the data reader.
-     *
-     * @param reader the new data reader
-     */
-    public void setDataReader(DataReader reader) {
-        dataReader = reader;
-    }
-
-    /**
-     * Sets the data tagger.
-     *
-     * @param tagger the new data tagger
-     */
-    public void setDataTagger(TaggingData tagger) {
-        dataTagger = tagger;
-    }
-
-    /**
-     * Sets the data writer.
-     *
-     * @param writer the new data writer
-     */
-    public void setDataWriter(DataWriter writer) {
-        dataWriter = writer;
+        Dictionary taggerDict = new Dictionary();
+        FeatureGen taggerFGen = new FeatureGen(taggerMaps, taggerDict);
+        taggerModel = new Model(taggerOpt, taggerMaps, taggerDict, taggerFGen, new Viterbi());
     }
 
     //---------------------------------------------------------
@@ -165,8 +95,7 @@ public class Labeling {
      * @param data list of sequences with specified format which can be read by DataReader
      * @return a list of sentences with tags annotated
      */
-    @SuppressWarnings("unchecked")
-    public List<Sentence> seqLabeling(String data) {
+    private List<Sentence> seqLabeling(String data) {
         List<Sentence> obsvSeqs = dataReader.readString(data);
         return labeling(obsvSeqs);
     }
@@ -211,7 +140,6 @@ public class Labeling {
      * @param obsvSeqs the obsv seqs
      * @return the list
      */
-    @SuppressWarnings("unchecked")
     private List<Sentence> labeling(List<Sentence> obsvSeqs) {
         List<List<Observation>> labelSeqs = new ArrayList<>();
 

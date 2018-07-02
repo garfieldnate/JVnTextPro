@@ -29,50 +29,29 @@ package vn.edu.vnu.jvntext.jflexcrf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
+import vn.edu.vnu.jvntext.utils.InitializationException;
+import vn.edu.vnu.jvntext.utils.PathUtils;
+
 public class Option {
-    private static final Logger logger = LoggerFactory.getLogger(Option.class);
-
-    /**
-     * The Constant FIRST_ORDER.
-     */
-    static public final int FIRST_ORDER = 1;
+    public static final int FIRST_ORDER = 1;
     // second-order Markov is not supported currently
-    /**
-     * The Constant SECOND_ORDER.
-     */
-    static public final int SECOND_ORDER = 2;
+    public static final int SECOND_ORDER = 2;
+    public static final String INPUT_SEPARATOR = "|";
+    public static final String OUTPUT_SEPARATOR = "|";
 
-    /**
-     * The Constant inputSeparator.
-     */
-    public static final String inputSeparator = "|";
+    private static final Logger logger = LoggerFactory.getLogger(Option.class);
+    private static final String OPTIONS_FILE = "option.txt";
+    // the model file contains the mapping, dictionary, and features
+    private static final String MODEL_FILE = "model.txt";
 
-    /**
-     * The Constant outputSeparator.
-     */
-    public static final String outputSeparator = "|";
-
-    // model directory, default is current dir
-    /**
-     * The model dir.
-     */
-    public Path modelDir = Paths.get(".");
-    // model file (mapping, dictionary, and features)
-    /**
-     * The model file.
-     */
-    public final String modelFile = "model.txt";
-    // option file
-    /**
-     * The option file.
-     */
-    public final String optionFile = "option.txt";
+    private final Path modelDir;
 
     /**
      * The order.
@@ -81,24 +60,36 @@ public class Option {
 
     /**
      * Instantiates a new option.
+     *
+     * @param modelDir the model dir
      */
-    public Option() {
+    public Option(Path modelDir) throws IOException {
+        this.modelDir = modelDir;
+        readOptions(modelDir.resolve(OPTIONS_FILE));
     }
 
     /**
      * Instantiates a new option.
      *
-     * @param modelDir the model dir
+     * @param clazz class to load option resource from
      */
-    public Option(Path modelDir) {
-        this.modelDir = modelDir;
+    public Option(Class<?> clazz) throws InitializationException, IOException {
+        Path optionsPath;
+        try {
+            optionsPath = PathUtils.getPath(clazz.getResource(OPTIONS_FILE).toURI());
+        } catch (URISyntaxException e) {
+            throw new InitializationException(e);
+        }
+        modelDir = optionsPath.getParent();
+        readOptions(optionsPath);
     }
 
     /**
      * Read options.
+     *
+     * @param optionsPath
      */
-    public void readOptions() throws IOException {
-        Path optionsPath = modelDir.resolve(optionFile);
+    public void readOptions(Path optionsPath) throws IOException {
         logger.info("Reading options from " + optionsPath + "...");
         // read option lines
         for (String line : Files.readAllLines(optionsPath)) {
@@ -126,4 +117,11 @@ public class Option {
         logger.info("Reading options completed!");
     }
 
+    public Path getModelDir() {
+        return modelDir;
+    }
+
+    public BufferedReader getModelReader() throws IOException {
+        return Files.newBufferedReader(modelDir.resolve(MODEL_FILE));
+    }
 }

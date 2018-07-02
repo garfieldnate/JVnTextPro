@@ -60,8 +60,10 @@ public class WordSegmenting {
         if (args[2].equalsIgnoreCase("-inputfile")) {
             File inputFile = new File(args[3]);
             String outputPath = inputFile.getPath() + ".wseg";
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                outputPath), "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(outputPath),
+                "UTF-8"
+            ));
 
             logger.info("Segmenting " + inputFile + ", writing to " + outputPath);
             String result = segmenter.segmenting(inputFile);
@@ -84,8 +86,10 @@ public class WordSegmenting {
                 }
                 String outputPath = filename + ".wseg";
                 logger.info("Segmenting " + filename + ", writing to " + outputPath);
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                    outputPath), "UTF-8"));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(outputPath),
+                    "UTF-8"
+                ));
 
                 writer.write(segmenter.segmenting(new File(filename)));
 

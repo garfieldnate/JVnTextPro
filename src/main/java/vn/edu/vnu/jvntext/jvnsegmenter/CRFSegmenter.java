@@ -40,6 +40,7 @@ import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
 
 import vn.edu.vnu.jvntext.jflexcrf.Labeling;
+import vn.edu.vnu.jvntext.jflexcrf.Option;
 import vn.edu.vnu.jvntext.jvntextpro.data.DataReader;
 import vn.edu.vnu.jvntext.jvntextpro.data.DataWriter;
 import vn.edu.vnu.jvntext.jvntextpro.data.TaggingData;
@@ -48,26 +49,27 @@ import vn.edu.vnu.jvntext.utils.PathUtils;
 
 public class CRFSegmenter {
     private static final Logger logger = LoggerFactory.getLogger(CRFSegmenter.class);
+    private static final String FEATURE_TEMPLATE_FILE_NAME = "featuretemplate.xml";
 
     /**
      * The reader.
      */
-    DataReader reader = new WordDataReader();
+    private DataReader reader = new WordDataReader();
 
     /**
      * The writer.
      */
-    DataWriter writer = new WordDataWriter();
+    private DataWriter writer = new WordDataWriter();
 
     /**
      * The data tagger.
      */
-    final TaggingData dataTagger = new TaggingData();
+    private final TaggingData dataTagger = new TaggingData();
 
     /**
      * The labeling.
      */
-    Labeling labeling = null;
+    private Labeling labeling = null;
 
     /**
      * Instantiates a new cRF segmenter.
@@ -75,35 +77,44 @@ public class CRFSegmenter {
      * @param modelDir the model dir
      */
     public CRFSegmenter(Path modelDir) throws InitializationException, IOException {
-        init(modelDir);
-    }
-
-    /**
-     * Instantiates a new cRF segmenter.
-     */
-    public CRFSegmenter() throws InitializationException, IOException {
-        init();
-    }
-
-    /**
-     * Inits the.
-     *
-     * @param modelDir the model dir
-     */
-    private void init(Path modelDir) throws InitializationException, IOException {
-        logger.info("Initializing JVnSegmenter from " + modelDir + "...");
+        logger.info("Initializing CRFSegmenter from " + modelDir + "...");
         //Read feature template file
-        Path templateFile = modelDir.resolve("featuretemplate.xml");
+        Path templateFile = modelDir.resolve(FEATURE_TEMPLATE_FILE_NAME);
         try {
             Vector<Element> nodes = BasicContextGenerator.readFeatureNodes(templateFile);
 
             initContextGenerators(modelDir, nodes, dataTagger);
 
             //create context generators
-            labeling = new Labeling(modelDir, dataTagger, reader, writer);
+            Option options = new Option(modelDir);
+            labeling = new Labeling(options, dataTagger, reader, writer);
         } catch (ParserConfigurationException | SAXException e) {
             throw new InitializationException(e);
         }
+    }
+
+    /**
+     * Instantiates a new cRF segmenter.
+     */
+    public CRFSegmenter() throws IOException, InitializationException {
+        logger.info("Initializing CRFSegmenter from class resources");
+        //Read feature template file
+        Path templateFile;
+        try {
+            templateFile = PathUtils.getPath(CRFSegmenter.class.getResource(FEATURE_TEMPLATE_FILE_NAME).toURI());
+        } catch (URISyntaxException e) {
+            throw new InitializationException(e);
+        }
+        Vector<Element> nodes;
+        try {
+            nodes = BasicContextGenerator.readFeatureNodes(templateFile);
+        } catch (SAXException | ParserConfigurationException e) {
+            throw new InitializationException(e);
+        }
+        Option crfOptions = new Option(CRFSegmenter.class);
+        initContextGenerators(crfOptions.getModelDir(), nodes, dataTagger);
+        //create context generators
+        labeling = new Labeling(crfOptions, dataTagger, reader, writer);
     }
 
     public static void initContextGenerators(Path modelDir, Vector<Element> nodes, TaggingData dataTagger) throws IOException {
@@ -134,18 +145,6 @@ public class CRFSegmenter {
 
             if (contextGen != null) dataTagger.addContextGenerator(contextGen);
         }
-    }
-
-    public void init() throws InitializationException, IOException {
-        Path modelDir;
-        try {
-            modelDir = PathUtils.getResourceDirectory(CRFSegmenter.class);
-        } catch (URISyntaxException | IOException e) {
-            // this should never happen
-            logger.error("problem getting the model path from resources", e);
-            throw new RuntimeException(e);
-        }
-        init(modelDir);
     }
 
     /**

@@ -38,7 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ import java.util.StringTokenizer;
 
 import vn.edu.vnu.jvntext.jmaxent.Classification;
 import vn.edu.vnu.jvntext.utils.InitializationException;
-import vn.edu.vnu.jvntext.utils.PathUtils;
 
 public class JVnSenSegmenter {
     private static final Logger logger = LoggerFactory.getLogger(JVnSenSegmenter.class);
@@ -71,23 +69,15 @@ public class JVnSenSegmenter {
     public void init(Path modelDir) throws IOException, InitializationException {
         logger.info("Initializing JVnSenSegmenter from " + modelDir + "...");
         classifier = new Classification(modelDir);
-        /*
-      The fea gen.
-     */
         FeatureGenerator feaGen = new FeatureGenerator();
         classifier.init();
     }
 
     public void init() throws IOException, InitializationException {
-        Path modelDir;
-        try {
-            modelDir = PathUtils.getResourceDirectory(JVnSenSegmenter.class);
-        } catch (URISyntaxException e) {
-            // this should never happen
-            logger.error("problem getting the model path from resources", e);
-            throw new RuntimeException(e);
-        }
-        init(modelDir);
+        logger.info("Initializing JVnSenSegmenter from class resources");
+        classifier = new Classification(JVnSenSegmenter.class);
+        FeatureGenerator feaGen = new FeatureGenerator();
+        classifier.init();
     }
 
     /**

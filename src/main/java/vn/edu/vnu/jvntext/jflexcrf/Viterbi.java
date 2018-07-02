@@ -90,7 +90,7 @@ public class Viterbi {
     public void init(Model model) {
         this.model = model;
 
-        numLabels = model.taggerMaps.numLabels();
+        numLabels = model.getTaggerMaps().numLabels();
 
         Mi = new DoubleMatrix(numLabels, numLabels);
         Vi = new DoubleVector(numLabels);
@@ -123,9 +123,9 @@ public class Viterbi {
     public void computeMi() {
         Mi.assign(0.0);
 
-        model.taggerFGen.startScanEFeatures();
-        while (model.taggerFGen.hasNextEFeature()) {
-            Feature f = model.taggerFGen.nextEFeature();
+        model.getTaggerFGen().startScanEFeatures();
+        while (model.getTaggerFGen().hasNextEFeature()) {
+            Feature f = model.getTaggerFGen().nextEFeature();
 
             if (f.ftype == Feature.EDGE_FEATURE1) {
                 Mi.mtrx[f.yp][f.y] += model.lambda[f.idx] * f.val;
@@ -151,10 +151,10 @@ public class Viterbi {
         Vi.assign(0.0);
 
         // start scan features for sequence "seq" at position "pos"
-        model.taggerFGen.startScanSFeaturesAt(seq, pos);
+        model.getTaggerFGen().startScanSFeaturesAt(seq, pos);
         // examine all features at position "pos"
-        while (model.taggerFGen.hasNextSFeature()) {
-            Feature f = model.taggerFGen.nextSFeature();
+        while (model.getTaggerFGen().hasNextSFeature()) {
+            Feature f = model.getTaggerFGen().nextSFeature();
 
             if (f.ftype == Feature.STAT_FEATURE1) {
                 Vi.vect[f.y] += model.lambda[f.idx] * f.val;

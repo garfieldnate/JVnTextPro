@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 import vn.edu.vnu.jvntext.utils.InitializationException;
@@ -41,27 +40,27 @@ public class Model {
     /**
      * The tagger opt.
      */
-    public Option taggerOpt = null;
+    private Option taggerOpt = null;
 
     /**
      * The tagger maps.
      */
-    public Maps taggerMaps = null;
+    private Maps taggerMaps = null;
 
     /**
      * The tagger dict.
      */
-    public Dictionary taggerDict = null;
+    private Dictionary taggerDict = null;
 
     /**
      * The tagger f gen.
      */
-    public FeatureGen taggerFGen = null;
+    private FeatureGen taggerFGen = null;
 
     /**
      * The tagger vtb.
      */
-    public Viterbi taggerVtb = null;
+    private Viterbi taggerVtb = null;
 
     // feature weight
     /**
@@ -84,43 +83,40 @@ public class Model {
      * @param taggerFGen the tagger f gen
      * @param taggerVtb  the tagger vtb
      */
-    public Model(Option taggerOpt, Maps taggerMaps, Dictionary taggerDict, FeatureGen taggerFGen, Viterbi taggerVtb) {
+    public Model(Option taggerOpt, Maps taggerMaps, Dictionary taggerDict, FeatureGen taggerFGen, Viterbi taggerVtb) throws IOException, InitializationException {
         this.taggerOpt = taggerOpt;
         this.taggerMaps = taggerMaps;
         this.taggerDict = taggerDict;
         this.taggerFGen = taggerFGen;
         this.taggerVtb = taggerVtb;
+        init();
     }
 
     // load the model
-
-    /**
-     * Inits the.
-     */
-    public void init() throws IOException, InitializationException {
+    private void init() throws IOException, InitializationException {
         // open model file to load model here ... complete later
-        BufferedReader fin = Files.newBufferedReader(taggerOpt.modelDir.resolve(taggerOpt.modelFile));
+        BufferedReader modelReader = taggerOpt.getModelReader();
         // read context predicate map and label map
-        taggerMaps.readCpMaps(fin);
+        taggerMaps.readCpMaps(modelReader);
 
         System.gc();
 
-        taggerMaps.readLbMaps(fin);
+        taggerMaps.readLbMaps(modelReader);
 
         System.gc();
 
         // read dictionary
-        taggerDict.readDict(fin);
+        taggerDict.readDict(modelReader);
 
         System.gc();
 
         // read features
-        taggerFGen.readFeatures(fin);
+        taggerFGen.readFeatures(modelReader);
 
         System.gc();
 
         // close model file
-        fin.close();
+        modelReader.close();
 
 
         // update feature weights
@@ -137,15 +133,6 @@ public class Model {
         if (taggerVtb != null) {
             taggerVtb.init(this);
         }
-    }
-
-    /**
-     * Inference.
-     *
-     * @param seq the seq
-     */
-    public void inference(List<Observation> seq) {
-        taggerVtb.viterbiInference(seq);
     }
 
     /**
@@ -172,4 +159,20 @@ public class Model {
         logger.info("Inference time: " + Double.toString((double) elapsed / 1000) + " seconds");
     }
 
+    /**
+     * Inference.
+     *
+     * @param seq the seq
+     */
+    public void inference(List<Observation> seq) {
+        taggerVtb.viterbiInference(seq);
+    }
+
+    public Maps getTaggerMaps() {
+        return taggerMaps;
+    }
+
+    public FeatureGen getTaggerFGen() {
+        return taggerFGen;
+    }
 }

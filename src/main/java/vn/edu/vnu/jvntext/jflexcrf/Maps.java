@@ -102,8 +102,7 @@ public class Maps {
         logger.info("Reading the context predicate maps ...");
         Data.readPredicateMaps(fin, numCps, cpStr2Int, cpInt2Str);
 
-        logger.info(
-            "Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
+        logger.info("Reading context predicate maps (" + Integer.toString(cpStr2Int.size()) + " entries) completed!");
 
         // read the line ###...
         fin.readLine();

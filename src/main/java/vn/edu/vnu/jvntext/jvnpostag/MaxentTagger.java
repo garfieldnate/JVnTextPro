@@ -50,21 +50,27 @@ import vn.edu.vnu.jvntext.utils.PathUtils;
 
 public class MaxentTagger implements POSTagger {
     private static final Logger logger = LoggerFactory.getLogger(MaxentTagger.class);
-    DataReader reader = new POSDataReader();
-    DataWriter writer = new POSDataWriter();
-    final TaggingData dataTagger = new TaggingData();
-
-    Classification classifier = null;
+    private DataReader reader = new POSDataReader();
+    private DataWriter writer = new POSDataWriter();
+    private final TaggingData dataTagger = new TaggingData();
+    private Classification classifier = null;
 
     public MaxentTagger(Path modelDir) throws InitializationException {
         init(modelDir);
     }
 
     public MaxentTagger() throws InitializationException {
-        init();
+        Path modelDir;
+        try {
+            modelDir = PathUtils.getPath(MaxentTagger.class.getResource("maxent").toURI());
+        } catch (URISyntaxException | IOException e) {
+            // this should never happen
+            logger.error("problem getting the model path from class resources", e);
+            throw new InitializationException(e);
+        }
+        init(modelDir);
     }
 
-    @Override
     public void init(Path modeldir) throws InitializationException {
         logger.info("Initializing MaxentTagger from " + modeldir + "...");
         try {
@@ -76,18 +82,9 @@ public class MaxentTagger implements POSTagger {
     }
 
     public void init() throws InitializationException {
-        Path modelDir;
-        try {
-            modelDir = PathUtils.getResourceDirectory(MaxentTagger.class).resolve("maxent");
-            //            modelDir = Paths.get(MaxentTagger.class.getResource(
-            //                "/" + MaxentTagger.class.getPackage().getName() + "/maxent").toURI());
-        } catch (URISyntaxException | IOException e) {
-            // this should never happen
-            logger.error("problem getting the model path from resources", e);
-            throw new InitializationException(e);
-        }
-        init(modelDir);
+
     }
+
 
     public String tagging(String instr) {
         logger.debug("tagging ....");

@@ -401,12 +401,7 @@ public class VnSyllParser {
     }
 
     private enum TONE {
-        NO_TONE(0),
-        ACUTE(1),
-        ACCENT(2),
-        QUESTION(3),
-        TILDE(4),
-        DOT(5);
+        NO_TONE(0), ACUTE(1), ACCENT(2), QUESTION(3), TILDE(4), DOT(5);
 
         private final int value;
 
@@ -415,8 +410,8 @@ public class VnSyllParser {
         }
 
         public static TONE getTone(int v) {
-            for(TONE t : TONE.values()) {
-                if(t.getValue() == v) {
+            for (TONE t : TONE.values()) {
+                if (t.getValue() == v) {
                     return t;
                 }
             }

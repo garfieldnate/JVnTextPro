@@ -11,7 +11,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group = 'vn.edu.vnu.jvntext.jvntextpro'
-version = '3.0.1'
+version = '3.0.2'
 description = """NLP Toolkit for Vietnamese"""
 
 sourceCompatibility = 1.8
@@ -35,12 +35,14 @@ dependencies {
     fatJarConf group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }
 
-// include models in the resources during development
-idea {
-    module {
-        resourceDirs += file('models')
-    }
-}
+// Uncomment this during development but do not release with it uncommented!
+//sourceSets {
+//    main {
+//        resources {
+//            srcDir 'models'
+//        }
+//    }
+//}
 
 jar {
     // library clients should configure slf4j themselves

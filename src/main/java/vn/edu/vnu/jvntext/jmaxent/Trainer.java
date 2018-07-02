@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
@@ -70,7 +69,6 @@ public class Trainer {
         Inference inference;
         Evaluation evaluation;
         Model model;
-
         PrintWriter foutModel;
         BufferedReader finModel;
 
@@ -90,8 +88,8 @@ public class Trainer {
             }
 
             data = new Data(option);
-            data.readTrnData(option.modelDir + File.separator + option.trainDataFile);
-            data.readTstData(option.modelDir + File.separator + option.testDataFile);
+            data.readTrnData(option.getTrainReader());
+            data.readTstData(option.getTestReader());
 
             dict = new Dictionary(option, data);
             dict.generateDict();
@@ -134,7 +132,7 @@ public class Trainer {
             }
 
             data = new Data(option);
-            data.readTrnData(option.modelDir + File.separator + option.trainDataFile);
+            data.readTrnData(option.getTrainReader());
 
             dict = new Dictionary(option, data);
             dict.generateDict();
@@ -154,9 +152,7 @@ public class Trainer {
             feaGen.writeFeatures(foutModel);
 
             foutModel.close();
-        }
-
-        if (isTst) {
+        } else if (isTst) {
             // testing only
 
             finModel = option.openModelFile();
@@ -168,7 +164,7 @@ public class Trainer {
             data = new Data(option);
             data.readCpMaps(finModel);
             data.readLbMaps(finModel);
-            data.readTstData(option.modelDir + File.separator + option.testDataFile);
+            data.readTstData(option.getTestReader());
 
             dict = new Dictionary(option, data);
             dict.readDict(finModel);
@@ -185,9 +181,7 @@ public class Trainer {
             model.evaluation.evaluate(null);
 
             finModel.close();
-        }
-
-        if (isCont) { //continue last training
+        } else if (isCont) { //continue last training
             PrintWriter flog = option.openTrainLogFile(); //append
             if (flog == null) {
                 logger.warn("Couldn't create training log file");
@@ -203,7 +197,7 @@ public class Trainer {
             data = new Data(option);
             data.readCpMaps(finModel);
             data.readLbMaps(finModel);
-            data.readTstData(option.modelDir + File.separator + option.testDataFile);
+            data.readTstData(option.getTestReader());
 
             dict = new Dictionary(option, data);
             dict.readDict(finModel);

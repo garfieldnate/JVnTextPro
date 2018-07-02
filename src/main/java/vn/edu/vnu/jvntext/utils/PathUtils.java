@@ -16,19 +16,18 @@ public class PathUtils {
      * Retrieve a path to the resource directory for the given class. This may be inside a JAR file or may be in the
      * regular filesystem.
      *
-     * @param _class to get resources for
+     * @param clazz to get resources for
      * @return path to resources directory for {@code _class}
      * @throws URISyntaxException
      * @throws IOException
      */
-    public static Path getResourceDirectory(Class<?> _class) throws URISyntaxException, IOException {
-        String packageName = _class.getPackage().getName();
-        String packageDir = "/" + packageName.replace('.', '/');
-        return getPath(_class.getResource(packageDir).toURI());
+    public static Path getResourceDirectory(Class<?> clazz) throws URISyntaxException, IOException {
+        String path = clazz.getPackage().getName().replace(".", "/");
+        return getPath(clazz.getClassLoader().getResource(path).toURI());
     }
 
     /**
-     * Retrieves a path for URI; automatically loads a new filesystem for jars when reading from "jar:" URI's.
+     * Retrieves a path for {@code uri}; automatically loads a new filesystem for jars when reading from "jar:" URI's.
      *
      * @return A path for the given URI
      */

@@ -80,32 +80,27 @@ public class RegexContextGenerator extends BasicContextGenerator {
     /**
      * The ptn short date.
      */
-    private static Pattern
-        ptnShortDate = Pattern.compile(strShortDatePattern);
+    private static Pattern ptnShortDate = Pattern.compile(strShortDatePattern);
 
     /**
      * The ptn long date.
      */
-    private static Pattern
-        ptnLongDate = Pattern.compile(strLongDatePattern);
+    private static Pattern ptnLongDate = Pattern.compile(strLongDatePattern);
 
     /**
      * The ptn percentage.
      */
-    private static Pattern
-        ptnPercentage = Pattern.compile(strPercentagePattern);
+    private static Pattern ptnPercentage = Pattern.compile(strPercentagePattern);
 
     /**
      * The ptn currency.
      */
-    private static Pattern
-        ptnCurrency = Pattern.compile(strCurrencyPattern);
+    private static Pattern ptnCurrency = Pattern.compile(strCurrencyPattern);
 
     /**
      * The ptn vi currency.
      */
-    private static Pattern
-        ptnViCurrency = Pattern.compile(strViCurrencyPattern);
+    private static Pattern ptnViCurrency = Pattern.compile(strViCurrencyPattern);
 
     //----------------------------
     //methods

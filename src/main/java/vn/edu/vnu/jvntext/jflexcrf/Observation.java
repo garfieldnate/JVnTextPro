@@ -63,7 +63,7 @@ public class Observation {
 
         String labelStr = lbInt2Str.get(modelLabel);
         if (labelStr != null) {
-            res += Option.outputSeparator + labelStr.toUpperCase();
+            res += Option.OUTPUT_SEPARATOR + labelStr.toUpperCase();
         }
 
         return res;
