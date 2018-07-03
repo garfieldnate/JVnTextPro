@@ -32,32 +32,26 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
 import vn.edu.vnu.jvntext.utils.InitializationException;
 import vn.edu.vnu.jvntext.utils.PathUtils;
 
 public class Option {
-    private static final Logger logger = LoggerFactory.getLogger(Option.class);
+    public static final String modelSeparator = "##########";
 
+    private static final Logger logger = LoggerFactory.getLogger(Option.class);
     private final static String DEFAULT_FILE_NAME = "option.txt";
+    private static final String FEATURETEMPLATE_FILE = "featuretemplate.xml";
     private final Path optionPath;
 
-    // model file
-    /**
-     * The model file.
-     */
+    private final Path modelDir;
     private String modelFileName = "model.txt";
-
-    /**
-     * The model separator.
-     */
-    public static final String modelSeparator = "##########";
 
     // training data, testing data file
     /**
@@ -163,12 +157,17 @@ public class Option {
      * The save best model.
      */
     public boolean saveBestModel = true; // save the best model with testing data
+    private InputStream featureTemplateInputStream;
 
     /**
      * Instantiates a new option.
+     *
+     * @param optionPath the path to the options file
      */
-    public Option() {
-        optionPath = Paths.get(DEFAULT_FILE_NAME);
+    public Option(Path optionPath) throws IOException {
+        this.optionPath = optionPath;
+        this.modelDir = optionPath.getParent();
+        init();
     }
 
     /**
@@ -176,17 +175,10 @@ public class Option {
      *
      * @param modelDir the model dir
      */
-    public Option(Path modelDir) {
-        optionPath = modelDir.resolve(DEFAULT_FILE_NAME);
-    }
-
-    /**
-     * Instantiates a new option.
-     *
-     * @param modelDir the model dir
-     */
-    public Option(Path modelDir, String optionFileName) {
+    public Option(Path modelDir, String optionFileName) throws IOException {
+        this.modelDir = modelDir;
         optionPath = modelDir.resolve(optionFileName);
+        init();
     }
 
     /**
@@ -200,13 +192,15 @@ public class Option {
         } catch (URISyntaxException e) {
             throw new InitializationException(e);
         }
+        modelDir = optionPath.getParent();
+        init();
     }
 
     /**
      * Read options.
      */
-    public void readOptions() throws IOException {
-        logger.info("Reading maxent options...");
+    private void init() throws IOException {
+        logger.info("Reading maxent options from " + optionPath + "...");
         for (String line : Files.readAllLines(optionPath)) {
             String trimLine = line.trim();
             if (trimLine.startsWith("#")) {
@@ -357,4 +351,7 @@ public class Option {
         fout.println();
     }
 
+    public InputStream getFeatureTemplateInputStream() throws IOException {
+        return Files.newInputStream(modelDir.resolve(FEATURETEMPLATE_FILE));
+    }
 }

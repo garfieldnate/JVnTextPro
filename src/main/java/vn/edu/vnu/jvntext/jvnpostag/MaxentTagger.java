@@ -39,6 +39,7 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import vn.edu.vnu.jvntext.jmaxent.Option;
 import vn.edu.vnu.jvntext.jmaxent.Classification;
 import vn.edu.vnu.jvntext.jvntextpro.data.DataReader;
 import vn.edu.vnu.jvntext.jvntextpro.data.DataWriter;
@@ -50,41 +51,41 @@ import vn.edu.vnu.jvntext.utils.PathUtils;
 
 public class MaxentTagger implements POSTagger {
     private static final Logger logger = LoggerFactory.getLogger(MaxentTagger.class);
+    public static final String MAXENT_OPTION_FILE = "maxent/option.txt";
+
     private DataReader reader = new POSDataReader();
     private DataWriter writer = new POSDataWriter();
     private final TaggingData dataTagger = new TaggingData();
     private Classification classifier = null;
 
-    public MaxentTagger(Path modelDir) throws InitializationException {
-        init(modelDir);
+    public MaxentTagger(Path modelDir) throws InitializationException, IOException {
+        Option options = new Option(modelDir.resolve(MAXENT_OPTION_FILE));
+        init(options);
     }
 
-    public MaxentTagger() throws InitializationException {
-        Path modelDir;
+    public MaxentTagger() throws InitializationException, IOException {
+        Path optionsPath;
         try {
-            modelDir = PathUtils.getPath(MaxentTagger.class.getResource("maxent").toURI());
+            optionsPath = PathUtils.getPath(MaxentTagger.class.getResource(MAXENT_OPTION_FILE).toURI());
         } catch (URISyntaxException | IOException e) {
             // this should never happen
             logger.error("problem getting the model path from class resources", e);
             throw new InitializationException(e);
         }
-        init(modelDir);
+        Option options = new Option(optionsPath);
+        init(options);
     }
 
-    public void init(Path modeldir) throws InitializationException {
-        logger.info("Initializing MaxentTagger from " + modeldir + "...");
+    private void init(Option options) throws InitializationException {
+        // TODO: message here
+        logger.info("Initializing MaxentTagger from " + options + "...");
         try {
-            dataTagger.addContextGenerator(new POSContextGenerator(modeldir.resolve("featuretemplate.xml")));
-            classifier = new Classification(modeldir);
+            dataTagger.addContextGenerator(new POSContextGenerator(options.getFeatureTemplateInputStream()));
+            classifier = new Classification(options);
         } catch (SAXException | ParserConfigurationException | IOException e) {
             throw new InitializationException(e);
         }
     }
-
-    public void init() throws InitializationException {
-
-    }
-
 
     public String tagging(String instr) {
         logger.debug("tagging ....");

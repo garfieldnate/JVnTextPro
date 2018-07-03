@@ -48,6 +48,8 @@ import vn.edu.vnu.jvntext.utils.InitializationException;
 
 public class CRFTagger implements POSTagger {
     private static final Logger logger = LoggerFactory.getLogger(CRFTagger.class);
+    public static final String CRF_OPTION_FILE = "crf/option.txt";
+
     private DataReader reader = new POSDataReader();
     private DataWriter writer = new POSDataWriter();
 
@@ -55,27 +57,28 @@ public class CRFTagger implements POSTagger {
 
     private Labeling labeling = null;
 
-    public CRFTagger(Path modelDir) throws InitializationException {
-        init(modelDir);
+    public CRFTagger(Path modelDir) throws InitializationException, IOException {
+        Option options = new Option(modelDir.resolve(CRF_OPTION_FILE));
+        init(options);
     }
 
-    public CRFTagger() throws InitializationException {
-        Path modelDir;
+    public CRFTagger() throws InitializationException, IOException {
+        Path optionsPath;
         try {
-            modelDir = Paths.get(CRFTagger.class.getResource("crf")
-                                                .toURI());
+            optionsPath = Paths.get(CRFTagger.class.getResource(CRF_OPTION_FILE).toURI());
         } catch (URISyntaxException e) {
             // this should never happen
-            logger.error("problem getting the model path from class resources", e);
+            logger.error("problem getting the model options path from class resources", e);
             throw new RuntimeException(e);
         }
-        init(modelDir);
+        Option options = new Option(optionsPath);
+        init(options);
     }
 
-    private void init(Path modelDir) throws InitializationException {
+    private void init(Option options) throws InitializationException {
+        // TODO: message
         try {
-            dataTagger.addContextGenerator(new POSContextGenerator(modelDir.resolve("featuretemplate.xml")));
-            Option options = new Option(modelDir);
+            dataTagger.addContextGenerator(new POSContextGenerator(options.getFeatureTemplateInputStream()));
             labeling = new Labeling(options, dataTagger, reader, writer);
         } catch (SAXException | ParserConfigurationException | IOException e) {
             throw new InitializationException(e);

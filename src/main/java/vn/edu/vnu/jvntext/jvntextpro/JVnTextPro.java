@@ -102,11 +102,11 @@ public class JVnTextPro {
      *
      * @param modelDir the model dir
      */
-    public void initPosTagger(Path modelDir) throws InitializationException {
+    public void initPosTagger(Path modelDir) throws InitializationException, IOException {
         vnPosTagger = new MaxentTagger(modelDir);
     }
 
-    public void initPosTagger() throws InitializationException {
+    public void initPosTagger() throws InitializationException, IOException {
         vnPosTagger = new MaxentTagger();
     }
 

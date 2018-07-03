@@ -60,8 +60,6 @@ public class Trainer {
         // create option object
         Option option = new Option(Paths.get(args[2]), args[4]);
 
-        option.readOptions();
-
         Data data;
         Dictionary dict;
         FeatureGen feaGen;

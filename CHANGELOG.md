@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [3.0.2] - 2018-07-XX
+## [3.0.3] - 2018-07-03
+
+### Fixed
+
+* Once again fixing a problem with external model loading. The previous release would have worked if the author had run "clean" before releasing D:
+* Previous fix was not aggressive enough; updated code for configuring CRF and MaxEnt taggers.
+
+## [3.0.2] - 2018-07-02
 
 ### Fixed
 

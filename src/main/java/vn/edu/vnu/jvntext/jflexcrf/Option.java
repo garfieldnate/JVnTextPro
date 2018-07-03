@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,6 +51,7 @@ public class Option {
     private static final String OPTIONS_FILE = "option.txt";
     // the model file contains the mapping, dictionary, and features
     private static final String MODEL_FILE = "model.txt";
+    public static final String FEATURETEMPLATE_FILE = "featuretemplate.xml";
 
     private final Path modelDir;
 
@@ -61,11 +63,11 @@ public class Option {
     /**
      * Instantiates a new option.
      *
-     * @param modelDir the model dir
+     * @param optionsPath the options file path
      */
-    public Option(Path modelDir) throws IOException {
-        this.modelDir = modelDir;
-        readOptions(modelDir.resolve(OPTIONS_FILE));
+    public Option(Path optionsPath) throws IOException {
+        this.modelDir = optionsPath.getParent();
+        readOptions(optionsPath);
     }
 
     /**
@@ -123,5 +125,9 @@ public class Option {
 
     public BufferedReader getModelReader() throws IOException {
         return Files.newBufferedReader(modelDir.resolve(MODEL_FILE));
+    }
+
+    public InputStream getFeatureTemplateInputStream() throws IOException {
+        return Files.newInputStream(modelDir.resolve(FEATURETEMPLATE_FILE));
     }
 }

@@ -11,7 +11,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group = 'vn.edu.vnu.jvntext.jvntextpro'
-version = '3.0.2'
+version = '3.0.3'
 description = """NLP Toolkit for Vietnamese"""
 
 sourceCompatibility = 1.8

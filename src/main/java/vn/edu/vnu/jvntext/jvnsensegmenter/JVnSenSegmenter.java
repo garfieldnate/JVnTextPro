@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import vn.edu.vnu.jvntext.jmaxent.Classification;
+import vn.edu.vnu.jvntext.jmaxent.Option;
 import vn.edu.vnu.jvntext.utils.InitializationException;
 
 public class JVnSenSegmenter {
@@ -68,15 +69,14 @@ public class JVnSenSegmenter {
      */
     public void init(Path modelDir) throws IOException, InitializationException {
         logger.info("Initializing JVnSenSegmenter from " + modelDir + "...");
-        classifier = new Classification(modelDir);
-        FeatureGenerator feaGen = new FeatureGenerator();
+        Option options = new Option(modelDir.resolve("option.txt"));
+        classifier = new Classification(options);
         classifier.init();
     }
 
     public void init() throws IOException, InitializationException {
         logger.info("Initializing JVnSenSegmenter from class resources");
         classifier = new Classification(JVnSenSegmenter.class);
-        FeatureGenerator feaGen = new FeatureGenerator();
         classifier.init();
     }
 

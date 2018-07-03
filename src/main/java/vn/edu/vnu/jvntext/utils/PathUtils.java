@@ -2,7 +2,6 @@ package vn.edu.vnu.jvntext.utils;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,20 +10,6 @@ import java.util.Collections;
 
 public class PathUtils {
     private static final String JAR_SCHEME = "jar";
-
-    /**
-     * Retrieve a path to the resource directory for the given class. This may be inside a JAR file or may be in the
-     * regular filesystem.
-     *
-     * @param clazz to get resources for
-     * @return path to resources directory for {@code _class}
-     * @throws URISyntaxException
-     * @throws IOException
-     */
-    public static Path getResourceDirectory(Class<?> clazz) throws URISyntaxException, IOException {
-        String path = clazz.getPackage().getName().replace(".", "/");
-        return getPath(clazz.getClassLoader().getResource(path).toURI());
-    }
 
     /**
      * Retrieves a path for {@code uri}; automatically loads a new filesystem for jars when reading from "jar:" URI's.

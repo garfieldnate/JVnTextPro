@@ -29,7 +29,6 @@ package vn.edu.vnu.jvntext.jmaxent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -76,13 +75,9 @@ public class Classification {
 
     /**
      * Instantiates a new classification.
-     *
-     * @param modelDir the model dir
      */
-    public Classification(Path modelDir) throws IOException, InitializationException {
-        option = new Option(modelDir);
-        option.readOptions();
-
+    public Classification(Option option) throws IOException, InitializationException {
+        this.option = option;
         init();
     }
 
@@ -93,8 +88,6 @@ public class Classification {
      */
     public Classification(Class<?> clazz) throws IOException, InitializationException {
         option = new Option(clazz);
-        option.readOptions();
-
         init();
     }
 

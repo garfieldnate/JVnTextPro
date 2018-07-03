@@ -29,6 +29,7 @@ package vn.edu.vnu.jvntext.jvnpostag;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -62,7 +63,7 @@ public class POSTrainGenerating extends TrainDataGenerating {
         this.reader = new POSDataReader(true);
         this.tagger = new TaggingData();
         try {
-            tagger.addContextGenerator(new POSContextGenerator(templateFile));
+            tagger.addContextGenerator(new POSContextGenerator(Files.newInputStream(templateFile)));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new InitializationException(e);
         }

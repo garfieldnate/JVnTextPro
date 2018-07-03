@@ -36,8 +36,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,9 +64,9 @@ public class POSContextGenerator extends ContextGenerator {
     //----------------------------------------------
     // Constructor and Override methods
     //----------------------------------------------
-    public POSContextGenerator(Path featureTemplateFile) throws IOException, SAXException, ParserConfigurationException {
+    public POSContextGenerator(InputStream featureTemplateInputStream) throws IOException, SAXException, ParserConfigurationException {
         readDict();
-        readFeatureTemplate(featureTemplateFile);
+        readFeatureTemplate(featureTemplateInputStream);
     }
 
     @Override
@@ -172,12 +170,11 @@ public class POSContextGenerator extends ContextGenerator {
         reader.close();
     }
 
-    public void readFeatureTemplate(Path file) throws ParserConfigurationException, IOException, SAXException {
+    public void readFeatureTemplate(InputStream inputStream) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
 
-        InputStream stream = Files.newInputStream(file);
-        Document doc = builder.parse(stream);
+        Document doc = builder.parse(inputStream);
 
         Element root = doc.getDocumentElement();
         NodeList childrent = root.getChildNodes();
