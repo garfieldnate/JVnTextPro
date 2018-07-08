@@ -1,0 +1,102 @@
+// Contains publication-related tasks
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.3'
+    }
+}
+
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+def pomConfig = {
+    licenses {
+        license {
+            name "GPL 2.0"
+            url "https://www.gnu.org/licenses/gpl-2.0.en.html"
+        }
+    }
+    developers {
+        developer {
+            id "ncamtu"
+            name "Cam-Tu Nguyen"
+            email "ncamtu@gmail.com"
+        }
+        developer {
+            id "pxhieu"
+            name "Xuan-Hieu Phan"
+            email "pxhieu@gmail.com"
+        }
+        developer {
+            id "trangnt"
+            name "Thu-Trang Nguyen"
+            email "trangnt84@gmail.com"
+        }
+        developer {
+            id "garfieldnate"
+            name "Nathan Glenn"
+            email "nathan.g.glenn@gmail.com"
+        }
+    }
+    scm {
+        url project.vcsUrl
+    }
+}
+
+publishing {
+    publications {
+        ProjectPublication(MavenPublication) {
+            from components.java
+            project.artifactsToPublish.forEach({
+                artifact it
+            })
+            groupId project.group
+            artifactId project.name
+            version project.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', project.description)
+                root.appendNode('name', project.name)
+                root.appendNode('url', project.website)
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = project.property('bintray.user')
+    key = project.property('bintray.key')
+    publications =['ProjectPublication']
+    pkg {
+        repo = 'general'
+        name = project.name
+        desc = project.description
+        userOrg = user
+        licenses = project.licenses.split(',')
+        vcsUrl = project.vcsUrl
+        issueTrackerUrl = project.vcsUrl + "/issues"
+        websiteUrl = project.website
+        githubRepo = project.githubRepo
+        githubReleaseNotesFile = 'CHANGELOG.md'
+        labels = project.labels.split(',')
+        publicDownloadNumbers = true
+        version {
+            name = project.version + '-Final'
+            desc = project.name + ' ' + project.version + ' final'
+            vcsTag = project.version
+            gpg {
+                sign = true
+                passphrase = project.property("signing.password")
+            }
+            mavenCentralSync {
+                user = project.property('sonatype.user')
+                password = project.property('sonatype.password')
+            }
+        }
+    }
+}

@@ -1,27 +1,19 @@
 // Useful tasks:
 // (default) jar: creates library jar
 // fatJar: creates executable jar
-// bintrayUpload: performs full release/publication
+// bintrayUpload: performs full publishingTasks/publication
 
-plugins {
-    id "com.jfrog.bintray" version "1.8.3"
-}
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
 
-group = 'vn.edu.vnu.jvntext.jvntextpro'
-version = '3.0.3'
-description = """NLP Toolkit for Vietnamese"""
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+wrapper {
+    gradleVersion = '4.8.1'
+}
 
 repositories {
     mavenCentral()
 }
 
-// needed for custom dependency in fatJar task
+// needed for custom dependencies in the fatJar task
 configurations {
     fatJarConf
 }
@@ -35,7 +27,7 @@ dependencies {
     fatJarConf group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }
 
-// Uncomment this during development but do not release with it uncommented!
+// Uncomment this during development but do not publishingTasks with it uncommented!
 //sourceSets {
 //    main {
 //        resources {
@@ -43,6 +35,15 @@ dependencies {
 //        }
 //    }
 //}
+
+//////////////////////////////////////////////////////////
+// Configure all of our artifact-generating tasks below //
+//////////////////////////////////////////////////////////
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-Xlint:all"
+}
 
 jar {
     // library clients should configure slf4j themselves
@@ -70,22 +71,6 @@ task fatJar(type: Jar) {
     with jar
 }
 
-//set compiler specific configs
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-    options.compilerArgs << "-Xlint:all"
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    classifier 'sources'
-}
-
-task javadocsJar(type: Jar) {
-    from javadoc
-    classifier 'javadoc'
-}
-
 task modelsJar(type: Jar) {
     description "Build a jar containing just the default models"
     from('models') {
@@ -94,96 +79,18 @@ task modelsJar(type: Jar) {
     classifier 'models'
 }
 
-// Create the pom configuration:
-def pomConfig = {
-    licenses {
-        license {
-            name "GPL 2.0"
-            url "https://www.gnu.org/licenses/gpl-2.0.en.html"
-        }
-    }
-    developers {
-        developer {
-            id "ncamtu"
-            name "Cam-Tu Nguyen"
-            email "ncamtu@gmail.com"
-        }
-        developer {
-            id "pxhieu"
-            name "Xuan-Hieu Phan"
-            email "pxhieu@gmail.com"
-        }
-        developer {
-            id "trangnt"
-            name "Thu-Trang Nguyen"
-            email "trangnt84@gmail.com"
-        }
-        developer {
-            id "garfieldnate"
-            name "Nathan Glenn"
-            email "nathan.g.glenn@gmail.com"
-        }
-    }
-    scm {
-        url project.property("vcsUrl")
-    }
+task sourcesJar(type: Jar) {
+    description "Build a jar containing just the java source files"
+    from sourceSets.main.allJava
+    classifier 'sources'
 }
 
-publishing {
-    publications {
-        JVnTextProPublication(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocsJar
-            artifact modelsJar
-            artifact fatJar
-            groupId project.group
-            artifactId project.name
-            version project.version
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('description', project.description)
-                root.appendNode('name', project.name)
-                root.appendNode('url', project.property("website"))
-                root.children().last() + pomConfig
-            }
-        }
-    }
+task javadocsJar(type: Jar) {
+    description "Build a jar containing just the JavaDocs"
+    from javadoc
+    classifier 'javadoc'
 }
 
-bintray {
-    user = project.property('bintray.user')
-    key = project.property('bintray.key')
-    publications =['JVnTextProPublication']
-    pkg {
-        repo = 'general'
-        name = project.name
-        desc = project.description
-        userOrg = user
-        licenses = ['GPL-2.0']
-        vcsUrl = project.property("vcsUrl")
-        issueTrackerUrl = project.property("vcsUrl") + "/issues"
-        websiteUrl = project.property("website")
-        githubRepo = 'garfieldnate/JVnTextPro'
-        githubReleaseNotesFile = 'CHANGELOG.md'
-        labels = ['NLP', 'Vietnamese']
-        publicDownloadNumbers = true
-        version {
-            name = project.version + '-Final'
-            desc = project.name + ' ' + project.version + ' final'
-            vcsTag = project.version
-            gpg {
-                sign = true
-                passphrase = project.property("signing.password")
-            }
-            mavenCentralSync {
-                user = project.property('sonatype.user')
-                password = project.property('sonatype.password')
-            }
-        }
-    }
-}
-
-wrapper {
-    gradleVersion = '4.8.1'
-}
+// add all of the publishing tasks, which rely on the existence of the artifact tasks above
+project.ext.artifactsToPublish = [sourcesJar, javadocsJar, modelsJar, fatJar]
+apply from: 'scripts/publishingTasks.gradle'
